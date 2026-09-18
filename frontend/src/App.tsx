@@ -288,11 +288,14 @@ function App() {
   const buyNow         = (book: Book) => { addToCart(book); setCartOpen(false); navigate('/checkout') }
   const showToast      = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 2600) }
 
+  
+
   const suggestions = useMemo(() => (
     searchQuery.length >= 1
       ? books.filter(b => b.title.includes(searchQuery) || b.author.includes(searchQuery)).slice(0,5)
       : []
   ), [books, searchQuery])
+
 
   const categorySuggestions = useMemo(() => (
     searchQuery.length >= 1
@@ -307,6 +310,10 @@ function App() {
   const heroBooks = useMemo(() => books.slice(0, 8), [books])
 
   const bestsellerBooks = useMemo(() => books.filter(b => b.bestseller).slice(0, 8), [books])
+
+  const promotionBooks = useMemo(() => 
+    books.filter(b => b.promotion && b.promotion > 0 && b.promotion < b.price), 
+  [books])
 
   const catsByType = useMemo(() => ({
     category: cats.filter(c => c.type === 'category'),
@@ -488,6 +495,19 @@ function App() {
                   </div>
                   <div className="bestsellers-grid" style={{ gap:'14px', paddingBottom:'8px' }}>
                     {bestsellerBooks.map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
+                  </div>
+                </div>
+              )}
+
+              {promotionBooks.length > 0 && (
+                <div style={{ padding:'0 4% 40px' }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:'16px', marginBottom:'20px' }}>
+                    <div style={{ flex:1, height:'1px', background:`linear-gradient(to left,${C.gold},transparent)` }}/>
+                    <h2 style={{ color:C.primary, fontSize:'clamp(1.2rem,4vw,1.6rem)', fontWeight:'800', margin:0, whiteSpace:'nowrap' }}>🔥 عروض وتخفيضات</h2>
+                    <div style={{ flex:1, height:'1px', background:`linear-gradient(to right,${C.gold},transparent)` }}/>
+                  </div>
+                  <div className="bestsellers-grid" style={{ gap:'14px', paddingBottom:'8px' }}>
+                    {promotionBooks.map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
                   </div>
                 </div>
               )}

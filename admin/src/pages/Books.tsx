@@ -1260,7 +1260,7 @@ setOptions(hasQias ? loaded : [
             <div style={{ marginBottom: '14px' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', background: 'rgba(232,184,0,0.06)', border: '1.5px solid rgba(232,184,0,0.15)', borderRadius: '10px', padding: '12px 14px' }}>
                 <input type="checkbox" checked={form.bestseller || false} onChange={e => setForm(p => ({ ...p, bestseller: e.target.checked }))} style={{ width: '20px', height: '20px', cursor: 'pointer', accentColor: '#E8B800' }} />
-                <span style={{ color: '#FFF8E7', fontSize: '14px', fontWeight: 600 }}>🔥 إضافة إلى "الأكثر مبيعاً"</span>
+                <span style={{ color: '#FFF8E7', fontSize: '14px', fontWeight: 600 }}>الإضافة إلى الجديد و الحصري"</span>
               </label>
             </div>
 
