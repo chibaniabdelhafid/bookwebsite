@@ -483,7 +483,7 @@ function App() {
                 <div style={{ padding:'0 4% 40px' }}>
                   <div style={{ display:'flex', alignItems:'center', gap:'16px', marginBottom:'20px' }}>
                     <div style={{ flex:1, height:'1px', background:`linear-gradient(to left,${C.gold},transparent)` }}/>
-                    <h2 style={{ color:C.primary, fontSize:'clamp(1.2rem,4vw,1.6rem)', fontWeight:'800', margin:0, whiteSpace:'nowrap' }}> الكتب الأكثر مبيعاً</h2>
+                    <h2 style={{ color:C.primary, fontSize:'clamp(1.2rem,4vw,1.6rem)', fontWeight:'800', margin:0, whiteSpace:'nowrap' }}>الجديد و الحصري</h2>
                     <div style={{ flex:1, height:'1px', background:`linear-gradient(to right,${C.gold},transparent)` }}/>
                   </div>
                   <div className="bestsellers-grid" style={{ gap:'14px', paddingBottom:'8px' }}>
