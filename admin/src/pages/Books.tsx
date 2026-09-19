@@ -235,9 +235,9 @@ export default function Books() {
     const ext = compressedFile.name.split('.').pop()
     const safeName = encodeURIComponent(catName).replace(/%/g, '_')
     const path = `categories/${safeName}_${Date.now()}.${ext}`
-    const { error } = await supabase.storage.from('book-images').upload(path, compressedFile, { upsert: true, cacheControl: '31536000' })
+    const { error } = await supabase.storage.from('images').upload(path, compressedFile, { upsert: true, cacheControl: '31536000' })
     if (!error) {
-      const { data: u } = supabase.storage.from('book-images').getPublicUrl(path)
+      const { data: u } = supabase.storage.from('images').getPublicUrl(path)
       await supabase.from('categories').update({ image_url: u.publicUrl }).eq('name', catName)
       setCategories(prev => prev.map(c => c.name === catName ? { ...c, image_url: u.publicUrl } : c))
     } else {
