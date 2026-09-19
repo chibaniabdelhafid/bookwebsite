@@ -53,7 +53,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, darkMode, C, navigate, activeTab
       <div style={{ padding:'20px 20px 16px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
         <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
           <div style={{ width:'44px',height:'44px',borderRadius:'12px',overflow:'hidden',border:`2px solid ${C.gold}` }}>
-            <img src={optimizeImg("/elquds.png")} loading="lazy" alt="القدس للكتاب" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
+            <img src={optimizeImg("/elquds.png")} loading="lazy" alt="" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
           </div>
           <div>
             <div style={{ fontWeight:'800', fontSize:'0.95rem', color:C.primary }}>القدس للكتاب</div>
@@ -101,12 +101,8 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
     `}</style>
     {/* DESKTOP */}
     <div className="fn-desktop" style={{ position:'fixed',top:'16px',right:'16px',zIndex:200,display:'flex',alignItems:'center',gap:'8px' }}>
-      <div onClick={()=>navigate('/')} style={{ width:'85px',height:'85px',borderRadius:'18px',overflow:'hidden',background:'#EEF4FF',border:`3px solid ${C.gold}`,boxShadow:`0 4px 20px rgba(37,99,235,0.45)`,cursor:'pointer',flexShrink:0 }}>
+      <div onClick={()=>navigate('/')} style={{ width:'85px',height:'85px',borderRadius:'18px',overflow:'hidden',background:'transparent',cursor:'pointer',flexShrink:0 }}>
         <img src={optimizeImg("/elquds.png")} loading='lazy' alt="القدس للكتاب" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
-      </div>
-      <div>
-        <div style={{ fontWeight:'800',fontSize:'1.1rem',color:C.primary,lineHeight:1.1,fontFamily:"'Cairo',sans-serif" }}>القدس للكتاب</div>
-        <div style={{ fontSize:'0.65rem',color:C.gold,letterSpacing:'2px' }}>ELQUDS/القدس</div>
       </div>
     </div>
     <div className="fn-desktop" style={{ position:'fixed',top:'16px',left:'50%',transform:'translateX(-50%)',zIndex:200,display:'flex',gap:'6px' }}>
@@ -125,14 +121,10 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
       </button>
     </div>
     {/* MOBILE */}
-    <div className="fn-mobile" style={{ position:'fixed',top:0,left:0,right:0,zIndex:200,height:'60px',background:darkMode?'rgba(10,21,38,0.97)':'rgba(255,255,255,0.97)',backdropFilter:'blur(16px)',borderBottom:`1px solid ${C.border}`,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 16px',boxShadow:'0 2px 16px rgba(0,0,0,0.1)' }}>
+    <div className="fn-mobile" style={{ position:'fixed',top:0,left:0,right:0,zIndex:200,height:'60px',background:'transparent',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 16px' }}>
       <div style={{ display:'flex', alignItems:'center', gap:'8px', cursor:'pointer' }} onClick={()=>navigate('/')}>
         <div style={{ width:'36px',height:'36px',borderRadius:'10px',overflow:'hidden',border:`2px solid ${C.gold}` }}>
           <img src={optimizeImg("/elquds.png")} loading="lazy" alt="القدس للكتاب" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
-        </div>
-        <div>
-          <div style={{ fontWeight:'800', fontSize:'0.82rem', color:C.primary, lineHeight:1.1 }}>القدس للكتاب</div>
-          <div style={{ fontSize:'0.55rem', color:C.gold, letterSpacing:'1px' }}>ELQUDS</div>
         </div>
       </div>
       <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
@@ -387,17 +379,20 @@ function App() {
           <Route path="/" element={
             <div style={{ position:'relative',zIndex:1 }}>
               <header style={{ padding:'80px 5% 40px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'40px',minHeight:'500px',position:'relative',flexWrap:'wrap' }}>
-                <div style={{ flex:'0 0 42%',maxWidth:'520px',minWidth:'280px',position:'relative',zIndex:2,width:'100%' }}>
-                  <div style={{ display:'flex',alignItems:'center',gap:'10px',marginBottom:'16px' }}>
-                    <div style={{ height:'1px',flex:1,background:`linear-gradient(to left,${C.gold},transparent)` }}/><span style={{ color:C.gold }}>✦</span>
-                    <span style={{ color:C.goldDark,fontSize:'0.68rem',letterSpacing:'1.5px' }}>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
-                    <span style={{ color:C.gold }}>✦</span><div style={{ height:'1px',flex:1,background:`linear-gradient(to right,${C.gold},transparent)` }}/>
+                <div style={{ flex:'1 1 100%',maxWidth:'100%',minWidth:'280px',position:'relative',zIndex:2,width:'100%' }}>
+                  <div className="hero-logo-banner">
+                    <img src="/elquds.png" alt="القدس للكتاب" />
                   </div>
-                  <h1 style={{ fontSize:'clamp(2rem,8vw,4rem)',fontWeight:'bold',color:C.primary,lineHeight:1.15,marginBottom:'12px' }}>
+                  <div className="hero-bismillah" style={{ display:'flex',alignItems:'center',gap:'10px',marginBottom:'16px' }}>
+                      <div style={{ height:'1px',flex:1,background:`linear-gradient(to left,${C.gold},transparent)` }}/><span style={{ color:C.gold }}>✦</span>
+                      <span style={{ color:C.goldDark,fontSize:'0.68rem',letterSpacing:'1.5px' }}>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
+                      <span style={{ color:C.gold }}>✦</span><div style={{ height:'1px',flex:1,background:`linear-gradient(to right,${C.gold},transparent)` }}/>
+                  </div>
+                  <div className="hero-bismillah" style={{ display:'flex',alignItems:'center',gap:'10px',marginBottom:'16px' }}></div>
+                  <h1 className="hero-title" style={{ fontSize:'clamp(2rem,8vw,4rem)',fontWeight:'bold',color:C.primary,lineHeight:1.15,marginBottom:'12px' }}>
                     جديد و <span style={{ color:C.goldDark }}>شائع</span>
                   </h1>
-                  <p style={{ fontSize:'clamp(0.9rem,3vw,1.15rem)',color:C.muted,lineHeight:1.8,marginBottom:'24px' }}>اكتشف عوالم جديدة من خلال صفحات أفضل الكتب الإسلامية وأكثرها مبيعاً.</p>
-
+                  <p className="hero-desc" style={{ fontSize:'clamp(0.9rem,3vw,1.15rem)',color:C.muted,lineHeight:1.8,marginBottom:'24px' }}>اكتشف عوالم جديدة من خلال صفحات أفضل الكتب الإسلامية وأكثرها مبيعاً.</p>
                   {/* ── SEARCH ── */}
                   <div style={{ position:'relative' }}>
                     <div style={{ display:'flex',alignItems:'center',background:C.bgCard,padding:'12px 20px',borderRadius:searchFocused&&suggestions.length>0?'20px 20px 0 0':'40px',border:`1.5px solid ${searchFocused?C.gold:C.border}`,boxShadow:searchFocused?`0 0 0 3px rgba(201,168,76,0.15)`:`0 8px 32px rgba(201,168,76,0.12)`,transition:'all 0.25s' }}>
@@ -464,7 +459,7 @@ function App() {
                 </div>
 
                 {/* Hero carousel */}
-                <div className="hero-carousel" style={{ flex:1,position:'relative',display:'flex',alignItems:'center',overflow:'hidden',minHeight:'320px',minWidth:'200px' }}>
+                <div className="hero-carousel hidden-carousel" style={{ flex:1,position:'relative',display:'flex',alignItems:'center',overflow:'hidden',minHeight:'320px',minWidth:'200px' }}>
                   <div style={{ position:'absolute',right:0,top:0,bottom:0,width:'60px',background:`linear-gradient(to left,${C.bg},transparent)`,zIndex:3,pointerEvents:'none' }}/>
                   <div style={{ position:'absolute',left:0,top:0,bottom:0,width:'60px',background:`linear-gradient(to right,${C.bg},transparent)`,zIndex:3,pointerEvents:'none' }}/>
                   <button onClick={()=>scrollHero('right')} style={{ position:'absolute',right:'8px',zIndex:10,background:C.bgCard,border:`1px solid ${C.border}`,width:'38px',height:'38px',borderRadius:'50%',cursor:'pointer',fontSize:'1.1rem',color:C.primary,display:'flex',alignItems:'center',justifyContent:'center' }}>›</button>
@@ -594,6 +589,21 @@ function App() {
       </div>
 
       <style>{`
+      .hero-bismillah{display:none!important;}
+      .hero-title{display:none!important;}
+      .hero-desc{display:none!important;}
+      .hero-logo-banner{
+      display:block!important;
+      width:100%;
+      height:260px;
+      margin-bottom:16px;
+      background:transparent;
+      }
+      .hero-logo-banner img{
+      width:100%; height:100%; object-fit:contain;
+      -webkit-mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 55%, transparent 100%);
+      mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 55%, transparent 100%);
+      }
         *{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif;}
         body{overflow-x:hidden;}
         ::-webkit-scrollbar{width:4px;height:4px;}
@@ -601,7 +611,7 @@ function App() {
         input::placeholder{color:#8C7B6B;font-family:'Cairo',sans-serif;}
         @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(12px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-        @media(min-width:640px){ .hero-carousel{display:flex!important;} }
+        .hidden-carousel{display:none!important;}
         @media(max-width:639px){
           header{flex-direction:column;padding:76px 4% 32px!important;min-height:auto!important;}
           .cat-img-wrapper{width:100px!important;height:100px!important;margin:0 auto 12px!important;}
@@ -626,6 +636,12 @@ function App() {
         @media(max-width:639px){
           .bestsellers-grid{display:flex!important;overflow-x:auto!important;scroll-snap-type:x mandatory;}
           .bestsellers-grid>div{scroll-snap-align:start;min-width:150px!important;}
+            
+              .hero-logo-banner img{
+                width:100%; height:100%; object-fit:contain;
+                -webkit-mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 55%, transparent 100%);
+                mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 55%, transparent 100%);
+              }
         }
       `}</style>
       
