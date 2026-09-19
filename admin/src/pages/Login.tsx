@@ -26,7 +26,7 @@ export default function Login() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(160deg, #0D0A04 0%, #1A1208 50%, #2C1810 100%)',
+      background: 'linear-gradient(160deg, #050B14 0%, #0A1526 50%, #0F2038 100%)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontFamily: "'Cairo', 'Segoe UI', sans-serif", padding: '20px',
       position: 'relative', overflow: 'hidden'
@@ -34,26 +34,26 @@ export default function Login() {
       {/* Background pattern */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.15 }}>
         <svg width="100%" height="100%"><defs><pattern id="p" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-          <path d="M40 6L46 28L66 22L53 40L66 58L46 52L40 74L34 52L14 58L27 40L14 22L34 28Z" fill="none" stroke="#E8B800" strokeWidth="1"/>
+          <path d="M40 6L46 28L66 22L53 40L66 58L46 52L40 74L34 52L14 58L27 40L14 22L34 28Z" fill="none" stroke="#2563EB" strokeWidth="1"/>
         </pattern></defs><rect width="100%" height="100%" fill="url(#p)"/></svg>
       </div>
 
       <div style={{
         background: 'rgba(255,253,248,0.04)', backdropFilter: 'blur(24px)',
-        border: '1px solid rgba(232,184,0,0.2)', borderRadius: '24px',
+        border: '1px solid rgba(37,99,235,0.2)', borderRadius: '24px',
         padding: 'clamp(28px, 6vw, 48px) clamp(20px, 5vw, 40px)',
         width: '100%', maxWidth: '420px',
-        boxShadow: '0 30px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(232,184,0,0.05)',
+        boxShadow: '0 30px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(37,99,235,0.05)',
         position: 'relative'
       }}>
         {/* Corner accents */}
         {[['top','right'],['top','left'],['bottom','right'],['bottom','left']].map(([v,h],i) => (
           <div key={i} style={{
             position: 'absolute', [v]: 0, [h]: 0, width: '36px', height: '36px',
-            borderTop: v==='top' ? '2px solid #E8B800' : 'none',
-            borderBottom: v==='bottom' ? '2px solid #E8B800' : 'none',
-            borderRight: h==='right' ? '2px solid #E8B800' : 'none',
-            borderLeft: h==='left' ? '2px solid #E8B800' : 'none',
+            borderTop: v==='top' ? '2px solid #2563EB' : 'none',
+            borderBottom: v==='bottom' ? '2px solid #2563EB' : 'none',
+            borderRight: h==='right' ? '2px solid #2563EB' : 'none',
+            borderLeft: h==='left' ? '2px solid #2563EB' : 'none',
             borderRadius: v==='top'&&h==='right'?'0 24px 0 0':v==='top'&&h==='left'?'24px 0 0 0':v==='bottom'&&h==='right'?'0 0 24px 0':'0 0 0 24px',
             pointerEvents: 'none'
           }}/>
@@ -62,23 +62,23 @@ export default function Login() {
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{
             width: '72px', height: '72px', borderRadius: '50%',
-            background: 'linear-gradient(135deg, #5C3A1E, #B8860B)',
+            background: 'linear-gradient(135deg, #14356B, #2563EB)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: '32px', margin: '0 auto 16px',
-            boxShadow: '0 8px 24px rgba(232,184,0,0.3)'
+            boxShadow: '0 8px 24px rgba(37,99,235,0.3)'
           }}>📚</div>
-          <h1 style={{ color: '#FFD700', fontSize: 'clamp(20px, 5vw, 26px)', fontWeight: 800, margin: 0 }}>
-            مكتبة كتابي
+          <h1 style={{ color: '#8FC1FF', fontSize: 'clamp(20px, 5vw, 26px)', fontWeight: 800, margin: 0 }}>
+            القدس للكتاب
           </h1>
-          <p style={{ color: 'rgba(232,184,0,0.5)', fontSize: '12px', marginTop: '6px', letterSpacing: '2px' }}>
+          <p style={{ color: 'rgba(37,99,235,0.5)', fontSize: '12px', marginTop: '6px', letterSpacing: '2px' }}>
             ADMIN DASHBOARD
           </p>
-          <div style={{ height: '1px', background: 'linear-gradient(to right, transparent, #E8B800, transparent)', margin: '16px 0 0' }}/>
+          <div style={{ height: '1px', background: 'linear-gradient(to right, transparent, #2563EB, transparent)', margin: '16px 0 0' }}/>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: '20px' }}>
-            <label style={{ color: 'rgba(232,184,0,0.7)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 600 }}>📧 Email</label>
+            <label style={{ color: 'rgba(37,99,235,0.7)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 600 }}>📧 Email</label>
             <input
                 type="email"
                 value={email}
@@ -87,17 +87,17 @@ export default function Login() {
                 style={{
                   width: '100%', padding: '14px 48px 14px 16px',
                   background: 'rgba(255,255,255,0.06)',
-                  border: '1.5px solid rgba(232,184,0,0.2)',
+                  border: '1.5px solid rgba(37,99,235,0.2)',
                   borderRadius: '12px', color: '#fff', fontSize: '16px',
                   outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s',
                   fontFamily: 'inherit'
                 }}
-                onFocus={e => e.target.style.borderColor = '#E8B800'}
-                onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.2)'}
+                onFocus={e => e.target.style.borderColor = '#2563EB'}
+                onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.2)'}
               />
           </div>
           <div style={{ marginBottom: '20px' }}>
-            <label style={{ color: 'rgba(232,184,0,0.7)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 600 }}>
+            <label style={{ color: 'rgba(37,99,235,0.7)', fontSize: '13px', display: 'block', marginBottom: '8px', fontWeight: 600 }}>
               🔑 Mot de passe
             </label>
             <div style={{ position: 'relative' }}>
@@ -109,13 +109,13 @@ export default function Login() {
                 style={{
                   width: '100%', padding: '14px 48px 14px 16px',
                   background: 'rgba(255,255,255,0.06)',
-                  border: '1.5px solid rgba(232,184,0,0.2)',
+                  border: '1.5px solid rgba(37,99,235,0.2)',
                   borderRadius: '12px', color: '#fff', fontSize: '16px',
                   outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s',
                   fontFamily: 'inherit'
                 }}
-                onFocus={e => e.target.style.borderColor = '#E8B800'}
-                onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.2)'}
+                onFocus={e => e.target.style.borderColor = '#2563EB'}
+                onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.2)'}
               />
               <button type="button" onClick={() => setShow(s => !s)} style={{
                 position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)',
@@ -134,11 +134,11 @@ export default function Login() {
 
           <button type="submit" disabled={loading} style={{
             width: '100%', padding: '15px',
-            background: loading ? 'rgba(184,134,11,0.4)' : 'linear-gradient(135deg, #5C3A1E, #B8860B)',
+            background: loading ? 'rgba(37,99,235,0.4)' : 'linear-gradient(135deg, #14356B, #2563EB)',
             border: 'none', borderRadius: '12px', color: '#FFF8E7',
             fontSize: '16px', fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
             transition: 'all 0.2s', fontFamily: 'inherit',
-            boxShadow: loading ? 'none' : '0 6px 20px rgba(184,134,11,0.35)'
+            boxShadow: loading ? 'none' : '0 6px 20px rgba(37,99,235,0.35)'
           }}>
             {loading ? '⏳ Connexion...' : '🚀 Se connecter'}
           </button>

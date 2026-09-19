@@ -499,19 +499,19 @@ setOptions(hasQias ? loaded : [
 
   const inp = {
     width: '100%', padding: '11px 14px',
-    background: 'rgba(255,253,248,0.05)', border: '1.5px solid rgba(232,184,0,0.15)',
+    background: 'rgba(255,253,248,0.05)', border: '1.5px solid rgba(37,99,235,0.15)',
     borderRadius: '10px', color: '#FFF8E7', fontSize: '16px',
     outline: 'none', boxSizing: 'border-box' as const, fontFamily: 'inherit',
     transition: 'border-color 0.2s'
   }
-  const lbl = { color: 'rgba(232,184,0,0.6)', fontSize: '12px', display: 'block', marginBottom: '6px', fontWeight: 600 as const }
+  const lbl = { color: 'rgba(37,99,235,0.6)', fontSize: '12px', display: 'block', marginBottom: '6px', fontWeight: 600 as const }
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h1 style={{ color: '#FFD700', fontSize: 'clamp(20px,5vw,28px)', fontWeight: 800, margin: 0 }}>📚 Livres</h1>
-          <p style={{ color: 'rgba(232,184,0,0.4)', fontSize: '13px', marginTop: '4px' }}>
+          <h1 style={{ color: '#8FC1FF', fontSize: 'clamp(20px,5vw,28px)', fontWeight: 800, margin: 0 }}>📚 Livres</h1>
+          <p style={{ color: 'rgba(37,99,235,0.4)', fontSize: '13px', marginTop: '4px' }}>
             {filteredBooks.length} livre(s){search && ` trouvé(s) pour "${search}"`}
           </p>
 
@@ -522,12 +522,12 @@ setOptions(hasQias ? loaded : [
               <input
                 value={search}
                 onChange={e => { setSearch(e.target.value); setShowSuggestions(true) }}
-                onFocus={e => { setShowSuggestions(true); e.target.style.borderColor = '#E8B800' }}
-                onBlur={e => { setTimeout(() => setShowSuggestions(false), 150); e.target.style.borderColor = 'rgba(232,184,0,0.2)' }}
+                onFocus={e => { setShowSuggestions(true); e.target.style.borderColor = '#2563EB' }}
+                onBlur={e => { setTimeout(() => setShowSuggestions(false), 150); e.target.style.borderColor = 'rgba(37,99,235,0.2)' }}
                 placeholder="البحث عن كتاب، مؤلف، دار نشر..."
                 style={{
                   width: '100%', padding: '10px 36px 10px 38px',
-                  background: 'rgba(255,253,248,0.05)', border: '1.5px solid rgba(232,184,0,0.2)',
+                  background: 'rgba(255,253,248,0.05)', border: '1.5px solid rgba(37,99,235,0.2)',
                   borderRadius: '12px', color: '#FFF8E7', fontSize: '16px',
                   outline: 'none', boxSizing: 'border-box' as const, fontFamily: 'inherit',
                   transition: 'border-color 0.2s'
@@ -535,7 +535,7 @@ setOptions(hasQias ? loaded : [
               />
               {search && (
                 <button onClick={() => { setSearch(''); setShowSuggestions(false) }}
-                  style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'rgba(232,184,0,0.5)', cursor: 'pointer', fontSize: '16px', padding: '0', lineHeight: 1 }}>
+                  style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: 'rgba(37,99,235,0.5)', cursor: 'pointer', fontSize: '16px', padding: '0', lineHeight: 1 }}>
                   ✕
                 </button>
               )}
@@ -545,14 +545,14 @@ setOptions(hasQias ? loaded : [
             {showSuggestions && (search.length >= 1 ? suggestions.length > 0 : searchHistory.length > 0) && (
               <div style={{
                 position: 'absolute', top: 'calc(100% + 6px)', left: 0, right: 0, zIndex: 500,
-                background: '#1A1208', border: '1px solid rgba(232,184,0,0.2)',
+                background: '#0A1526', border: '1px solid rgba(37,99,235,0.2)',
                 borderRadius: '12px', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.5)'
               }}>
                 {search.length >= 1 ? (
                   suggestions.map(book => (
                     <div key={book.id} onMouseDown={() => handleSearchSelect(book.title)}
                       style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', cursor: 'pointer', transition: 'background 0.15s' }}
-                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(232,184,0,0.08)')}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(37,99,235,0.08)')}
                       onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
                       {book.image_url
                         ? <img src={optimizeImg(book.image_url, 300)} loading="lazy" style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0 }} />
@@ -560,7 +560,7 @@ setOptions(hasQias ? loaded : [
                       }
                       <div style={{ minWidth: 0 }}>
                         <div style={{ color: '#FFF8E7', fontSize: '13px', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{book.title}</div>
-                        <div style={{ color: 'rgba(232,184,0,0.45)', fontSize: '11px', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                        <div style={{ color: 'rgba(37,99,235,0.45)', fontSize: '11px', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                           {book.author && <span>{book.author}</span>}
                           {book.publisher && <span>· {book.publisher}</span>}
                           {book.categories?.length > 0 && <span>· {book.categories.join(', ')}</span>}
@@ -570,17 +570,17 @@ setOptions(hasQias ? loaded : [
                   ))
                 ) : (
                   <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 14px', borderBottom: '1px solid rgba(232,184,0,0.08)' }}>
-                      <span style={{ color: 'rgba(232,184,0,0.4)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>🕐 Recherches récentes</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 14px', borderBottom: '1px solid rgba(37,99,235,0.08)' }}>
+                      <span style={{ color: 'rgba(37,99,235,0.4)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>🕐 Recherches récentes</span>
                       <button onMouseDown={clearHistory} style={{ background: 'none', border: 'none', color: 'rgba(239,68,68,0.5)', fontSize: '11px', cursor: 'pointer', fontFamily: 'inherit' }}>Effacer</button>
                     </div>
                     {searchHistory.map(h => (
                       <div key={h} onMouseDown={() => handleSearchSelect(h)}
                         style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 14px', cursor: 'pointer', transition: 'background 0.15s' }}
-                        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(232,184,0,0.08)')}
+                        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(37,99,235,0.08)')}
                         onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
-                        <span style={{ color: 'rgba(232,184,0,0.35)', fontSize: '14px' }}>🕐</span>
-                        <span style={{ color: 'rgba(232,184,0,0.7)', fontSize: '13px' }}>{h}</span>
+                        <span style={{ color: 'rgba(37,99,235,0.35)', fontSize: '14px' }}>🕐</span>
+                        <span style={{ color: 'rgba(37,99,235,0.7)', fontSize: '13px' }}>{h}</span>
                       </div>
                     ))}
                   </>
@@ -591,24 +591,24 @@ setOptions(hasQias ? loaded : [
         </div>
 
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <button onClick={() => setShowDeliveryModal(true)} style={{ background: 'rgba(232,184,0,0.1)', border: '1.5px solid rgba(232,184,0,0.3)', borderRadius: '12px', color: '#E8B800', padding: '11px 16px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+          <button onClick={() => setShowDeliveryModal(true)} style={{ background: 'rgba(37,99,235,0.1)', border: '1.5px solid rgba(37,99,235,0.3)', borderRadius: '12px', color: '#2563EB', padding: '11px 16px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
             🚚 Livraison
           </button>
-          <button onClick={() => setShowCatModal(true)} style={{ background: 'rgba(232,184,0,0.1)', border: '1.5px solid rgba(232,184,0,0.3)', borderRadius: '12px', color: '#E8B800', padding: '11px 16px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>🏷️ Catégories</button>
-          <button onClick={openAdd} style={{ background: 'linear-gradient(135deg, #5C3A1E, #B8860B)', border: 'none', borderRadius: '12px', color: '#FFF8E7', padding: '11px 18px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 4px 16px rgba(184,134,11,0.3)' }}>+ Ajouter</button>
+          <button onClick={() => setShowCatModal(true)} style={{ background: 'rgba(37,99,235,0.1)', border: '1.5px solid rgba(37,99,235,0.3)', borderRadius: '12px', color: '#2563EB', padding: '11px 16px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>🏷️ Catégories</button>
+          <button onClick={openAdd} style={{ background: 'linear-gradient(135deg, #14356B, #2563EB)', border: 'none', borderRadius: '12px', color: '#FFF8E7', padding: '11px 18px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>+ Ajouter</button>
         </div>
       </div>
 
       {/* Grille livres */}
       {loading ? (
-        <div style={{ color: 'rgba(232,184,0,0.4)', textAlign: 'center', paddingTop: '60px' }}>Chargement...</div>
+        <div style={{ color: 'rgba(37,99,235,0.4)', textAlign: 'center', paddingTop: '60px' }}>Chargement...</div>
       ) : (
         <div className="books-grid" style={{ display: 'grid', gap: '14px' }}>
           {paginatedBooks.map(book => (
-            <div key={book.id} style={{ background: 'rgba(255,253,248,0.03)', border: '1px solid rgba(232,184,0,0.1)', borderRadius: '16px', overflow: 'hidden', position: 'relative' }}>
+            <div key={book.id} style={{ background: 'rgba(255,253,248,0.03)', border: '1px solid rgba(37,99,235,0.1)', borderRadius: '16px', overflow: 'hidden', position: 'relative' }}>
               {book.image_url
                 ? <img src={optimizeImg(book.image_url, 300)} loading="lazy" alt={book.title} style={{ width: '100%', height: '170px', objectFit: 'cover' }} />
-                : <div style={{ width: '100%', height: '170px', background: 'rgba(232,184,0,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>📖</div>
+                : <div style={{ width: '100%', height: '170px', background: 'rgba(37,99,235,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>📖</div>
               }
               {book.stock === 0 && (
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '170px', background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>
@@ -622,11 +622,11 @@ setOptions(hasQias ? loaded : [
               )}
               <div style={{ padding: '14px' }}>
                 <div style={{ color: '#FFF8E7', fontWeight: 700, fontSize: '15px', marginBottom: '3px' }}>{book.title}</div>
-                <div style={{ color: 'rgba(232,184,0,0.5)', fontSize: '12px', marginBottom: '8px' }}>{book.author}</div>
+                <div style={{ color: 'rgba(37,99,235,0.5)', fontSize: '12px', marginBottom: '8px' }}>{book.author}</div>
                 {book.categories && book.categories.length > 0 && (
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '8px' }}>
                     {book.categories.map(cat => (
-                      <span key={cat} style={{ background: 'rgba(184,134,11,0.15)', color: '#E8B800', padding: '2px 10px', borderRadius: '20px', fontSize: '11px', display: 'inline-block', border: '1px solid rgba(232,184,0,0.15)' }}>{cat}</span>
+                      <span key={cat} style={{ background: 'rgba(37,99,235,0.15)', color: '#2563EB', padding: '2px 10px', borderRadius: '20px', fontSize: '11px', display: 'inline-block', border: '1px solid rgba(37,99,235,0.15)' }}>{cat}</span>
                     ))}
                   </div>
                 )}
@@ -634,15 +634,15 @@ setOptions(hasQias ? loaded : [
                   {book.promotion && book.promotion < book.price ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                       <span style={{ color: '#ef4444', fontWeight: 800, fontSize: '17px' }}>{book.promotion.toLocaleString()} DA</span>
-                      <span style={{ color: 'rgba(232,184,0,0.4)', fontWeight: 400, fontSize: '13px', textDecoration: 'line-through' }}>{book.price.toLocaleString()}</span>
+                      <span style={{ color: 'rgba(37,99,235,0.4)', fontWeight: 400, fontSize: '13px', textDecoration: 'line-through' }}>{book.price.toLocaleString()}</span>
                       <span style={{ background: '#ef4444', color: '#fff', fontSize: '10px', fontWeight: 700, padding: '2px 6px', borderRadius: '8px' }}>-{Math.round((1 - book.promotion / book.price) * 100)}%</span>
                     </div>
                   ) : (
-                    <span style={{ color: '#E8B800', fontWeight: 800, fontSize: '17px' }}>{book.price.toLocaleString()} DA</span>
+                    <span style={{ color: '#2563EB', fontWeight: 800, fontSize: '17px' }}>{book.price.toLocaleString()} DA</span>
                   )}
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => openEdit(book)} style={{ flex: 1, padding: '9px', background: 'rgba(184,134,11,0.12)', border: '1px solid rgba(232,184,0,0.2)', borderRadius: '10px', color: '#E8B800', cursor: 'pointer', fontSize: '13px', fontFamily: 'inherit', fontWeight: 600 }}>✏️ Modifier</button>
+                  <button onClick={() => openEdit(book)} style={{ flex: 1, padding: '9px', background: 'rgba(37,99,235,0.12)', border: '1px solid rgba(37,99,235,0.2)', borderRadius: '10px', color: '#2563EB', cursor: 'pointer', fontSize: '13px', fontFamily: 'inherit', fontWeight: 600 }}>✏️ Modifier</button>
                   <button onClick={() => handleDelete(book.id)} disabled={deleting === book.id} style={{ flex: 1, padding: '9px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.18)', borderRadius: '10px', color: '#ef4444', cursor: 'pointer', fontSize: '13px', fontFamily: 'inherit', fontWeight: 600 }}>
                     {deleting === book.id ? '...' : '🗑️ Supprimer'}
                   </button>
@@ -653,12 +653,12 @@ setOptions(hasQias ? loaded : [
           {totalPages > 1 && (
             <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:'8px', marginTop:'24px', flexWrap:'wrap' }}>
               <button onClick={() => setCurrentPage(p => Math.max(1, p-1))} disabled={currentPage===1}
-                style={{ padding:'8px 14px', borderRadius:'10px', border:'1px solid rgba(232,184,0,0.2)', background:'rgba(232,184,0,0.05)', color: currentPage===1 ? 'rgba(232,184,0,0.3)' : '#E8B800', cursor: currentPage===1 ? 'not-allowed' : 'pointer', fontFamily:'inherit' }}>
+                style={{ padding:'8px 14px', borderRadius:'10px', border:'1px solid rgba(37,99,235,0.2)', background:'rgba(37,99,235,0.05)', color: currentPage===1 ? 'rgba(37,99,235,0.3)' : '#2563EB', cursor: currentPage===1 ? 'not-allowed' : 'pointer', fontFamily:'inherit' }}>
                 ‹ السابق
               </button>
-              <span style={{ color:'rgba(232,184,0,0.6)', fontSize:'13px' }}>{currentPage} / {totalPages}</span>
+              <span style={{ color:'rgba(37,99,235,0.6)', fontSize:'13px' }}>{currentPage} / {totalPages}</span>
               <button onClick={() => setCurrentPage(p => Math.min(totalPages, p+1))} disabled={currentPage===totalPages}
-                style={{ padding:'8px 14px', borderRadius:'10px', border:'1px solid rgba(232,184,0,0.2)', background:'rgba(232,184,0,0.05)', color: currentPage===totalPages ? 'rgba(232,184,0,0.3)' : '#E8B800', cursor: currentPage===totalPages ? 'not-allowed' : 'pointer', fontFamily:'inherit' }}>
+                style={{ padding:'8px 14px', borderRadius:'10px', border:'1px solid rgba(37,99,235,0.2)', background:'rgba(37,99,235,0.05)', color: currentPage===totalPages ? 'rgba(37,99,235,0.3)' : '#2563EB', cursor: currentPage===totalPages ? 'not-allowed' : 'pointer', fontFamily:'inherit' }}>
                 التالي ›
               </button>
             </div>
@@ -678,11 +678,11 @@ setOptions(hasQias ? loaded : [
       
       {showCatModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: '#1A1208', border: '1px solid rgba(232,184,0,0.15)', borderRadius: '24px 24px 0 0', padding: 'clamp(20px,4vw,32px)', width: '100%', maxWidth: '480px', maxHeight: '80vh', overflowY: 'auto' }}>
-            <div style={{ width: '40px', height: '4px', background: 'rgba(232,184,0,0.2)', borderRadius: '2px', margin: '0 auto 20px' }} />
+          <div style={{ background: '#0A1526', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '24px 24px 0 0', padding: 'clamp(20px,4vw,32px)', width: '100%', maxWidth: '480px', maxHeight: '80vh', overflowY: 'auto' }}>
+            <div style={{ width: '40px', height: '4px', background: 'rgba(37,99,235,0.2)', borderRadius: '2px', margin: '0 auto 20px' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ color: '#FFD700', fontSize: '18px', fontWeight: 800 }}>🏷️ Gérer les catégories</h2>
-              <button onClick={() => setShowCatModal(false)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(232,184,0,0.15)', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', color: 'rgba(232,184,0,0.6)', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+              <h2 style={{ color: '#8FC1FF', fontSize: '18px', fontWeight: 800 }}>🏷️ Gérer les catégories</h2>
+              <button onClick={() => setShowCatModal(false)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', color: 'rgba(37,99,235,0.6)', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
             </div>
             <div style={{ marginBottom: '20px' }}>
               {/* Sélecteur type */}
@@ -700,9 +700,9 @@ setOptions(hasQias ? loaded : [
                     style={{
                       flex: '1 1 calc(50% - 3px)', padding: '9px 4px', borderRadius: '10px', fontSize: '12px',
                       fontFamily: 'inherit', fontWeight: 700, cursor: 'pointer',
-                      border: `1.5px solid ${newCatType === t.val ? '#E8B800' : 'rgba(232,184,0,0.2)'}`,
-                      background: newCatType === t.val ? 'rgba(232,184,0,0.2)' : 'transparent',
-                      color: newCatType === t.val ? '#FFD700' : 'rgba(232,184,0,0.5)',
+                      border: `1.5px solid ${newCatType === t.val ? '#2563EB' : 'rgba(37,99,235,0.2)'}`,
+                      background: newCatType === t.val ? 'rgba(37,99,235,0.2)' : 'transparent',
+                      color: newCatType === t.val ? '#8FC1FF' : 'rgba(37,99,235,0.5)',
                       transition: 'all 0.2s',
                     }}
                   >
@@ -717,11 +717,11 @@ setOptions(hasQias ? loaded : [
                   onKeyDown={e => e.key === 'Enter' && addCategory()}
                   placeholder='اسم التصنيف...'
                   style={{ ...inp, flex: 1 }}
-                  onFocus={e => e.target.style.borderColor = '#E8B800'}
-                  onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'}
+                  onFocus={e => e.target.style.borderColor = '#2563EB'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'}
                 />
                 <button onClick={addCategory} disabled={addingCat || !newCatName.trim()} style={{
-                  padding: '11px 18px', background: addingCat ? 'rgba(184,134,11,0.3)' : 'linear-gradient(135deg, #5C3A1E, #B8860B)',
+                  padding: '11px 18px', background: addingCat ? 'rgba(37,99,235,0.3)' : 'linear-gradient(135deg, #14356B, #2563EB)',
                   border: 'none', borderRadius: '10px', color: '#FFF8E7',
                   cursor: addingCat ? 'not-allowed' : 'pointer', fontSize: '14px',
                   fontWeight: 700, fontFamily: 'inherit', whiteSpace: 'nowrap'
@@ -732,24 +732,24 @@ setOptions(hasQias ? loaded : [
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {categories.length === 0 ? (
-                <p style={{ color: 'rgba(232,184,0,0.3)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Aucune catégorie</p>
+                <p style={{ color: 'rgba(37,99,235,0.3)', fontSize: '13px', textAlign: 'center', padding: '20px 0' }}>Aucune catégorie</p>
               ) : categories.map(cat => {
   const typeLabel = cat.type === 'author' ? { icon: 'مؤلف ✍️', color: '#a78bfa' }
     : cat.type === 'publisher' ? { icon: 'دار نشر 🏛️', color: '#34d399' }
     : cat.type === 'quran' ? { icon: ' قرآن📖', color: '#60a5fa' }
-    : { icon: 'تصنيف 🏷️', color: '#E8B800' }
+    : { icon: 'تصنيف 🏷️', color: '#2563EB' }
 
   const isEditing = editingCat === cat.name
 
   return (
-    <div key={cat.name} style={{ background: 'rgba(232,184,0,0.06)', border: `1px solid ${isEditing ? 'rgba(232,184,0,0.4)' : 'rgba(232,184,0,0.12)'}`, borderRadius: '12px', overflow: 'hidden', transition: 'border-color 0.2s' }}>
+    <div key={cat.name} style={{ background: 'rgba(37,99,235,0.06)', border: `1px solid ${isEditing ? 'rgba(37,99,235,0.4)' : 'rgba(37,99,235,0.12)'}`, borderRadius: '12px', overflow: 'hidden', transition: 'border-color 0.2s' }}>
       
       {/* Ligne principale */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: 1 }}>
           <div onClick={() => { setActiveCatUpload(cat.name); catImgRef.current?.click() }}
-            style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(232,184,0,0.3)', cursor: 'pointer', flexShrink: 0, background: 'rgba(232,184,0,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {uploadingCatImg === cat.name ? <span style={{ fontSize: '10px', color: '#E8B800' }}>...</span>
+            style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(37,99,235,0.3)', cursor: 'pointer', flexShrink: 0, background: 'rgba(37,99,235,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {uploadingCatImg === cat.name ? <span style={{ fontSize: '10px', color: '#2563EB' }}>...</span>
               : cat.image_url ? <img src={optimizeImg(cat.image_url, 300)} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : <span style={{ fontSize: '16px' }}>📷</span>}
           </div>
@@ -759,7 +759,7 @@ setOptions(hasQias ? loaded : [
               <span style={{ fontSize: '10px', color: typeLabel.color, background: `${typeLabel.color}18`, padding: '1px 6px', borderRadius: '6px', fontWeight: 700 }}>
                 {typeLabel.icon}
               </span>
-              <span style={{ color: 'rgba(232,184,0,0.35)', fontSize: '11px' }}>
+              <span style={{ color: 'rgba(37,99,235,0.35)', fontSize: '11px' }}>
                 {(booksByCategory[cat.name]?.length || 0)} livre{(booksByCategory[cat.name]?.length || 0) !== 1 ? 's' : ''}
               </span>
             </div>
@@ -781,10 +781,10 @@ setOptions(hasQias ? loaded : [
               padding: '5px 4px', cursor: 'pointer', fontFamily: 'inherit', outline: 'none',
             }}
           >
-            <option value="category" style={{ background: '#1A1208', color: '#E8B800' }}>تصنيف 🏷️</option>
-            <option value="author" style={{ background: '#1A1208', color: '#a78bfa' }}>مؤلف ✍️</option>
-            <option value="publisher" style={{ background: '#1A1208', color: '#34d399' }}>دار نشر  🏛️</option>
-            <option value="quran" style={{ background: '#1A1208', color: '#60a5fa' }}>قرآن 📖</option>
+            <option value="category" style={{ background: '#0A1526', color: '#2563EB' }}>تصنيف 🏷️</option>
+            <option value="author" style={{ background: '#0A1526', color: '#a78bfa' }}>مؤلف ✍️</option>
+            <option value="publisher" style={{ background: '#0A1526', color: '#34d399' }}>دار نشر  🏛️</option>
+            <option value="quran" style={{ background: '#0A1526', color: '#60a5fa' }}>قرآن 📖</option>
           </select>
 
           {/* Bouton éditer */}
@@ -793,7 +793,7 @@ setOptions(hasQias ? loaded : [
               if (isEditing) { setEditingCat(null) }
               else { setEditingCat(cat.name); setEditCatName(cat.name) }
             }}
-            style={{ background: isEditing ? 'rgba(232,184,0,0.2)' : 'rgba(232,184,0,0.08)', border: `1px solid ${isEditing ? '#E8B800' : 'rgba(232,184,0,0.2)'}`, borderRadius: '8px', color: '#E8B800', cursor: 'pointer', padding: '5px 8px', fontSize: '12px', fontFamily: 'inherit' }}>
+            style={{ background: isEditing ? 'rgba(37,99,235,0.2)' : 'rgba(37,99,235,0.08)', border: `1px solid ${isEditing ? '#2563EB' : 'rgba(37,99,235,0.2)'}`, borderRadius: '8px', color: '#2563EB', cursor: 'pointer', padding: '5px 8px', fontSize: '12px', fontFamily: 'inherit' }}>
             ✏️
           </button>
 
@@ -807,12 +807,12 @@ setOptions(hasQias ? loaded : [
 
       {/* Panneau d'édition inline */}
       {isEditing && (
-        <div style={{ borderTop: '1px solid rgba(232,184,0,0.1)', padding: '12px 14px', background: 'rgba(232,184,0,0.03)' }}>
-          <p style={{ color: 'rgba(232,184,0,0.5)', fontSize: '11px', fontWeight: 700, marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>✏️ تعديل التصنيف</p>
+        <div style={{ borderTop: '1px solid rgba(37,99,235,0.1)', padding: '12px 14px', background: 'rgba(37,99,235,0.03)' }}>
+          <p style={{ color: 'rgba(37,99,235,0.5)', fontSize: '11px', fontWeight: 700, marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>✏️ تعديل التصنيف</p>
           
           {/* Nouveau nom */}
           <div style={{ marginBottom: '10px' }}>
-            <label style={{ color: 'rgba(232,184,0,0.6)', fontSize: '11px', display: 'block', marginBottom: '4px', fontWeight: 600 }}>الاسم الجديد</label>
+            <label style={{ color: 'rgba(37,99,235,0.6)', fontSize: '11px', display: 'block', marginBottom: '4px', fontWeight: 600 }}>الاسم الجديد</label>
             <div style={{ display: 'flex', gap: '6px' }}>
               <input
                 value={editCatName}
@@ -829,8 +829,8 @@ setOptions(hasQias ? loaded : [
                   }
                 }}
                 style={{ ...inp, flex: 1, padding: '8px 12px', fontSize: '16px' }}
-                onFocus={e => e.target.style.borderColor = '#E8B800'}
-                onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'}
+                onFocus={e => e.target.style.borderColor = '#2563EB'}
+                onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'}
               />
               <button
                 onClick={async () => {
@@ -842,7 +842,7 @@ setOptions(hasQias ? loaded : [
                   setCategories(prev => prev.map(c => c.name === cat.name ? { ...c, name: newName } : c))
                   setEditingCat(null)
                 }}
-                style={{ padding: '8px 14px', background: 'linear-gradient(135deg, #5C3A1E, #B8860B)', border: 'none', borderRadius: '8px', color: '#FFF8E7', cursor: 'pointer', fontSize: '13px', fontWeight: 700, fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
+                style={{ padding: '8px 14px', background: 'linear-gradient(135deg, #14356B, #2563EB)', border: 'none', borderRadius: '8px', color: '#FFF8E7', cursor: 'pointer', fontSize: '13px', fontWeight: 700, fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
                 ✅ حفظ
               </button>
             </div>
@@ -851,24 +851,24 @@ setOptions(hasQias ? loaded : [
           {/* Changer image */}
           <button
             onClick={() => { setActiveCatUpload(cat.name); catImgRef.current?.click() }}
-            style={{ width: '100%', padding: '8px', background: 'rgba(232,184,0,0.08)', border: '1px dashed rgba(232,184,0,0.3)', borderRadius: '8px', color: '#E8B800', cursor: 'pointer', fontSize: '12px', fontFamily: 'inherit', fontWeight: 600 }}>
+            style={{ width: '100%', padding: '8px', background: 'rgba(37,99,235,0.08)', border: '1px dashed rgba(37,99,235,0.3)', borderRadius: '8px', color: '#2563EB', cursor: 'pointer', fontSize: '12px', fontFamily: 'inherit', fontWeight: 600 }}>
             📷 تغيير الصورة
           </button>
 
           {/* Livres de cette catégorie */}
           {(booksByCategory[cat.name]?.length || 0) > 0 && (
             <div style={{ marginTop: '10px' }}>
-              <label style={{ color: 'rgba(232,184,0,0.5)', fontSize: '11px', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
+              <label style={{ color: 'rgba(37,99,235,0.5)', fontSize: '11px', display: 'block', marginBottom: '6px', fontWeight: 600 }}>
                 📚 الكتب في هذا التصنيف ({booksByCategory[cat.name]?.length || 0})
               </label>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', maxHeight: '140px', overflowY: 'auto' }}>
                 {(booksByCategory[cat.name] || []).map(book => (
-                  <div key={book.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '5px 8px', background: 'rgba(255,253,248,0.03)', borderRadius: '6px', border: '1px solid rgba(232,184,0,0.08)' }}>
+                  <div key={book.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '5px 8px', background: 'rgba(255,253,248,0.03)', borderRadius: '6px', border: '1px solid rgba(37,99,235,0.08)' }}>
                     {book.image_url
                       ? <img src={optimizeImg(book.image_url, 300)} loading="lazy" style={{ width: '28px', height: '28px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }} />
                       : <span style={{ fontSize: '16px', flexShrink: 0 }}>📖</span>}
                     <span style={{ color: '#FFF8E7', fontSize: '12px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>{book.title}</span>
-                    <span style={{ color: '#E8B800', fontSize: '11px', fontWeight: 700, flexShrink: 0 }}>{book.price.toLocaleString()} DA</span>
+                    <span style={{ color: '#2563EB', fontSize: '11px', fontWeight: 700, flexShrink: 0 }}>{book.price.toLocaleString()} DA</span>
                   </div>
                 ))}
               </div>
@@ -888,43 +888,43 @@ setOptions(hasQias ? loaded : [
       {/* ══ Modal Livraison ══ */}
       {showDeliveryModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}>
-          <div style={{ width: '100%', maxWidth: '700px', maxHeight: '90vh', background: '#1A1208', border: '1px solid rgba(232,184,0,0.15)', borderRadius: '20px', padding: '24px', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ width: '100%', maxWidth: '700px', maxHeight: '90vh', background: '#0A1526', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '20px', padding: '24px', display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h2 style={{ color: '#FFD700', margin: 0 }}>🚚 أسعار التوصيل حسب الولاية</h2>
-              <button onClick={() => setShowDeliveryModal(false)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(232,184,0,0.15)', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', color: 'rgba(232,184,0,0.6)', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+              <h2 style={{ color: '#8FC1FF', margin: 0 }}>🚚 أسعار التوصيل حسب الولاية</h2>
+              <button onClick={() => setShowDeliveryModal(false)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', color: 'rgba(37,99,235,0.6)', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
             </div>
-            <div style={{ background: 'rgba(232,184,0,0.06)', border: '1px solid rgba(232,184,0,0.12)', borderRadius: '12px', padding: '12px 16px', marginBottom: '16px' }}>
-              <p style={{ color: 'rgba(232,184,0,0.6)', fontSize: '12px', fontWeight: 700, margin: '0 0 10px' }}>⚡ تطبيق سريع على كل الولايات</p>
+            <div style={{ background: 'rgba(37,99,235,0.06)', border: '1px solid rgba(37,99,235,0.12)', borderRadius: '12px', padding: '12px 16px', marginBottom: '16px' }}>
+              <p style={{ color: 'rgba(37,99,235,0.6)', fontSize: '12px', fontWeight: 700, margin: '0 0 10px' }}>⚡ تطبيق سريع على كل الولايات</p>
               <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                 <div style={{ flex: 1, minWidth: '120px' }}>
                   <label style={lbl}>🏠 منزل (دج)</label>
-                  <input type="number" value={globalHomePrice || ''} onWheel={e => e.currentTarget.blur()} onChange={e => setGlobalHomePrice(Number(e.target.value))} placeholder="مثال: 800" style={inp} onFocus={e => e.target.style.borderColor = '#E8B800'} onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'} />
+                  <input type="number" value={globalHomePrice || ''} onWheel={e => e.currentTarget.blur()} onChange={e => setGlobalHomePrice(Number(e.target.value))} placeholder="مثال: 800" style={inp} onFocus={e => e.target.style.borderColor = '#2563EB'} onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'} />
                 </div>
                 <div style={{ flex: 1, minWidth: '120px' }}>
                   <label style={lbl}>🏢 DHD (دج)</label>
-                  <input type="number" value={globalDhdPrice || ''} onWheel={e => e.currentTarget.blur()} onChange={e => setGlobalDhdPrice(Number(e.target.value))} placeholder="مثال: 400" style={inp} onFocus={e => e.target.style.borderColor = '#E8B800'} onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'} />
+                  <input type="number" value={globalDhdPrice || ''} onWheel={e => e.currentTarget.blur()} onChange={e => setGlobalDhdPrice(Number(e.target.value))} placeholder="مثال: 400" style={inp} onFocus={e => e.target.style.borderColor = '#2563EB'} onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'} />
                 </div>
-                <button onClick={applyGlobalPrices} style={{ padding: '11px 18px', background: 'linear-gradient(135deg, #5C3A1E, #B8860B)', border: 'none', borderRadius: '10px', color: '#FFF8E7', fontFamily: 'inherit', fontWeight: 700, cursor: 'pointer', alignSelf: 'flex-end' }}>تطبيق على الكل</button>
+                <button onClick={applyGlobalPrices} style={{ padding: '11px 18px', background: 'linear-gradient(135deg, #14356B, #2563EB)', border: 'none', borderRadius: '10px', color: '#FFF8E7', fontFamily: 'inherit', fontWeight: 700, cursor: 'pointer', alignSelf: 'flex-end' }}>تطبيق على الكل</button>
               </div>
             </div>
             <div style={{ overflowY: 'auto', flex: 1 }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead style={{ position: 'sticky', top: 0, background: '#1A1208', zIndex: 1 }}>
+                <thead style={{ position: 'sticky', top: 0, background: '#0A1526', zIndex: 1 }}>
                   <tr>
-                    <th style={{ color: 'rgba(232,184,0,0.6)', fontSize: '12px', padding: '8px 12px', textAlign: 'right', fontWeight: 700 }}>الولاية</th>
-                    <th style={{ color: 'rgba(232,184,0,0.6)', fontSize: '12px', padding: '8px 12px', textAlign: 'center', fontWeight: 700 }}>🏠 منزل (دج)</th>
-                    <th style={{ color: 'rgba(232,184,0,0.6)', fontSize: '12px', padding: '8px 12px', textAlign: 'center', fontWeight: 700 }}>🏢 DHD (دج)</th>
+                    <th style={{ color: 'rgba(37,99,235,0.6)', fontSize: '12px', padding: '8px 12px', textAlign: 'right', fontWeight: 700 }}>الولاية</th>
+                    <th style={{ color: 'rgba(37,99,235,0.6)', fontSize: '12px', padding: '8px 12px', textAlign: 'center', fontWeight: 700 }}>🏠 منزل (دج)</th>
+                    <th style={{ color: 'rgba(37,99,235,0.6)', fontSize: '12px', padding: '8px 12px', textAlign: 'center', fontWeight: 700 }}>🏢 DHD (دج)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {wilayaDelivery.map((w, i) => (
-                    <tr key={w.wilaya} style={{ borderBottom: '1px solid rgba(232,184,0,0.06)', background: i % 2 === 0 ? 'transparent' : 'rgba(232,184,0,0.02)' }}>
+                    <tr key={w.wilaya} style={{ borderBottom: '1px solid rgba(37,99,235,0.06)', background: i % 2 === 0 ? 'transparent' : 'rgba(37,99,235,0.02)' }}>
                       <td style={{ color: '#FFF8E7', fontSize: '13px', padding: '8px 12px', fontWeight: 600 }}>{w.wilaya}</td>
                       <td style={{ padding: '6px 8px' }}>
-                        <input type="number" value={w.home_price || ''} onWheel={e => e.currentTarget.blur()} onChange={e => updateWilayaPrice(w.wilaya, 'home_price', Number(e.target.value))} style={{ ...inp, padding: '7px 10px', fontSize: '16px', textAlign: 'center' }} onFocus={e => e.target.style.borderColor = '#E8B800'} onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'} />
+                        <input type="number" value={w.home_price || ''} onWheel={e => e.currentTarget.blur()} onChange={e => updateWilayaPrice(w.wilaya, 'home_price', Number(e.target.value))} style={{ ...inp, padding: '7px 10px', fontSize: '16px', textAlign: 'center' }} onFocus={e => e.target.style.borderColor = '#2563EB'} onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'} />
                       </td>
                       <td style={{ padding: '6px 8px' }}>
-                        <input type="number" value={w.dhd_price || ''} onWheel={e => e.currentTarget.blur()} onChange={e => updateWilayaPrice(w.wilaya, 'dhd_price', Number(e.target.value))} style={{ ...inp, padding: '7px 10px', fontSize: '16px', textAlign: 'center' }} onFocus={e => e.target.style.borderColor = '#E8B800'} onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'} />
+                        <input type="number" value={w.dhd_price || ''} onWheel={e => e.currentTarget.blur()} onChange={e => updateWilayaPrice(w.wilaya, 'dhd_price', Number(e.target.value))} style={{ ...inp, padding: '7px 10px', fontSize: '16px', textAlign: 'center' }} onFocus={e => e.target.style.borderColor = '#2563EB'} onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'} />
                       </td>
                     </tr>
                   ))}
@@ -932,8 +932,8 @@ setOptions(hasQias ? loaded : [
               </table>
             </div>
             <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
-              <button onClick={() => setShowDeliveryModal(false)} style={{ flex: 1, padding: '12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(232,184,0,0.15)', borderRadius: '10px', color: 'rgba(232,184,0,0.6)', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '14px' }}>إلغاء</button>
-              <button onClick={saveWilayaDelivery} disabled={savingDelivery} style={{ flex: 2, padding: '12px', background: savingDelivery ? 'rgba(184,134,11,0.4)' : 'linear-gradient(135deg, #5C3A1E, #B8860B)', border: 'none', borderRadius: '10px', color: '#FFF8E7', cursor: savingDelivery ? 'not-allowed' : 'pointer', fontFamily: 'inherit', fontWeight: 700, fontSize: '14px' }}>
+              <button onClick={() => setShowDeliveryModal(false)} style={{ flex: 1, padding: '12px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '10px', color: 'rgba(37,99,235,0.6)', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, fontSize: '14px' }}>إلغاء</button>
+              <button onClick={saveWilayaDelivery} disabled={savingDelivery} style={{ flex: 2, padding: '12px', background: savingDelivery ? 'rgba(37,99,235,0.4)' : 'linear-gradient(135deg, #14356B, #2563EB)', border: 'none', borderRadius: '10px', color: '#FFF8E7', cursor: savingDelivery ? 'not-allowed' : 'pointer', fontFamily: 'inherit', fontWeight: 700, fontSize: '14px' }}>
                 {savingDelivery ? '...' : '💾 حفظ جميع الأسعار'}
               </button>
             </div>
@@ -944,13 +944,13 @@ setOptions(hasQias ? loaded : [
       {/* ══ Modal Livre ══ */}
       {showModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', zIndex: 1000 }} className="modal-overlay">
-          <div style={{ background: '#1A1208', border: '1px solid rgba(232,184,0,0.15)', borderRadius: '24px 24px 0 0', padding: 'clamp(20px,4vw,32px)', width: '100%', maxWidth: '560px', maxHeight: '94vh', overflowY: 'auto' }} className="modal-sheet">
-            <div style={{ width: '40px', height: '4px', background: 'rgba(232,184,0,0.2)', borderRadius: '2px', margin: '0 auto 20px' }} />
+          <div style={{ background: '#0A1526', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '24px 24px 0 0', padding: 'clamp(20px,4vw,32px)', width: '100%', maxWidth: '560px', maxHeight: '94vh', overflowY: 'auto' }} className="modal-sheet">
+            <div style={{ width: '40px', height: '4px', background: 'rgba(37,99,235,0.2)', borderRadius: '2px', margin: '0 auto 20px' }} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h2 style={{ color: '#FFD700', fontSize: '18px', fontWeight: 800 }}>
+              <h2 style={{ color: '#8FC1FF', fontSize: '18px', fontWeight: 800 }}>
                 {editBook ? '✏️ Modifier le livre' : '➕ Nouveau livre'}
               </h2>
-              <button onClick={() => setShowModal(false)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(232,184,0,0.15)', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', color: 'rgba(232,184,0,0.6)', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+              <button onClick={() => setShowModal(false)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', color: 'rgba(37,99,235,0.6)', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
             </div>
 
             {/* Titre (sans autocomplete) */}
@@ -961,8 +961,8 @@ setOptions(hasQias ? loaded : [
                 onChange={e => setForm(p => ({ ...p, title: e.target.value }))}
                 placeholder="Titre du livre"
                 style={inp}
-                onFocus={e => e.target.style.borderColor = '#E8B800'}
-                onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'}
+                onFocus={e => e.target.style.borderColor = '#2563EB'}
+                onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'}
               />
             </div>
 
@@ -981,15 +981,15 @@ setOptions(hasQias ? loaded : [
             <div style={{ marginBottom: '14px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                 <label style={lbl}>التصنيفات (يمكن اختيار أكثر من واحد)</label>
-                <button onClick={() => { setShowModal(false); setShowCatModal(true) }} style={{ background: 'none', border: 'none', color: '#E8B800', fontSize: '11px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, padding: 0 }}>+ Gérer les catégories</button>
+                <button onClick={() => { setShowModal(false); setShowCatModal(true) }} style={{ background: 'none', border: 'none', color: '#2563EB', fontSize: '11px', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600, padding: 0 }}>+ Gérer les catégories</button>
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', background: 'rgba(255,253,248,0.05)', border: '1.5px solid rgba(232,184,0,0.15)', borderRadius: '10px', padding: '12px' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', background: 'rgba(255,253,248,0.05)', border: '1.5px solid rgba(37,99,235,0.15)', borderRadius: '10px', padding: '12px' }}>
                 {categories.length === 0 ? (
-                  <span style={{ color: 'rgba(232,184,0,0.3)', fontSize: '13px' }}>لا توجد تصنيفات</span>
+                  <span style={{ color: 'rgba(37,99,235,0.3)', fontSize: '13px' }}>لا توجد تصنيفات</span>
                 ) : categories.map(cat => {
                   const selected = form.categories.includes(cat.name)
                   return (
-                    <button key={cat.name} type="button" onClick={() => toggleCategory(cat.name)} style={{ padding: '6px 14px', borderRadius: '20px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', border: `1.5px solid ${selected ? '#E8B800' : 'rgba(232,184,0,0.2)'}`, background: selected ? 'rgba(232,184,0,0.2)' : 'transparent', color: selected ? '#FFD700' : 'rgba(232,184,0,0.6)' }}>
+                    <button key={cat.name} type="button" onClick={() => toggleCategory(cat.name)} style={{ padding: '6px 14px', borderRadius: '20px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', border: `1.5px solid ${selected ? '#2563EB' : 'rgba(37,99,235,0.2)'}`, background: selected ? 'rgba(37,99,235,0.2)' : 'transparent', color: selected ? '#8FC1FF' : 'rgba(37,99,235,0.6)' }}>
                       {selected ? '✓ ' : ''}{cat.name}
                     </button>
                   )
@@ -1003,7 +1003,7 @@ setOptions(hasQias ? loaded : [
               <input type="number" value={form.price || ''}
                 onChange={e => { const val = e.target.value.replace(/[^0-9]/g, ''); setForm(p => ({ ...p, price: val === '' ? 0 : Number(val) })) }}
                 onWheel={e => e.currentTarget.blur()} placeholder='مثال: 1200' style={inp}
-                onFocus={e => e.target.style.borderColor = '#E8B800'} onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'} />
+                onFocus={e => e.target.style.borderColor = '#2563EB'} onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'} />
             </div>
 
             {/* Prix promotion */}
@@ -1012,52 +1012,52 @@ setOptions(hasQias ? loaded : [
               <input type="number" value={form.promotion ?? ''}
                 onChange={e => { const val = e.target.value.replace(/[^0-9]/g, ''); setForm(p => ({ ...p, promotion: val === '' ? undefined : Number(val) })) }}
                 onWheel={e => e.currentTarget.blur()} placeholder='مثال: 800' style={inp}
-                onFocus={e => e.target.style.borderColor = '#E8B800'} onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'} />
+                onFocus={e => e.target.style.borderColor = '#2563EB'} onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'} />
             </div>
 
             {showBundleModal && editBook && (
               <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 3000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ background: '#1A1208', border: '1px solid rgba(232,184,0,0.2)', borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '480px', maxHeight: '90vh', overflowY: 'auto' }}>
+                <div style={{ background: '#0A1526', border: '1px solid rgba(37,99,235,0.2)', borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '480px', maxHeight: '90vh', overflowY: 'auto' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                    <h2 style={{ color: '#FFD700', fontSize: '18px', fontWeight: 800 }}>📦 العروض المجمعة</h2>
-                    <button onClick={() => setShowBundleModal(false)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(232,184,0,0.15)', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', color: 'rgba(232,184,0,0.6)', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+                    <h2 style={{ color: '#8FC1FF', fontSize: '18px', fontWeight: 800 }}>📦 العروض المجمعة</h2>
+                    <button onClick={() => setShowBundleModal(false)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', color: 'rgba(37,99,235,0.6)', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
                     {bundles.map((b, i) => (
-                      <div key={i} style={{ background: 'rgba(232,184,0,0.06)', border: '1px solid rgba(232,184,0,0.12)', borderRadius: '12px', padding: '12px 14px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div key={i} style={{ background: 'rgba(37,99,235,0.06)', border: '1px solid rgba(37,99,235,0.12)', borderRadius: '12px', padding: '12px 14px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{ flex: 1 }}>
                           <div style={{ color: '#FFF8E7', fontWeight: 700, fontSize: '14px' }}>{b.qty} {b.qty === 1 ? 'نسخة' : 'نسخ'} — {b.price.toLocaleString()} دج</div>
-                          {b.label && <div style={{ color: 'rgba(232,184,0,0.5)', fontSize: '12px', marginTop: '2px' }}>{b.label}</div>}
+                          {b.label && <div style={{ color: 'rgba(37,99,235,0.5)', fontSize: '12px', marginTop: '2px' }}>{b.label}</div>}
                           <span style={{ background: b.qias_choice ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.08)', color: b.qias_choice ? '#60a5fa' : 'rgba(255,255,255,0.5)', fontSize: '11px', padding: '2px 8px', borderRadius: '8px', display: 'inline-block', marginTop: '4px', marginRight: '4px' }}>
                             📐 {b.qias_choice || 'كل القياسات'}
                           </span>
                           {b.free_delivery && <span style={{ background: 'rgba(39,174,96,0.15)', color: '#27ae60', fontSize: '11px', padding: '2px 8px', borderRadius: '8px', display: 'inline-block', marginTop: '4px' }}>توصيل مجاني</span>}
-                          {b.badge && <span style={{ background: 'rgba(232,184,0,0.15)', color: '#E8B800', fontSize: '11px', padding: '2px 8px', borderRadius: '8px', display: 'inline-block', marginTop: '4px', marginRight: '4px' }}>{b.badge}</span>}
+                          {b.badge && <span style={{ background: 'rgba(37,99,235,0.15)', color: '#2563EB', fontSize: '11px', padding: '2px 8px', borderRadius: '8px', display: 'inline-block', marginTop: '4px', marginRight: '4px' }}>{b.badge}</span>}
                         </div>
                         <button onClick={() => deleteBundle(b.id)} style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', color: '#ef4444', cursor: 'pointer', padding: '5px 10px', fontSize: '12px', fontFamily: 'inherit' }}>🗑️</button>
                       </div>
                     ))}
-                    {bundles.length === 0 && <p style={{ color: 'rgba(232,184,0,0.3)', fontSize: '13px', textAlign: 'center', padding: '16px 0' }}>لا توجد عروض بعد</p>}
+                    {bundles.length === 0 && <p style={{ color: 'rgba(37,99,235,0.3)', fontSize: '13px', textAlign: 'center', padding: '16px 0' }}>لا توجد عروض بعد</p>}
                   </div>
-                  <div style={{ borderTop: '1px solid rgba(232,184,0,0.1)', paddingTop: '16px' }}>
-                    <p style={{ color: 'rgba(232,184,0,0.6)', fontSize: '12px', marginBottom: '12px', fontWeight: 700 }}>➕ إضافة عرض جديد</p>
+                  <div style={{ borderTop: '1px solid rgba(37,99,235,0.1)', paddingTop: '16px' }}>
+                    <p style={{ color: 'rgba(37,99,235,0.6)', fontSize: '12px', marginBottom: '12px', fontWeight: 700 }}>➕ إضافة عرض جديد</p>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
                       <div>
                         <label style={lbl}>عدد النسخ *</label>
-                        <input type="number" value={newBundle.qty || ''} onWheel={e => e.currentTarget.blur()} onChange={e => setNewBundle(p => ({ ...p, qty: Number(e.target.value) }))} placeholder="مثال: 2" style={inp} onFocus={e => e.target.style.borderColor = '#E8B800'} onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'} />
+                        <input type="number" value={newBundle.qty || ''} onWheel={e => e.currentTarget.blur()} onChange={e => setNewBundle(p => ({ ...p, qty: Number(e.target.value) }))} placeholder="مثال: 2" style={inp} onFocus={e => e.target.style.borderColor = '#2563EB'} onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'} />
                       </div>
                       <div>
                         <label style={lbl}>السعر الإجمالي (دج) *</label>
-                        <input type="number" value={newBundle.price || ''} onWheel={e => e.currentTarget.blur()} onChange={e => setNewBundle(p => ({ ...p, price: Number(e.target.value) }))} placeholder="مثال: 20000" style={inp} onFocus={e => e.target.style.borderColor = '#E8B800'} onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'} />
+                        <input type="number" value={newBundle.price || ''} onWheel={e => e.currentTarget.blur()} onChange={e => setNewBundle(p => ({ ...p, price: Number(e.target.value) }))} placeholder="مثال: 20000" style={inp} onFocus={e => e.target.style.borderColor = '#2563EB'} onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'} />
                       </div>
                     </div>
                     <div style={{ marginBottom: '10px' }}>
                       <label style={lbl}>التسمية (اختياري)</label>
-                      <input value={newBundle.label} onChange={e => setNewBundle(p => ({ ...p, label: e.target.value }))} placeholder="مثال: نسختان" style={inp} onFocus={e => e.target.style.borderColor = '#E8B800'} onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'} />
+                      <input value={newBundle.label} onChange={e => setNewBundle(p => ({ ...p, label: e.target.value }))} placeholder="مثال: نسختان" style={inp} onFocus={e => e.target.style.borderColor = '#2563EB'} onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'} />
                     </div>
                     <div style={{ marginBottom: '10px' }}>
                       <label style={lbl}>شارة العرض (اختياري)</label>
-                      <input value={newBundle.badge} onChange={e => setNewBundle(p => ({ ...p, badge: e.target.value }))} placeholder="مثال: تخفيض مع توصيل مجاني" style={inp} onFocus={e => e.target.style.borderColor = '#E8B800'} onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'} />
+                      <input value={newBundle.badge} onChange={e => setNewBundle(p => ({ ...p, badge: e.target.value }))} placeholder="مثال: تخفيض مع توصيل مجاني" style={inp} onFocus={e => e.target.style.borderColor = '#2563EB'} onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'} />
                     </div>
                     <div style={{ marginBottom: '10px' }}>
                       <label style={lbl}>📐 يخص أي قياس؟</label>
@@ -1066,9 +1066,9 @@ setOptions(hasQias ? loaded : [
                         onChange={e => setNewBundle(p => ({ ...p, qias_choice: e.target.value }))}
                         style={{ ...inp, cursor: 'pointer' }}
                       >
-                        <option value="" style={{ background: '#1A1208' }}>🔁 كل القياسات</option>
+                        <option value="" style={{ background: '#0A1526' }}>🔁 كل القياسات</option>
                         {options.find(o => o.label === 'القياس')?.choices.map(ch => (
-                          <option key={ch.name} value={ch.name} style={{ background: '#1A1208' }}>{ch.name}</option>
+                          <option key={ch.name} value={ch.name} style={{ background: '#0A1526' }}>{ch.name}</option>
                         ))}
                       </select>
                     </div>
@@ -1076,52 +1076,52 @@ setOptions(hasQias ? loaded : [
                       <input type="checkbox" checked={newBundle.free_delivery} onChange={e => setNewBundle(p => ({ ...p, free_delivery: e.target.checked }))} style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: '#27ae60' }} />
                       <span style={{ color: '#FFF8E7', fontSize: '14px', fontWeight: 600 }}>🚚 توصيل مجاني لهذا العرض</span>
                     </label>
-                    <button onClick={addBundle} style={{ width: '100%', padding: '12px', background: 'linear-gradient(135deg, #5C3A1E, #B8860B)', border: 'none', borderRadius: '10px', color: '#FFF8E7', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>✅ إضافة العرض</button>
+                    <button onClick={addBundle} style={{ width: '100%', padding: '12px', background: 'linear-gradient(135deg, #14356B, #2563EB)', border: 'none', borderRadius: '10px', color: '#FFF8E7', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>✅ إضافة العرض</button>
                   </div>
                 </div>
               </div>
             )}
 
             {/* Photos */}
-            <div style={{ borderTop: '1px solid rgba(232,184,0,0.1)', margin: '18px 0', paddingTop: '18px' }}>
-              <p style={{ color: 'rgba(232,184,0,0.4)', fontSize: '11px', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>📸 Photos du livre</p>
+            <div style={{ borderTop: '1px solid rgba(37,99,235,0.1)', margin: '18px 0', paddingTop: '18px' }}>
+              <p style={{ color: 'rgba(37,99,235,0.4)', fontSize: '11px', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>📸 Photos du livre</p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '10px' }}>
                 {existingImages.map(img => (
                   <div key={img.id} style={{ position: 'relative', width: '80px', height: '80px' }}>
-                    <img src={img.url} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '10px', border: '2px solid rgba(232,184,0,0.2)' }} />
+                    <img src={img.url} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '10px', border: '2px solid rgba(37,99,235,0.2)' }} />
                     <button onClick={() => markDeleteExisting(img.id)} style={{ position: 'absolute', top: '-6px', right: '-6px', width: '20px', height: '20px', borderRadius: '50%', background: '#ef4444', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
                   </div>
                 ))}
                 {newPreviews.map((src, i) => (
                   <div key={`n${i}`} style={{ position: 'relative', width: '80px', height: '80px' }}>
-                    <img src={optimizeImg(src, 300)} loading="lazy" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '10px', border: '2px solid #E8B800' }} />
+                    <img src={optimizeImg(src, 300)} loading="lazy" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '10px', border: '2px solid #2563EB' }} />
                     <button onClick={() => removeNewFile(i)} style={{ position: 'absolute', top: '-6px', right: '-6px', width: '20px', height: '20px', borderRadius: '50%', background: '#ef4444', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
-                    <div style={{ position: 'absolute', bottom: '2px', left: '2px', background: '#E8B800', borderRadius: '4px', fontSize: '8px', color: '#1A1208', padding: '1px 4px', fontWeight: 700 }}>NEW</div>
+                    <div style={{ position: 'absolute', bottom: '2px', left: '2px', background: '#2563EB', borderRadius: '4px', fontSize: '8px', color: '#0A1526', padding: '1px 4px', fontWeight: 700 }}>NEW</div>
                   </div>
                 ))}
-                <button onClick={() => { if (fileInputRef.current) { fileInputRef.current.removeAttribute('capture'); fileInputRef.current.click() } }} style={{ width: '80px', height: '80px', background: 'rgba(232,184,0,0.06)', border: '2px dashed rgba(232,184,0,0.25)', borderRadius: '10px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                <button onClick={() => { if (fileInputRef.current) { fileInputRef.current.removeAttribute('capture'); fileInputRef.current.click() } }} style={{ width: '80px', height: '80px', background: 'rgba(37,99,235,0.06)', border: '2px dashed rgba(37,99,235,0.25)', borderRadius: '10px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
                   <span style={{ fontSize: '20px' }}>📷</span>
-                  <span style={{ color: '#E8B800', fontSize: '9px', fontWeight: 700 }}>Ajouter</span>
+                  <span style={{ color: '#2563EB', fontSize: '9px', fontWeight: 700 }}>Ajouter</span>
                 </button>
               </div>
               <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleFileSelect} style={{ display: 'none' }} />
               <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <button onClick={() => { if (fileInputRef.current) { fileInputRef.current.removeAttribute('capture'); fileInputRef.current.click() } }} style={{ flex: 1, padding: '10px', fontSize: '13px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(232,184,0,0.15)', borderRadius: '10px', color: 'rgba(232,184,0,0.6)', cursor: 'pointer', fontFamily: 'inherit' }}>🖼️ Galerie</button>
-                <button onClick={() => { if (fileInputRef.current) { fileInputRef.current.setAttribute('capture', 'environment'); fileInputRef.current.click() } }} style={{ flex: 1, padding: '10px', fontSize: '13px', background: 'rgba(232,184,0,0.1)', border: '1px solid rgba(232,184,0,0.25)', borderRadius: '10px', color: '#E8B800', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600 }}>📸 Appareil photo</button>
+                <button onClick={() => { if (fileInputRef.current) { fileInputRef.current.removeAttribute('capture'); fileInputRef.current.click() } }} style={{ flex: 1, padding: '10px', fontSize: '13px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '10px', color: 'rgba(37,99,235,0.6)', cursor: 'pointer', fontFamily: 'inherit' }}>🖼️ Galerie</button>
+                <button onClick={() => { if (fileInputRef.current) { fileInputRef.current.setAttribute('capture', 'environment'); fileInputRef.current.click() } }} style={{ flex: 1, padding: '10px', fontSize: '13px', background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(37,99,235,0.25)', borderRadius: '10px', color: '#2563EB', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 600 }}>📸 Appareil photo</button>
               </div>
               {saving && newFiles.length > 0 && uploadProgress > 0 && (
                 <div style={{ marginTop: '8px' }}>
-                  <div style={{ background: 'rgba(232,184,0,0.1)', borderRadius: '4px', height: '5px' }}>
-                    <div style={{ width: `${uploadProgress}%`, height: '5px', background: 'linear-gradient(90deg, #B8860B, #E8B800)', borderRadius: '4px', transition: 'width 0.3s' }} />
+                  <div style={{ background: 'rgba(37,99,235,0.1)', borderRadius: '4px', height: '5px' }}>
+                    <div style={{ width: `${uploadProgress}%`, height: '5px', background: 'linear-gradient(90deg, #2563EB, #8FC1FF)', borderRadius: '4px', transition: 'width 0.3s' }} />
                   </div>
-                  <p style={{ color: '#E8B800', fontSize: '11px', marginTop: '4px' }}>Upload : {uploadProgress}%</p>
+                  <p style={{ color: '#2563EB', fontSize: '11px', marginTop: '4px' }}>Upload : {uploadProgress}%</p>
                 </div>
               )}
             </div>
 
             {/* Détails */}
-            <div style={{ borderTop: '1px solid rgba(232,184,0,0.1)', margin: '18px 0', paddingTop: '18px' }}>
-              <p style={{ color: 'rgba(232,184,0,0.4)', fontSize: '11px', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>تفاصيل الكتاب</p>
+            <div style={{ borderTop: '1px solid rgba(37,99,235,0.1)', margin: '18px 0', paddingTop: '18px' }}>
+              <p style={{ color: 'rgba(37,99,235,0.4)', fontSize: '11px', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 700 }}>تفاصيل الكتاب</p>
 
               <div style={{ marginBottom: '14px' }}>
                 <label style={lbl}>🏛️ دار النشر — Maison d'édition</label>
@@ -1145,8 +1145,8 @@ setOptions(hasQias ? loaded : [
                 <input type="number" value={form.stock ?? ''}
                   onChange={e => { const val = e.target.value.replace(/[^0-9]/g, ''); setForm(p => ({ ...p, stock: val === '' ? 0 : Number(val) })) }}
                   onWheel={e => e.currentTarget.blur()} placeholder='مثال: 50' style={inp}
-                  onFocus={e => e.target.style.borderColor = '#E8B800'} onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'} />
-                <p style={{ color: 'rgba(232,184,0,0.4)', fontSize: '11px', marginTop: '4px' }}>⚠ ستنخفض الكمية تلقائياً عند كل طلب جديد</p>
+                  onFocus={e => e.target.style.borderColor = '#2563EB'} onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'} />
+                <p style={{ color: 'rgba(37,99,235,0.4)', fontSize: '11px', marginTop: '4px' }}>⚠ ستنخفض الكمية تلقائياً عند كل طلب جديد</p>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '14px' }}>
@@ -1166,20 +1166,20 @@ setOptions(hasQias ? loaded : [
               <label style={lbl}>نبذة عن الكتاب</label>
               <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={3}
                 style={{ ...inp, resize: 'vertical' }}
-                onFocus={e => e.target.style.borderColor = '#E8B800'}
-                onBlur={e => e.target.style.borderColor = 'rgba(232,184,0,0.15)'} />
+                onFocus={e => e.target.style.borderColor = '#2563EB'}
+                onBlur={e => e.target.style.borderColor = 'rgba(37,99,235,0.15)'} />
             </div>
 
             <div style={{ marginTop:'24px' }}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'12px' }}>
                 <label style={lbl}>الخيارات (لون، حجم...)</label>
                 <button onClick={() => setOptions(p => [...p, { label:'', choices:[], newChoice:'', newPrice:0, affects_price:false }])}
-                  style={{ background:'rgba(232,184,0,0.15)', border:`1px solid rgba(232,184,0,0.4)`, color:'#E8B800', padding:'5px 12px', borderRadius:'10px', cursor:'pointer', fontSize:'0.8rem', fontFamily:'inherit', fontWeight:700 }}>
+                  style={{ background:'rgba(37,99,235,0.15)', border:`1px solid rgba(37,99,235,0.4)`, color:'#2563EB', padding:'5px 12px', borderRadius:'10px', cursor:'pointer', fontSize:'0.8rem', fontFamily:'inherit', fontWeight:700 }}>
                   + إضافة خيار
                 </button>
               </div>
               {options.map((opt, oi) => (
-              <div key={oi} style={{ background:'rgba(232,184,0,0.05)', border:`1px solid rgba(232,184,0,0.2)`, borderRadius:'14px', padding:'14px', marginBottom:'10px' }}>
+              <div key={oi} style={{ background:'rgba(37,99,235,0.05)', border:`1px solid rgba(37,99,235,0.2)`, borderRadius:'14px', padding:'14px', marginBottom:'10px' }}>
                 
                 {/* اسم الخيار + supprimer */}
                 <div style={{ display:'flex', gap:'8px', marginBottom:'8px' }}>
@@ -1201,8 +1201,8 @@ setOptions(hasQias ? loaded : [
                 {/* Choix existants */}
                 <div style={{ display:'flex', flexDirection:'column', gap:'6px', marginBottom:'10px' }}>
                   {opt.choices.map((ch, ci) => (
-                    <div key={ci} style={{ display:'flex', alignItems:'center', gap:'8px', background:'rgba(232,184,0,0.08)', border:`1px solid rgba(232,184,0,0.2)`, borderRadius:'10px', padding:'8px 12px' }}>
-                      <span style={{ flex:1, color:'#E8B800', fontSize:'0.85rem', fontWeight:700 }}>
+                    <div key={ci} style={{ display:'flex', alignItems:'center', gap:'8px', background:'rgba(37,99,235,0.08)', border:`1px solid rgba(37,99,235,0.2)`, borderRadius:'10px', padding:'8px 12px' }}>
+                      <span style={{ flex:1, color:'#2563EB', fontSize:'0.85rem', fontWeight:700 }}>
                         {ch.name} {ch.auto && <span style={{ fontSize:'0.7rem', color:'rgba(255,255,255,0.4)' }}>(تلقائي)</span>}
                       </span>
                       {opt.affects_price && (
@@ -1248,7 +1248,7 @@ setOptions(hasQias ? loaded : [
 
                 {/* Pour le qias : bouton pour ajouter le prix du livre automatiquement */}
                 {opt.label === 'القياس' && opt.choices.length === 0 && (
-                  <div style={{ marginTop:'8px', padding:'8px', background:'rgba(232,184,0,0.05)', borderRadius:'8px', fontSize:'0.78rem', color:'rgba(255,255,255,0.5)' }}>
+                  <div style={{ marginTop:'8px', padding:'8px', background:'rgba(37,99,235,0.05)', borderRadius:'8px', fontSize:'0.78rem', color:'rgba(255,255,255,0.5)' }}>
                     💡 اكتب القياس الموجود في الحقل أعلاه وأدخل سعر الكتاب
                   </div>
                 )}
@@ -1258,16 +1258,16 @@ setOptions(hasQias ? loaded : [
 
             {/* Bestseller */}
             <div style={{ marginBottom: '14px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', background: 'rgba(232,184,0,0.06)', border: '1.5px solid rgba(232,184,0,0.15)', borderRadius: '10px', padding: '12px 14px' }}>
-                <input type="checkbox" checked={form.bestseller || false} onChange={e => setForm(p => ({ ...p, bestseller: e.target.checked }))} style={{ width: '20px', height: '20px', cursor: 'pointer', accentColor: '#E8B800' }} />
+              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', background: 'rgba(37,99,235,0.06)', border: '1.5px solid rgba(37,99,235,0.15)', borderRadius: '10px', padding: '12px 14px' }}>
+                <input type="checkbox" checked={form.bestseller || false} onChange={e => setForm(p => ({ ...p, bestseller: e.target.checked }))} style={{ width: '20px', height: '20px', cursor: 'pointer', accentColor: '#2563EB' }} />
                 <span style={{ color: '#FFF8E7', fontSize: '14px', fontWeight: 600 }}>الإضافة إلى الجديد و الحصري"</span>
               </label>
             </div>
 
             {/* Livraison gratuite */}
             <div style={{ marginBottom: '14px' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', background: 'rgba(232,184,0,0.06)', border: '1.5px solid rgba(232,184,0,0.15)', borderRadius: '10px', padding: '12px 14px' }}>
-                <input type="checkbox" checked={form.free_delivery || false} onChange={e => setForm(p => ({ ...p, free_delivery: e.target.checked }))} style={{ width: '20px', height: '20px', cursor: 'pointer', accentColor: '#E8B800' }} />
+              <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', background: 'rgba(37,99,235,0.06)', border: '1.5px solid rgba(37,99,235,0.15)', borderRadius: '10px', padding: '12px 14px' }}>
+                <input type="checkbox" checked={form.free_delivery || false} onChange={e => setForm(p => ({ ...p, free_delivery: e.target.checked }))} style={{ width: '20px', height: '20px', cursor: 'pointer', accentColor: '#2563EB' }} />
                 <span style={{ color: '#FFF8E7', fontSize: '14px', fontWeight: 600 }}>🚚 توصيل مجاني لهذا الكتاب</span>
               </label>
             </div>
@@ -1282,13 +1282,13 @@ setOptions(hasQias ? loaded : [
 
             {/* Offres groupées */}
             <div style={{ marginBottom: '14px' }}>
-              <button type="button" onClick={() => setShowBundleModal(true)} style={{ width: '100%', padding: '12px 14px', background: 'rgba(232,184,0,0.06)', border: '1.5px solid rgba(232,184,0,0.15)', borderRadius: '10px', cursor: 'pointer', color: '#FFF8E7', fontSize: '14px', fontWeight: 600, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <button type="button" onClick={() => setShowBundleModal(true)} style={{ width: '100%', padding: '12px 14px', background: 'rgba(37,99,235,0.06)', border: '1.5px solid rgba(37,99,235,0.15)', borderRadius: '10px', cursor: 'pointer', color: '#FFF8E7', fontSize: '14px', fontWeight: 600, fontFamily: 'inherit', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <span>📦</span>
                 <span>إدارة العروض المجمعة ({bundles.length} عرض)</span>
               </button>
             </div>
 
-            <button onClick={handleSave} disabled={saving} style={{ width: '100%', padding: '15px', background: saving ? 'rgba(184,134,11,0.4)' : 'linear-gradient(135deg, #5C3A1E, #B8860B)', border: 'none', borderRadius: '12px', color: '#FFF8E7', fontSize: '15px', fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', fontFamily: 'inherit', boxShadow: saving ? 'none' : '0 6px 20px rgba(184,134,11,0.3)' }}>
+            <button onClick={handleSave} disabled={saving} style={{ width: '100%', padding: '15px', background: saving ? 'rgba(37,99,235,0.4)' : 'linear-gradient(135deg, #14356B, #2563EB)', border: 'none', borderRadius: '12px', color: '#FFF8E7', fontSize: '15px', fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', fontFamily: 'inherit', boxShadow: saving ? 'none' : '0 6px 20px rgba(37,99,235,0.3)' }}>
               {saving ? `⏳ Enregistrement${newFiles.length > 0 ? ` (${uploadProgress}%)` : '...'}` : '✅ Enregistrer'}
             </button>
           </div>
