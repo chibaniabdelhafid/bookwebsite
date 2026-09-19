@@ -356,9 +356,9 @@ setOptions(hasQias ? loaded : [
       const file = newFiles[i]
       const ext = file.name.split('.').pop()
       const path = `${bookId}/${Date.now()}_${i}.${ext}`
-      const { error } = await supabase.storage.from('book-images').upload(path, file, { upsert: true, cacheControl: '31536000' })
+      const { error } = await supabase.storage.from('images').upload(path, file, { upsert: true, cacheControl: '31536000' })
       if (!error) {
-        const { data: u } = supabase.storage.from('book-images').getPublicUrl(path)
+        const { data: u } = supabase.storage.from('images').getPublicUrl(path)
         urls.push(u.publicUrl)
       }
       setUploadProgress(Math.round(((i + 1) / newFiles.length) * 100))
