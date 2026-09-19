@@ -138,7 +138,7 @@ export default function Orders() {
       {/* Header */}
       <div style={{ display:'flex', gap:'8px', marginBottom:'16px' }}>
         <button onClick={() => setViewMode('orders')}
-          style={{ padding:'8px 16px', borderRadius:'10px', border:'none', cursor:'pointer', fontFamily:'inherit', fontWeight:700, background: viewMode === 'orders' ? '#6c63ff' : 'rgba(255,255,255,0.06)', color: viewMode === 'orders' ? '#fff' : 'rgba(255,255,255,0.5)' }}>
+          style={{ padding:'8px 16px', borderRadius:'10px', border:'none', cursor:'pointer', fontFamily:'inherit', fontWeight:700, background: viewMode === 'orders' ? '#2563EB' : 'rgba(255,255,255,0.06)', color: viewMode === 'orders' ? '#fff' : 'rgba(255,255,255,0.5)' }}>
           📦 Commandes
         </button>
         <button onClick={() => setViewMode('abandoned')}
@@ -174,9 +174,9 @@ export default function Orders() {
           background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
           borderRadius: '10px', color: '#fff', padding: '9px 12px', fontSize: '16px', cursor: 'pointer', outline: 'none'
         }}>
-          <option value="all" style={{ background: '#1a1a2e' }}>Tous ({orders.length})</option>
+          <option value="all" style={{ background: '#0F2038' }}>Tous ({orders.length})</option>
           {STATUS_OPTIONS.map(s => (
-            <option key={s} value={s} style={{ background: '#1a1a2e' }}>{s} ({orders.filter(o => o.status === s).length})</option>
+            <option key={s} value={s} style={{ background: '#0F2038' }}>{s} ({orders.filter(o => o.status === s).length})</option>
           ))}
         </select>
       </div>
@@ -246,14 +246,14 @@ export default function Orders() {
                         return (
                           <div key={item.id} style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)', display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
                             <span>📖 {item.title} {item.qty > 1 && `×${item.qty}`}</span>
-                            <span style={{ color: '#E8B800', fontWeight: 600 }}>{unitPrice.toLocaleString()} DA</span>
+                            <span style={{ color: '#8FC1FF', fontWeight: 600 }}>{unitPrice.toLocaleString()} DA</span>
                           </div>
                         )
                       })
                     : order.books && (
                         <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', fontStyle: 'italic', display: 'flex', justifyContent: 'space-between' }}>
                           <span>📖 {order.books.title} {order.bundle_qty > 1 && `×${order.bundle_qty}`}</span>
-                          <span style={{ color: '#E8B800', fontWeight: 600 }}>
+                          <span style={{ color: '#8FC1FF', fontWeight: 600 }}>
                             {(((order.total ?? 0) - (order.delivery_price ?? 0)) / (order.bundle_qty && order.bundle_qty > 0 ? order.bundle_qty : 1)).toLocaleString()} DA
                           </span>
                         </div>
@@ -271,11 +271,11 @@ export default function Orders() {
                       padding: '8px 10px', fontSize: '13px', fontWeight: 700, flex: 1, minWidth: '110px'
                     }}>
                     {STATUS_OPTIONS.map(s => (
-                      <option key={s} value={s} style={{ background: '#1a1a2e', color: '#fff' }}>{s}</option>
+                      <option key={s} value={s} style={{ background: '#0F2038', color: '#fff' }}>{s}</option>
                     ))}
                   </select>
                   <button onClick={() => openEditOrder(order)} style={{
-                    background: 'rgba(108,99,255,0.15)', border: '1px solid rgba(108,99,255,0.4)',
+                    background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.4)',
                     borderRadius: '8px', color: '#a78bfa', padding: '8px 12px', fontSize: '13px', cursor: 'pointer'
                   }}>✏️</button>
                   <button onClick={() => deleteOrder(order.id)} style={{
@@ -345,7 +345,7 @@ export default function Orders() {
                             <div key={item.id} style={{ fontSize: '12px', display:'flex', alignItems:'center', gap:'6px', marginBottom:'2px' }}>
                               <span>📖 {item.title}</span>
                               {item.qty > 1
-                                ? <span style={{ background:'#E8B800', color:'#1a1a2e', fontSize:'12px', fontWeight:900, padding:'2px 8px', borderRadius:'8px' }}>×{item.qty}</span>
+                                ? <span style={{ background:'#8FC1FF', color:'#0F2038', fontSize:'12px', fontWeight:900, padding:'2px 8px', borderRadius:'8px' }}>×{item.qty}</span>
                                 : <span style={{ color:'rgba(255,255,255,0.3)', fontSize:'11px' }}>×1</span>
                               }
                             </div>
@@ -354,7 +354,7 @@ export default function Orders() {
                           ? <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', fontStyle: 'italic', display:'flex', alignItems:'center', gap:'6px', flexWrap:'wrap' }}>
                               <span>📖 {order.books.title}</span>
                               {order.bundle_qty > 1
-                                ? <span style={{ background:'#E8B800', color:'#1a1a2e', fontSize:'12px', fontWeight:900, padding:'2px 8px', borderRadius:'8px' }}>×{order.bundle_qty}</span>
+                                ? <span style={{ background:'#8FC1FF', color:'#0F2038', fontSize:'12px', fontWeight:900, padding:'2px 8px', borderRadius:'8px' }}>×{order.bundle_qty}</span>
                                 : <span style={{ color:'rgba(255,255,255,0.3)', fontSize:'11px' }}>×1</span>
                               }
                               <span style={{ color:'#94a3b8', fontSize:'11px' }}>⚠ غير مؤكد</span>
@@ -388,7 +388,7 @@ export default function Orders() {
                     </td>
                     <td style={{ padding: '12px' }}>
                       {order.bundle_label
-                        ? <span style={{ background:'rgba(108,99,255,0.15)', border:'1px solid rgba(108,99,255,0.4)', color:'#a78bfa', fontSize:'11px', fontWeight:700, padding:'4px 10px', borderRadius:'10px', whiteSpace:'nowrap' }}>📦 {order.bundle_label}</span>
+                        ? <span style={{ background:'rgba(37,99,235,0.15)', border:'1px solid rgba(37,99,235,0.4)', color:'#8FC1FF', fontSize:'11px', fontWeight:700, padding:'4px 10px', borderRadius:'10px', whiteSpace:'nowrap' }}>📦 {order.bundle_label}</span>
                         : <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '12px' }}>—</span>
                       }
                     </td>
@@ -451,14 +451,14 @@ export default function Orders() {
                           ? STATUS_OPTIONS
                           : STATUS_OPTIONS.filter(s => s !== STATUS_OPTIONS[0])
                         ).map(s => (
-                          <option key={s} value={s} style={{ background: '#1a1a2e', color: '#fff' }}>{s}</option>
+                          <option key={s} value={s} style={{ background: '#0F2038', color: '#fff' }}>{s}</option>
                         ))}
                       </select>
                     </td>
                     <td style={{ padding: '12px', display: 'flex', gap: '6px' }}>
                       <button onClick={() => openEditOrder(order)} style={{
-                        background: 'rgba(108,99,255,0.15)', border: '1px solid rgba(108,99,255,0.4)',
-                        borderRadius: '8px', color: '#a78bfa', padding: '5px 10px',
+                        background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.4)',
+                        borderRadius: '8px', color: '#8FC1FF', padding: '5px 10px',
                         cursor: 'pointer', fontSize: '12px'
                       }}>✏️</button>
                       <button onClick={() => deleteOrder(order.id)} style={{
@@ -477,7 +477,7 @@ export default function Orders() {
 
       {editingOrder && editForm && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000, padding: '16px' }}>
-          <div style={{ background: '#1a1a2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '480px', maxHeight: '90vh', overflowY: 'auto' }}>
+          <div style={{ background: '#0F2038', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '480px', maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <h2 style={{ color: '#fff', fontSize: '18px', fontWeight: 800, margin: 0 }}>✏️ Modifier la commande</h2>
               <button onClick={() => { setEditingOrder(null); setEditForm(null) }} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', color: 'rgba(255,255,255,0.6)', fontSize: '16px' }}>✕</button>
@@ -545,7 +545,7 @@ export default function Orders() {
                 </div>
 
                 <button onClick={saveEditOrder} disabled={savingEdit} style={{
-                  width: '100%', padding: '14px', background: savingEdit ? 'rgba(108,99,255,0.4)' : '#6c63ff',
+                  width: '100%', padding: '14px', background: savingEdit ? 'rgba(37,99,235,0.4)' : '#2563EB',
                   border: 'none', borderRadius: '12px', color: '#fff', fontSize: '15px', fontWeight: 700,
                   cursor: savingEdit ? 'not-allowed' : 'pointer'
                 }}>

@@ -21,8 +21,8 @@ function StatCard({ icon, label, value, color }: { icon: string, label: string, 
         border: `1px solid ${color}20`
       }}>{icon}</div>
       <div>
-        <div style={{ color: 'rgba(232,184,0,0.5)', fontSize: '12px', marginBottom: '4px' }}>{label}</div>
-        <div style={{ color: '#FFD700', fontSize: 'clamp(20px,4vw,26px)', fontWeight: 800 }}>{value}</div>
+        <div style={{ color: 'rgba(37,99,235,0.5)', fontSize: '12px', marginBottom: '4px' }}>{label}</div>
+        <div style={{ color: '#8FC1FF', fontSize: 'clamp(20px,4vw,26px)', fontWeight: 800 }}>{value}</div>
       </div>
     </div>
   )
@@ -61,7 +61,7 @@ export default function Statistics() {
   }
 
   if (loading) return (
-    <div style={{ color: 'rgba(232,184,0,0.5)', textAlign: 'center', paddingTop: '80px', fontSize: '18px' }}>
+    <div style={{ color: 'rgba(37,99,235,0.5)', textAlign: 'center', paddingTop: '80px', fontSize: '18px' }}>
       <div style={{ fontSize: '2rem', marginBottom: '12px', animation: 'spin 1.5s linear infinite', display: 'inline-block' }}>📚</div>
       <p>Chargement...</p>
       <style>{`@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}`}</style>
@@ -71,12 +71,12 @@ export default function Statistics() {
   return (
     <div>
       <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ color: '#FFD700', fontSize: 'clamp(20px,5vw,28px)', fontWeight: 800, margin: 0 }}>📊 Tableau de bord</h1>
-        <p style={{ color: 'rgba(232,184,0,0.4)', marginTop: '4px', fontSize: '13px' }}>Vue d'ensemble — مكتبة كتابي</p>
+        <h1 style={{ color: '#8FC1FF', fontSize: 'clamp(20px,5vw,28px)', fontWeight: 800, margin: 0 }}>📊 Tableau de bord</h1>
+        <p style={{ color: 'rgba(37,99,235,0.4)', marginTop: '4px', fontSize: '13px' }}>Vue d'ensemble — القدس للكتاب</p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px,100%), 1fr))', gap: '12px', marginBottom: '32px' }}>
-        <StatCard icon="📦" label="Total Commandes" value={stats?.totalOrders || 0} color="#E8B800" />
+        <StatCard icon="📦" label="Total Commandes" value={stats?.totalOrders || 0} color="#2563EB" />
         <StatCard icon="⏳" label="En attente" value={stats?.pendingOrders || 0} color="#f59e0b" />
         <StatCard icon="✅" label="Livrées" value={stats?.completedOrders || 0} color="#10b981" />
         <StatCard icon="💰" label="Chiffre d'affaires" value={`${stats?.totalRevenue?.toLocaleString() || '0'} DA`} color="#a78bfa" />
@@ -85,29 +85,29 @@ export default function Statistics() {
 
       <div style={{
         background: 'rgba(255,253,248,0.03)', borderRadius: '18px',
-        border: '1px solid rgba(232,184,0,0.1)', padding: 'clamp(16px,3vw,24px)'
+        border: '1px solid rgba(37,99,235,0.1)', padding: 'clamp(16px,3vw,24px)'
       }}>
-        <h2 style={{ color: '#FFD700', fontSize: '16px', fontWeight: 700, marginBottom: '16px' }}>🕐 Dernières commandes</h2>
+        <h2 style={{ color: '#8FC1FF', fontSize: '16px', fontWeight: 700, marginBottom: '16px' }}>🕐 Dernières commandes</h2>
 
         {recentOrders.length === 0 ? (
-          <p style={{ color: 'rgba(232,184,0,0.3)', fontSize: '14px', textAlign: 'center', padding: '20px 0' }}>Aucune commande pour l'instant.</p>
+          <p style={{ color: 'rgba(37,99,235,0.3)', fontSize: '14px', textAlign: 'center', padding: '20px 0' }}>Aucune commande pour l'instant.</p>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {recentOrders.map(order => (
               <div key={order.id} style={{
                 background: 'rgba(255,255,255,0.03)', borderRadius: '12px',
-                border: '1px solid rgba(232,184,0,0.08)', padding: '12px 16px',
+                border: '1px solid rgba(37,99,235,0.08)', padding: '12px 16px',
                 display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 flexWrap: 'wrap', gap: '8px'
               }}>
                 <div>
                   <div style={{ color: '#FFF8E7', fontWeight: 600, fontSize: '14px' }}>{order.name || '—'}</div>
-                  <div style={{ color: 'rgba(232,184,0,0.4)', fontSize: '11px', marginTop: '2px' }}>
+                  <div style={{ color: 'rgba(37,99,235,0.4)', fontSize: '11px', marginTop: '2px' }}>
                     {new Date(order.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ color: '#E8B800', fontWeight: 700, fontSize: '14px' }}>{order.total} DA</span>
+                  <span style={{ color: '#8FC1FF', fontWeight: 700, fontSize: '14px' }}>{order.total} DA</span>
                   <span style={{
                     background: `${statusColors[order.status] || '#888'}20`,
                     color: statusColors[order.status] || '#888',

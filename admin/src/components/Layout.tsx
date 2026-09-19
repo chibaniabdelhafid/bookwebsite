@@ -13,26 +13,26 @@ export default function Layout() {
 
   const handleLogout = () => { logout(); navigate('/login') }
 
-  const goldDark = '#B8860B'
+  const goldDark = '#2563EB'
 // author permission
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#0D0A04', fontFamily: "'Cairo', 'Segoe UI', sans-serif" }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'linear-gradient(160deg, #050B14 0%, #0A1526 50%, #0F2038 100%)', fontFamily: "'Cairo', 'Segoe UI', sans-serif" }}>
 
       {/* ── Sidebar desktop ── */}
       <aside style={{
         width: '220px', flexShrink: 0,
         background: 'rgba(255,253,248,0.03)',
-        borderLeft: '1px solid rgba(232,184,0,0.12)',
+        borderLeft: '1px solid rgba(37,99,235,0.12)',
         display: 'flex', flexDirection: 'column',
         padding: '24px 12px',
         position: 'sticky', top: 0, height: '100vh',
       }} className="sidebar-desk">
 
         {/* Logo */}
-        <div style={{ padding: '0 8px', marginBottom: '28px', borderBottom: '1px solid rgba(232,184,0,0.1)', paddingBottom: '20px' }}>
+        <div style={{ padding: '0 8px', marginBottom: '28px', borderBottom: '1px solid rgba(37,99,235,0.1)', paddingBottom: '20px' }}>
           <div style={{ fontSize: '22px', marginBottom: '4px' }}>📚</div>
-          <div style={{ color: '#FFD700', fontWeight: 800, fontSize: '15px' }}>مكتبة كتابي</div>
-          <div style={{ color: 'rgba(232,184,0,0.4)', fontSize: '10px', letterSpacing: '2px' }}>ADMIN</div>
+          <div style={{ color: '#8FC1FF', fontWeight: 800, fontSize: '15px' }}>القدس للكتاب</div>
+          <div style={{ color: 'rgba(37,99,235,0.4)', fontSize: '10px', letterSpacing: '2px' }}>ADMIN</div>
         </div>
 
         <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -40,12 +40,12 @@ export default function Layout() {
             <NavLink key={item.to} to={item.to} end={item.end} style={({ isActive }) => ({
               display: 'flex', alignItems: 'center', gap: '10px',
               padding: '11px 12px', borderRadius: '12px',
-              color: isActive ? '#FFF8E7' : 'rgba(232,184,0,0.5)',
-              background: isActive ? `linear-gradient(135deg, #5C3A1E, ${goldDark})` : 'transparent',
+              color: isActive ? '#FFF8E7' : 'rgba(37,99,235,0.5)',
+              background: isActive ? `linear-gradient(135deg, #14356B, ${goldDark})` : 'transparent',
               border: isActive ? 'none' : '1px solid transparent',
               textDecoration: 'none', fontSize: '14px',
               fontWeight: isActive ? 700 : 400, transition: 'all 0.2s',
-              boxShadow: isActive ? '0 4px 14px rgba(184,134,11,0.3)' : 'none'
+              boxShadow: isActive ? '0 4px 14px rgba(37,99,235,0.3)' : 'none'
             })}>
               <span style={{ fontSize: '16px' }}>{item.icon}</span>
               <span>{item.label}</span>
@@ -54,20 +54,20 @@ export default function Layout() {
         </nav>
         {/* Bouton Voir le site - Desktop */}
         <a
-          href="https://kitabi-roan.vercel.app/"
+          href="https://elqudssite.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
           style={{
             display: 'flex', alignItems: 'center', gap: '10px',
             padding: '11px 12px', borderRadius: '12px',
-            color: 'rgba(232,184,0,0.6)',
+            color: 'rgba(37,99,235,0.6)',
             background: 'transparent',
-            border: '1px solid rgba(232,184,0,0.2)',
+            border: '1px solid rgba(37,99,235,0.2)',
             textDecoration: 'none', fontSize: '14px',
             marginBottom: '8px', transition: 'all 0.2s',
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(232,184,0,0.08)'; e.currentTarget.style.color = '#FFD700' }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgba(232,184,0,0.6)' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(37,99,235,0.08)'; e.currentTarget.style.color = '#2563eb' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgba(37,99,235,0.6)' }}
         >
           <span>🌐</span><span>Voir le site</span>
         </a>
@@ -89,7 +89,7 @@ export default function Layout() {
       <div style={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 100,
         background: 'rgba(13,10,4,0.96)', backdropFilter: 'blur(16px)',
-        borderTop: `1px solid rgba(232,184,0,0.15)`,
+        borderTop: `1px solid rgba(37,99,235,0.15)`,
         display: 'flex', alignItems: 'center', justifyContent: 'space-around',
         padding: '8px 0 12px', gap: '4px'
       }} className="mobile-nav">
@@ -97,8 +97,8 @@ export default function Layout() {
           <NavLink key={item.to} to={item.to} end={item.end} style={({ isActive }) => ({
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px',
             padding: '6px 16px', borderRadius: '14px', textDecoration: 'none',
-            background: isActive ? `linear-gradient(135deg, #5C3A1E, ${goldDark})` : 'transparent',
-            color: isActive ? '#FFF8E7' : 'rgba(232,184,0,0.4)',
+            background: isActive ? `linear-gradient(135deg, #14356B, ${goldDark})` : 'transparent',
+            color: isActive ? '#FFF8E7' : 'rgba(37,99,235,0.4)',
             fontSize: '10px', fontWeight: isActive ? 700 : 400, transition: 'all 0.2s',
             minWidth: '60px'
           })}>
@@ -114,7 +114,7 @@ export default function Layout() {
             style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px',
               padding: '6px 16px', borderRadius: '14px',
-              color: 'rgba(232,184,0,0.5)', fontSize: '10px',
+              color: 'rgba(37,99,235,0.5)', fontSize: '10px',
               textDecoration: 'none', minWidth: '60px'
             }}
           >
