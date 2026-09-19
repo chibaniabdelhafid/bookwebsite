@@ -53,7 +53,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, darkMode, C, navigate, activeTab
       <div style={{ padding:'20px 20px 16px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', justifyContent:'space-between' }}>
         <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
           <div style={{ width:'44px',height:'44px',borderRadius:'12px',overflow:'hidden',border:`2px solid ${C.gold}` }}>
-            <img src={optimizeImg("/elquds.png")} loading="lazy" alt="كتابي" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
+            <img src={optimizeImg("/elquds.png")} loading="lazy" alt="القدس للكتاب" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
           </div>
           <div>
             <div style={{ fontWeight:'800', fontSize:'0.95rem', color:C.primary }}>القدس للكتاب</div>
@@ -102,7 +102,7 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
     {/* DESKTOP */}
     <div className="fn-desktop" style={{ position:'fixed',top:'16px',right:'16px',zIndex:200,display:'flex',alignItems:'center',gap:'8px' }}>
       <div onClick={()=>navigate('/')} style={{ width:'85px',height:'85px',borderRadius:'18px',overflow:'hidden',background:'#EEF4FF',border:`3px solid ${C.gold}`,boxShadow:`0 4px 20px rgba(37,99,235,0.45)`,cursor:'pointer',flexShrink:0 }}>
-        <img src={optimizeImg("/elquds.png")} loading='lazy' alt="كتابي" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
+        <img src={optimizeImg("/elquds.png")} loading='lazy' alt="القدس للكتاب" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
       </div>
       <div>
         <div style={{ fontWeight:'800',fontSize:'1.1rem',color:C.primary,lineHeight:1.1,fontFamily:"'Cairo',sans-serif" }}>القدس للكتاب</div>
@@ -128,11 +128,11 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
     <div className="fn-mobile" style={{ position:'fixed',top:0,left:0,right:0,zIndex:200,height:'60px',background:darkMode?'rgba(10,21,38,0.97)':'rgba(255,255,255,0.97)',backdropFilter:'blur(16px)',borderBottom:`1px solid ${C.border}`,display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 16px',boxShadow:'0 2px 16px rgba(0,0,0,0.1)' }}>
       <div style={{ display:'flex', alignItems:'center', gap:'8px', cursor:'pointer' }} onClick={()=>navigate('/')}>
         <div style={{ width:'36px',height:'36px',borderRadius:'10px',overflow:'hidden',border:`2px solid ${C.gold}` }}>
-          <img src={optimizeImg("/elquds.png")} loading="lazy" alt="كتابي" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
+          <img src={optimizeImg("/elquds.png")} loading="lazy" alt="القدس للكتاب" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
         </div>
         <div>
           <div style={{ fontWeight:'800', fontSize:'0.82rem', color:C.primary, lineHeight:1.1 }}>القدس للكتاب</div>
-          <div style={{ fontSize:'0.55rem', color:C.gold, letterSpacing:'1px' }}>KITABI</div>
+          <div style={{ fontSize:'0.55rem', color:C.gold, letterSpacing:'1px' }}>ELQUDS</div>
         </div>
       </div>
       <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
