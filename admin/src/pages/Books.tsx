@@ -62,13 +62,17 @@ export default function Books() {
   const [editingCat, setEditingCat] = useState<string | null>(null)
   const [editCatName, setEditCatName] = useState('')
   const [options, setOptions] = useState<{
-  id?: number;
-  label: string;
-  choices: {name: string, price: number, auto?: boolean}[];
-  newChoice: string;
-  newPrice: number;
-  affects_price: boolean;
-}[]>([])
+    id?: number;
+    label: string;
+    choices: {name: string, price: number, auto?: boolean}[];
+    newChoice: string;
+    newPrice: number;
+    affects_price: boolean;
+  }[]>([])
+  const [showBannerModal, setShowBannerModal] = useState(false)
+  const [bannerUrl, setBannerUrl] = useState<string | null>(null)
+  const [uploadingBanner, setUploadingBanner] = useState(false)
+  const bannerInputRef = useRef<HTMLInputElement>(null)
 
   async function addBundle() {
     if (!editBook || !newBundle.qty || !newBundle.price) return
@@ -124,7 +128,40 @@ export default function Books() {
     fetchBooks()
     fetchCategories()
     fetchDeliverySettings()
+    fetchBanner()
   }, [])
+
+  async function fetchBanner() {
+    const { data } = await supabase.from('site_banner').select('image_url').eq('id', 1).single()
+    setBannerUrl(data?.image_url || null)
+  }
+
+  async function uploadBanner(file: File) {
+    setUploadingBanner(true)
+    const compressed = await compressImage(file, 1200, 0.8)
+    const ext = compressed.name.split('.').pop()
+    const path = `banner/main_${Date.now()}.${ext}`
+    const { error } = await supabase.storage.from('images').upload(path, compressed, { upsert: true, cacheControl: '31536000' })
+    if (!error) {
+      const { data: u } = supabase.storage.from('images').getPublicUrl(path)
+      const { error: dbError, count } = await supabase.from('site_banner').update({ image_url: u.publicUrl }).eq('id', 1).select()
+      if (dbError) {
+        console.error('Erreur DB banner:', dbError)
+        alert('Erreur lors de la sauvegarde: ' + dbError.message)
+      } else {
+        setBannerUrl(u.publicUrl)
+      }
+    } else {
+      console.error('Erreur upload banner:', error)
+      alert('Erreur upload: ' + error.message)
+    }
+    setUploadingBanner(false)
+  }
+
+async function removeBanner() {
+  await supabase.from('site_banner').update({ image_url: null }).eq('id', 1)
+  setBannerUrl(null)
+}
 
   useEffect(() => {
     if (!showModal) return
@@ -594,6 +631,9 @@ setOptions(hasQias ? loaded : [
           <button onClick={() => setShowDeliveryModal(true)} style={{ background: 'rgba(37,99,235,0.1)', border: '1.5px solid rgba(37,99,235,0.3)', borderRadius: '12px', color: '#2563EB', padding: '11px 16px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
             🚚 Livraison
           </button>
+          <button onClick={() => setShowBannerModal(true)} style={{ background: 'rgba(37,99,235,0.1)', border: '1.5px solid rgba(37,99,235,0.3)', borderRadius: '12px', color: '#2563EB', padding: '11px 16px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+            🖼️ لافتة
+          </button>
           <button onClick={() => setShowCatModal(true)} style={{ background: 'rgba(37,99,235,0.1)', border: '1.5px solid rgba(37,99,235,0.3)', borderRadius: '12px', color: '#2563EB', padding: '11px 16px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>🏷️ Catégories</button>
           <button onClick={openAdd} style={{ background: 'linear-gradient(135deg, #14356B, #2563EB)', border: 'none', borderRadius: '12px', color: '#FFF8E7', padding: '11px 18px', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 4px 16px rgba(37,99,235,0.3)' }}>+ Ajouter</button>
         </div>
@@ -886,6 +926,29 @@ setOptions(hasQias ? loaded : [
       )}
 
       {/* ══ Modal Livraison ══ */}
+      {showBannerModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}>
+          <div style={{ width: '100%', maxWidth: '480px', background: '#0A1526', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '20px', padding: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h2 style={{ color: '#8FC1FF', margin: 0 }}>🖼️ لافتة الصفحة الرئيسية</h2>
+              <button onClick={() => setShowBannerModal(false)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', color: 'rgba(37,99,235,0.6)', fontSize: '16px' }}>✕</button>
+            </div>
+            <p style={{ color: 'rgba(37,99,235,0.5)', fontSize: '12px', marginBottom: '16px' }}>ستظهر هذه الصورة في وسط الصفحة الرئيسية، بين قسم "الجديد والحصري" وقسم "العروض والتخفيضات".</p>
+            {bannerUrl ? (
+              <div style={{ position: 'relative', marginBottom: '16px' }}>
+                <img src={bannerUrl} style={{ width: '100%', borderRadius: '12px', border: '1px solid rgba(37,99,235,0.2)' }} />
+                <button onClick={removeBanner} style={{ position: 'absolute', top: '8px', left: '8px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '8px', padding: '6px 12px', cursor: 'pointer', fontSize: '12px', fontWeight: 700 }}>🗑️ حذف</button>
+              </div>
+            ) : (
+              <p style={{ color: 'rgba(37,99,235,0.3)', textAlign: 'center', padding: '20px 0' }}>لا توجد لافتة حالياً</p>
+            )}
+            <input ref={bannerInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) uploadBanner(f); if (bannerInputRef.current) bannerInputRef.current.value = '' }} />
+            <button onClick={() => bannerInputRef.current?.click()} disabled={uploadingBanner} style={{ width: '100%', padding: '12px', background: 'linear-gradient(135deg, #14356B, #2563EB)', border: 'none', borderRadius: '10px', color: '#FFF8E7', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+              {uploadingBanner ? '⏳ ...' : bannerUrl ? '📷 تغيير الصورة' : '📷 رفع صورة'}
+            </button>
+          </div>
+        </div>
+      )}
       {showDeliveryModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}>
           <div style={{ width: '100%', maxWidth: '700px', maxHeight: '90vh', background: '#0A1526', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '20px', padding: '24px', display: 'flex', flexDirection: 'column' }}>
