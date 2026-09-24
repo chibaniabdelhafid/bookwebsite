@@ -41,12 +41,13 @@ interface SidebarProps {
   darkMode: boolean; C: any; navigate: any;
   activeTab: string; cartCount: number;
   setCartOpen: (v:boolean)=>void; setDarkMode: (fn:any)=>void;
+  catsByType: { category: any[]; author: any[]; quran: any[]; publisher: any[] };
 }
 
 // Fonction utilitaire à ajouter en haut de chaque fichier
 const optimizeImg = (url: string, _width = 400) => url
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen, darkMode, C, navigate, activeTab, cartCount, setCartOpen, setDarkMode }: SidebarProps) => (
+const Sidebar = ({ sidebarOpen, setSidebarOpen, darkMode, C, navigate, activeTab, cartCount, setCartOpen, setDarkMode, catsByType }: SidebarProps) => (
   <>
     <div onClick={() => setSidebarOpen(false)} style={{ position:'fixed', inset:0, zIndex:400, background:'rgba(0,0,0,0.5)', backdropFilter:'blur(4px)', opacity: sidebarOpen ? 1 : 0, pointerEvents: sidebarOpen ? 'all' : 'none', transition:'opacity 0.3s' }}/>
     <div style={{ position:'fixed', top:0, right:0, bottom:0, zIndex:500, width:'75vw', maxWidth:'300px', background: darkMode ? '#0F2038' : '#FFFFFF', borderLeft:`2px solid ${C.gold}`, transform: sidebarOpen ? 'translateX(0)' : 'translateX(100%)', transition:'transform 0.35s cubic-bezier(0.34,1.1,0.64,1)', display:'flex', flexDirection:'column', boxShadow:'-8px 0 40px rgba(0,0,0,0.3)', direction:'rtl' }}>
@@ -62,13 +63,34 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, darkMode, C, navigate, activeTab
         </div>
         <button onClick={() => setSidebarOpen(false)} style={{ background:'none', border:`1px solid ${C.border}`, color:C.muted, width:'32px', height:'32px', borderRadius:'50%', cursor:'pointer', fontSize:'1rem', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
       </div>
-      <div style={{ flex:1, padding:'20px 16px', display:'flex', flexDirection:'column', gap:'8px' }}>
+      <div style={{ flex:1, padding:'20px 16px', display:'flex', flexDirection:'column', gap:'8px', overflowY:'auto' }}>
         {[{id:'home',label:'الرئيسية',icon:'🏠',path:'/'},{id:'books',label:'الكتب',icon:'📚',path:'/books'}].map(tab => (
           <button key={tab.id} onClick={() => { navigate(tab.path); setSidebarOpen(false); }} style={{ display:'flex', alignItems:'center', gap:'12px', padding:'14px 16px', borderRadius:'16px', cursor:'pointer', fontFamily:'inherit', fontSize:'1rem', fontWeight:'700', border: activeTab===tab.id ? 'none' : `1px solid ${C.border}`, background: activeTab===tab.id ? `linear-gradient(135deg,${darkMode?'#2C1810':C.primary},${C.goldDark})` : 'transparent', color: activeTab===tab.id ? '#FFF8E7' : C.text, transition:'all 0.2s' }}>
             <span style={{ fontSize:'1.3rem' }}>{tab.icon}</span>
             <span>{tab.label}</span>
             {activeTab===tab.id && <span style={{ marginRight:'auto', fontSize:'0.8rem' }}>●</span>}
           </button>
+        ))}
+
+        {[
+          { key:'category', label:'🏷️ التصنيفات', list: catsByType?.category || [] },
+          { key:'author',   label:'✍️ المؤلفون',   list: catsByType?.author || [] },
+          { key:'publisher',label:'🏛️ دور النشر',  list: catsByType?.publisher || [] },
+        ].map(group => group.list.length > 0 && (
+          <div key={group.key} style={{ marginTop:'12px' }}>
+            <p style={{ color:C.muted, fontSize:'0.75rem', fontWeight:'700', margin:'0 0 8px', padding:'0 4px' }}>{group.label}</p>
+            <div style={{ display:'flex', flexDirection:'column', gap:'4px' }}>
+              {group.list.map((cat:any) => (
+                <button key={cat.name} onClick={() => { navigate(`/books?category=${encodeURIComponent(cat.name)}`); setSidebarOpen(false); }}
+                  style={{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 12px', borderRadius:'12px', cursor:'pointer', fontFamily:'inherit', fontSize:'0.85rem', fontWeight:'600', border:`1px solid ${C.border}`, background:'transparent', color:C.text, textAlign:'right' }}>
+                  <div style={{ width:'24px', height:'24px', borderRadius:'50%', overflow:'hidden', flexShrink:0, border:`1px solid ${C.border}` }}>
+                    <img src={optimizeImg(cat.image, 100)} loading="lazy" alt={cat.label} style={{ width:'100%', height:'100%', objectFit:'cover' }}/>
+                  </div>
+                  <span style={{ overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{cat.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
       <div style={{ padding:'16px 20px', borderTop:`1px solid ${C.border}`, display:'flex', alignItems:'center', gap:'12px' }}>
@@ -89,8 +111,9 @@ interface FloatingNavProps {
   darkMode: boolean; C: any; navigate: any; activeTab: string;
   cartCount: number; setCartOpen: (v:boolean)=>void;
   setDarkMode: (fn:any)=>void; setSidebarOpen: (v:boolean)=>void;
+  catsByType: { category: any[]; author: any[]; quran: any[]; publisher: any[] };
 }
-const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen, setDarkMode, setSidebarOpen }: FloatingNavProps) => (
+const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen, setDarkMode, setSidebarOpen, catsByType }: FloatingNavProps) => (
   <>
     <style>{`
       .fn-mobile { display: none !important; }
@@ -121,17 +144,32 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
       </button>
     </div>
     {/* MOBILE */}
-    <div className="fn-mobile" style={{ position:'fixed',top:0,left:0,right:0,zIndex:200,height:'60px',background:'transparent',display:'flex',alignItems:'center',justifyContent:'space-between',padding:'0 16px' }}>
-      <div style={{ display:'flex', alignItems:'center', gap:'8px', cursor:'pointer' }} onClick={()=>navigate('/')}>
-        <div style={{ width:'36px',height:'36px',borderRadius:'10px',overflow:'hidden',border:`2px solid ${C.gold}` }}>
-          <img src={optimizeImg("/elquds.png")} loading="lazy" alt="القدس للكتاب" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
-        </div>
-      </div>
-      <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
+    {/* MOBILE */}
+    <div className="fn-mobile" style={{ 
+      position:'fixed', top:0, left:0, right:0, zIndex:200, 
+      height:'90px', // Hauteur de la barre augmentée si besoin
+      background:darkMode?'rgba(10,21,38,0.9)':'rgba(255,255,255,0.9)',
+      backdropFilter:'blur(10px)', 
+      display:'flex', alignItems:'center', justifyContent:'space-between', 
+      padding:'0 16px', borderBottom:`1px solid ${C.border}` 
+    }}>
+      {/* 1. Boutons du côté gauche (Panier) */}
+      <div style={{ display:'flex', alignItems:'center', gap:'8px', width:'70px' }}>
         <button onClick={()=>setCartOpen(true)} style={{ position:'relative', background:'none', border:`1px solid ${C.border}`, borderRadius:'50%', width:'36px', height:'36px', cursor:'pointer', fontSize:'1rem', display:'flex', alignItems:'center', justifyContent:'center', color:C.text }}>
           🛒
           {cartCount>0 && <span style={{ position:'absolute',top:'-3px',right:'-3px',background:C.gold,color:darkMode?'#1A1208':C.primary,borderRadius:'50%',width:'16px',height:'16px',fontSize:'0.5rem',fontWeight:'bold',display:'flex',alignItems:'center',justifyContent:'center' }}>{cartCount}</span>}
         </button>
+      </div>
+
+      {/* 2. Logo au MILIEU avec plus de hauteur */}
+      <div style={{ display:'flex', justifyContent:'center', alignItems:'center', cursor:'pointer', flex:1 }} onClick={()=>navigate('/')}>
+        <div style={{ width:'80px', height:'80px', overflow:'hidden' }}>
+          <img src={optimizeImg("/elquds.png")} loading="lazy" alt="القدس للكتاب" style={{ width:'100%', height:'100%', objectFit:'contain' }}/>
+        </div>
+      </div>
+
+      {/* 3. Bouton Menu du côté droit */}
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'flex-end', width:'70px' }}>
         <button onClick={()=>setSidebarOpen(true)} style={{ background:'none', border:`1px solid ${C.border}`, borderRadius:'10px', width:'36px', height:'36px', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'5px', padding:'8px' }}>
           <span style={{ display:'block', width:'18px', height:'2px', background:C.primary, borderRadius:'2px' }}/>
           <span style={{ display:'block', width:'18px', height:'2px', background:C.primary, borderRadius:'2px' }}/>
@@ -139,32 +177,45 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
         </button>
       </div>
     </div>
-    <Sidebar sidebarOpen={false} setSidebarOpen={()=>{}} darkMode={darkMode} C={C} navigate={navigate} activeTab={activeTab} cartCount={cartCount} setCartOpen={setCartOpen} setDarkMode={setDarkMode}/>
+    <Sidebar sidebarOpen={false} setSidebarOpen={()=>{}} darkMode={darkMode} C={C} navigate={navigate} activeTab={activeTab} cartCount={cartCount} setCartOpen={setCartOpen} setDarkMode={setDarkMode} catsByType={catsByType}/>
   </>
 )
 interface CatCardProps {
   cat: {name:string;image:string;label:string;desc:string;type:string};
   books: Book[]; C: any; darkMode: boolean;
-  navigate: any;   // ← setSelectedCategory retiré
+  navigate: any;
 }
 const CatCard = memo(({ cat, books, C, darkMode, navigate }: CatCardProps) => {
   const count = books.filter(b => b.categories?.includes(cat.name)).length
   return (
-    <div onClick={() => navigate(`/books?category=${encodeURIComponent(cat.name)}`)}
+    <div
+      onClick={() => navigate(`/books?category=${encodeURIComponent(cat.name)}`)}
       className="cat-card"
-      style={{ background:C.bgCard, borderRadius:'20px', border:`1px solid ${C.border}`, boxShadow:`0 4px 20px rgba(74,55,40,0.08)`, padding:'28px 24px', cursor:'pointer', position:'relative', overflow:'hidden'}}>
-      <div style={{ position:'absolute',top:0,right:0,width:'40px',height:'40px',borderTop:`2px solid ${C.gold}`,borderRight:`2px solid ${C.gold}`,borderRadius:'0 20px 0 0',pointerEvents:'none' }}/>
-      <div style={{ position:'absolute',bottom:0,left:0,width:'40px',height:'40px',borderBottom:`2px solid ${C.gold}`,borderLeft:`2px solid ${C.gold}`,borderRadius:'0 0 0 20px',pointerEvents:'none' }}/>
-      <div className="cat-img-wrapper" style={{ width:'100%',height:'220px',overflow:'hidden',borderRadius:'50%',margin:'0 auto 18px',border:`2px solid ${C.border}`,boxShadow:`0 8px 24px rgba(74,55,40,0.25)` }}>
-        <img src={optimizeImg(cat.image, 300)} loading="lazy" alt={cat.label} style={{ width:'100%',height:'100%',objectFit:'cover',display:'block' }}/>
+      style={{
+        background: C.bgCard,
+        borderRadius: '12px',
+        border: `1px solid ${C.border}`,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+        padding: '8px 10px',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        width: '160px',
+        height: '56px',
+        boxSizing: 'border-box',
+      }}
+    >
+      <div style={{ width:'36px', height:'36px', borderRadius:'50%', border:`2px solid ${C.gold}`, flexShrink:0, overflow:'hidden' }}>
+        <img src={optimizeImg(cat.image, 100)} loading="lazy" alt={cat.label} style={{ width:'100%', height:'100%', objectFit:'cover', display:'block' }}/>
       </div>
-      <h3 style={{ color:C.primary, fontSize:'1.1rem', fontWeight:'800', margin:'0 0 6px', fontFamily:'inherit' }}>{cat.label}</h3>
-      <p style={{ color:C.muted, fontSize:'0.82rem', margin:'0 0 16px', lineHeight:1.6 }}>{cat.desc}</p>
-      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-        <span style={{ background:`rgba(201,168,76,0.12)`, color:C.goldDark, fontSize:'0.75rem', fontWeight:'700', padding:'4px 12px', borderRadius:'20px', border:`1px solid ${C.border}` }}>
+      <div style={{ flex:1, minWidth:0 }}>
+        <div style={{ color:C.primary, fontSize:'0.78rem', fontWeight:'700', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
+          {cat.label}
+        </div>
+        <div style={{ color:C.muted, fontSize:'0.65rem', marginTop:'2px' }}>
           {count > 0 ? `${count} كتاب` : 'قريباً'}
-        </span>
-        <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:`linear-gradient(135deg,${darkMode?'#2C1810':C.primary},${C.goldDark})`, display:'flex', alignItems:'center', justifyContent:'center', color:'#FFF8E7', fontSize:'1rem' }}>←</div>
+        </div>
       </div>
     </div>
   )
@@ -365,12 +416,13 @@ function App() {
       <FloatingNav
         darkMode={darkMode} C={C} navigate={navigate} activeTab={activeTab}
         cartCount={cartCount} setCartOpen={setCartOpen}
-        setDarkMode={setDarkMode} setSidebarOpen={setSidebarOpen}
+        setDarkMode={setDarkMode} setSidebarOpen={setSidebarOpen} catsByType={catsByType}
       />
       <Sidebar
         sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}
         darkMode={darkMode} C={C} navigate={navigate} activeTab={activeTab}
         cartCount={cartCount} setCartOpen={setCartOpen} setDarkMode={setDarkMode}
+        catsByType={catsByType}
       />
 
       {toast && (
@@ -387,12 +439,9 @@ function App() {
         <Routes>
           <Route path="/" element={
             <div style={{ position:'relative',zIndex:1 }}>
-              <header style={{ padding:'80px 5% 40px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'40px',minHeight:'500px',position:'relative',flexWrap:'wrap' }}>
+              <header style={{ padding:'80px 5% 20px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'40px',minHeight:'auto',position:'relative',flexWrap:'wrap' }}>
                 <div style={{ flex:'1 1 100%',maxWidth:'100%',minWidth:'280px',position:'relative',zIndex:2,width:'100%' }}>
-                  <div className="hero-logo-banner">
-                    <img src="/elquds.png" alt="القدس للكتاب" />
-                  </div>
-                  <div className="hero-bismillah" style={{ display:'flex',alignItems:'center',gap:'10px',marginBottom:'16px' }}>
+                  <div className="hero-bismillah" style={{ display:'flex',alignItems:'center',gap:'10px',marginBottom:'16px' ,marginTop:'150px' }}>
                       <div style={{ height:'1px',flex:1,background:`linear-gradient(to left,${C.gold},transparent)` }}/><span style={{ color:C.gold }}>✦</span>
                       <span style={{ color:C.goldDark,fontSize:'0.68rem',letterSpacing:'1.5px' }}>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
                       <span style={{ color:C.gold }}>✦</span><div style={{ height:'1px',flex:1,background:`linear-gradient(to right,${C.gold},transparent)` }}/>
@@ -457,41 +506,40 @@ function App() {
                     )}
                   </div>
 
-                  <div style={{ display:'flex',gap:'24px',marginTop:'28px' }}>
-                    {[{v:'500+',l:'كتاب'},{v:'120',l:'مؤلف'},{v:'10k',l:'عميل'}].map((s,i)=>(
-                      <div key={i} style={{ textAlign:'center' }}>
-                        <div style={{ fontSize:'clamp(1.1rem,4vw,1.6rem)',fontWeight:'bold',color:C.goldDark }}>{s.v}</div>
-                        <div style={{ fontSize:'0.72rem',color:C.muted }}>{s.l}</div>
+                  <div className="cats-groups-wrap" style={{ marginTop:'16px' }}>
+                    {catsByType.category.length > 0 && (
+                    <div className="cats-group">
+                      <h3 style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>🏷️ تصفّح حسب التصنيف</h3>
+                      <div className="cats-hscroll">
+                        {catsByType.category.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    </div>
+                  )}
 
-                {/* Hero carousel */}
-                <div className="hero-carousel hidden-carousel" style={{ flex:1,position:'relative',display:'flex',alignItems:'center',overflow:'hidden',minHeight:'320px',minWidth:'200px' }}>
-                  <div style={{ position:'absolute',right:0,top:0,bottom:0,width:'60px',background:`linear-gradient(to left,${C.bg},transparent)`,zIndex:3,pointerEvents:'none' }}/>
-                  <div style={{ position:'absolute',left:0,top:0,bottom:0,width:'60px',background:`linear-gradient(to right,${C.bg},transparent)`,zIndex:3,pointerEvents:'none' }}/>
-                  <button onClick={()=>scrollHero('right')} style={{ position:'absolute',right:'8px',zIndex:10,background:C.bgCard,border:`1px solid ${C.border}`,width:'38px',height:'38px',borderRadius:'50%',cursor:'pointer',fontSize:'1.1rem',color:C.primary,display:'flex',alignItems:'center',justifyContent:'center' }}>›</button>
-                  <button onClick={()=>scrollHero('left')}  style={{ position:'absolute',left:'8px',zIndex:10,background:C.bgCard,border:`1px solid ${C.border}`,width:'38px',height:'38px',borderRadius:'50%',cursor:'pointer',fontSize:'1.1rem',color:C.primary,display:'flex',alignItems:'center',justifyContent:'center' }}>‹</button>
-                  <div ref={heroRef} style={{ display:'flex',gap:'16px',overflowX:'auto',scrollbarWidth:'none',padding:'20px 50px' }}>
-                    {heroBooks.map((book,idx)=>(
-                      <div key={idx} className="hero-item" style={{ minWidth:'150px',cursor:'pointer',flexShrink:0 }}>
-                        <div style={{ borderRadius:'14px',overflow:'hidden',boxShadow:`0 12px 32px rgba(74,55,40,0.22)`,border:`2px solid rgba(201,168,76,0.2)` }}>
-                          <img src={optimizeImg(book.image_url, 300)} loading="lazy" alt={book.title} style={{ width:'150px',height:'210px',objectFit:'cover',display:'block' }}/>
-                        </div>
-                        <div style={{ marginTop:'8px',textAlign:'center',background:C.bgCard,borderRadius:'8px',padding:'6px 8px',border:`1px solid ${C.border}` }}>
-                          <p style={{ margin:0,fontSize:'0.75rem',color:C.primary,fontWeight:'bold' }}>{book.title}</p>
-                          <p style={{ margin:'2px 0 0',fontSize:'0.65rem',color:C.muted }}>{book.author}</p>
-                        </div>
+                  {catsByType.author.length > 0 && (
+                    <div className="cats-group">
+                      <h3 style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>✍️ تصفّح حسب المؤلف</h3>
+                      <div className="cats-hscroll">
+                        {catsByType.author.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
                       </div>
-                    ))}
+                    </div>
+                  )}
+
+                  {catsByType.publisher.length > 0 && (
+                    <div className="cats-group">
+                      <h3 style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>🏛️ تصفّح حسب دار النشر</h3>
+                      <div className="cats-hscroll">
+                        {catsByType.publisher.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
+                      </div>
+                    </div>
+                  )}
                   </div>
                 </div>
               </header>
 
               {/* BESTSELLERS */}
               {(bestsellerBooks.length > 0 || promotionBooks.length > 0 || bannerUrl) && (
-                <div className="highlights-row" style={{ padding: '0 4% 40px', display: 'grid', gridTemplateColumns: bannerUrl ? '1fr 1.4fr 1fr' : '1fr 1fr', gap: '20px', alignItems: 'stretch' }}>
+                <div className="highlights-row" style={{ padding: '10px 4% 40px', display: 'grid', gridTemplateColumns: bannerUrl ? '1fr 1.4fr 1fr' : '1fr 1fr', gap: '20px', alignItems: 'stretch' }}>
                   {/* Colonne droite : الجديد والحصري */}
                   {bestsellerBooks.length > 0 && (
                     <div>
@@ -511,7 +559,7 @@ function App() {
 
                   {/* Centre : lafitte */}
                   {bannerUrl && (
-                    <div className="highlights-banner" onClick={() => navigate('/books')} style={{ cursor:'pointer', borderRadius:'20px', overflow:'hidden', boxShadow:'0 8px 30px rgba(37,99,235,0.15)', border:`1px solid ${C.border}`, alignSelf:'center' }}>
+                    <div className="highlights-banner" onClick={() => navigate('/books')} style={{ cursor:'pointer', borderRadius:'20px', overflow:'hidden', boxShadow:'0 8px 30px rgba(37,99,235,0.15)', border:`1px solid ${C.border}`, alignSelf:'flex-start' }}>
                       <img src={bannerUrl} alt="عروض" style={{ width:'100%', height:'auto', display:'block' }}/>
                     </div>
                   )}
@@ -554,29 +602,6 @@ function App() {
               )}
 
               <main style={{ padding:'0 4% 100px' }}>
-                {catsByType.category.length > 0 && (
-                  <>
-                    <div style={{ marginBottom:'32px', textAlign:'center' }}>
-                      <h2 style={{ fontSize:'clamp(1.4rem,5vw,2rem)', color:C.primary, margin:'0 0 8px' }}>تصفّح حسب التصنيف</h2>
-                      <p style={{ color:C.muted, fontSize:'0.88rem' }}>اختر تصنيفاً لعرض الكتب المتعلقة به</p>
-                    </div>
-                    <div className="cats-grid" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(min(260px,100%),1fr))', gap:'20px', marginBottom:'48px' }}>
-                      {catsByType.category.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
-                    </div>
-                  </>
-                )}
-                {catsByType.author.length > 0 && (
-                  <>
-                    <div style={{ display:'flex', alignItems:'center', gap:'16px', marginBottom:'24px' }}>
-                      <div style={{ flex:1, height:'1px', background:`linear-gradient(to left,${C.gold},transparent)` }}/>
-                      <h2 style={{ color:C.primary, fontSize:'clamp(1.2rem,4vw,1.6rem)', fontWeight:'800', margin:0, whiteSpace:'nowrap' }}>✍️ تصفّح حسب المؤلف</h2>
-                      <div style={{ flex:1, height:'1px', background:`linear-gradient(to right,${C.gold},transparent)` }}/>
-                    </div>
-                    <div className="cats-grid" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(min(260px,100%),1fr))', gap:'20px', marginBottom:'48px' }}>
-                      {catsByType.author.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
-                    </div>
-                  </>
-                )}
                 {catsByType.quran.map(cat => {
                   const quranBooks = books.filter(b => b.categories?.includes(cat.name))
                   if (quranBooks.length === 0) return null
@@ -593,18 +618,6 @@ function App() {
                     </div>
                   )
                 })}
-                {catsByType.publisher.length > 0 && (
-                  <>
-                    <div style={{ display:'flex', alignItems:'center', gap:'16px', marginBottom:'24px' }}>
-                      <div style={{ flex:1, height:'1px', background:`linear-gradient(to left,${C.gold},transparent)` }}/>
-                      <h2 style={{ color:C.primary, fontSize:'clamp(1.2rem,4vw,1.6rem)', fontWeight:'800', margin:0, whiteSpace:'nowrap' }}>🏛️ تصفّح حسب دار النشر</h2>
-                      <div style={{ flex:1, height:'1px', background:`linear-gradient(to right,${C.gold},transparent)` }}/>
-                    </div>
-                    <div className="cats-grid" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(min(260px,100%),1fr))', gap:'20px', marginBottom:'48px' }}>
-                      {catsByType.publisher.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
-                    </div>
-                  </>
-                )}
                 <div style={{ textAlign:'center', marginTop:'40px' }}>
                   <button onClick={() => { navigate('/books'); }} style={{ background:`linear-gradient(135deg,${darkMode?'#2C1810':'#4A3728'},${C.goldDark})`, color:'#FFF8E7', border:'none', padding:'13px 32px', borderRadius:'24px', cursor:'pointer', fontWeight:'700', fontSize:'0.95rem', fontFamily:'inherit', boxShadow:`0 6px 20px rgba(74,55,40,0.3)`, display:'inline-flex', alignItems:'center', gap:'8px' }}>
                     <span>📚</span><span>عرض جميع الكتب</span>
@@ -649,7 +662,43 @@ function App() {
         <Analytics />
       </div>
 
-      <style>{`
+     <style>{`
+     .cats-groups-wrap{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .cats-hscroll{
+      display:flex;
+      gap:8px;
+      overflow-x:auto;
+      padding-bottom:6px;
+      scrollbar-width:none;
+      scroll-behavior:smooth;
+    }
+    .cats-hscroll::-webkit-scrollbar{ display:none; }
+    .cats-hscroll > * { flex-shrink:0; }
+    .cats-group{ position:relative; }
+    .cats-scroll-arrow{
+      display:none;
+      position:absolute;
+      top:38px;
+      width:30px; height:30px;
+      border-radius:50%;
+      align-items:center; justify-content:center;
+      cursor:pointer;
+      z-index:5;
+      font-size:0.9rem;
+      font-weight:700;
+    }
+    @media(min-width:900px){
+      .cats-hscroll{
+        flex-wrap:wrap;
+        overflow-x:visible;
+      }
+      .cats-hscroll > * { flex-shrink:0; }
+      .cats-scroll-arrow{ display:none !important; }
+    }
       .highlights-col{
         display:grid;
         grid-template-columns: repeat(2, 1fr);
@@ -665,9 +714,9 @@ function App() {
       .hero-desc{display:none!important;}
       .hero-logo-banner{
       display:block!important;
-      width:100%;
-      height:260px;
-      margin-bottom:16px;
+      width:80%;
+      height:80px;
+      margin-bottom:4px;
       background:transparent;
       }
       .hero-logo-banner img{
@@ -683,16 +732,12 @@ function App() {
         @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(12px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         .hidden-carousel{display:none!important;}
-        .cats-grid, .bestsellers-grid {
+        .bestsellers-grid {
           content-visibility: auto;
           contain-intrinsic-size: 1px 600px;
         }
         .bestsellers-grid{display:grid!important;grid-template-columns:repeat(6,1fr)!important;overflow-x:visible!important;}
-        @media(max-width:639px){
-          header{flex-direction:column;padding:76px 4% 32px!important;min-height:auto!important;}
-          .cat-img-wrapper{width:100px!important;height:100px!important;margin:0 auto 12px!important;}
-          .cat-card{padding:14px 10px!important;}
-          .cats-grid{grid-template-columns:repeat(2,1fr)!important;}
+        @media (max-width: 639px) {
           .hero-carousel{display:none!important;}
           .modal-content{flex-direction:column!important;}
           .modal-cover{flex:none!important;border-radius:24px 24px 0 0!important;}
