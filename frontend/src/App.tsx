@@ -544,7 +544,7 @@ function App() {
                   {bestsellerBooks.length > 0 && (
                     <div>
                       <h2 style={{ color:C.primary, fontSize:'clamp(1.1rem,3vw,1.4rem)', fontWeight:'800', marginBottom:'14px', textAlign:'center' }}>الجديد والحصري</h2>
-                      <div className="highlights-col">
+                      <div className="highlights-col-scroll">
                         {bestsellerBooks.slice(0, 4).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
                       </div>
                       {bestsellerBooks.length > 4 && (
@@ -586,7 +586,7 @@ function App() {
               {/* Extension pleine largeur : reste des nouveautés */}
               {bestsellerBooks.length > 4 && (
                 <div className="extra-books" style={{ padding:'0 4% 20px', display: showAllBestsellers ? 'block' : 'none' }}>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:'14px' }}>
+                  <div className="extra-books-grid" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:'14px' }}>
                     {bestsellerBooks.slice(4).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
                   </div>
                 </div>
@@ -595,7 +595,7 @@ function App() {
               {/* Extension pleine largeur : reste des réductions */}
               {promotionBooks.length > 4 && (
                 <div className="extra-books" style={{ padding:'0 4% 40px', display: showAllPromotions ? 'block' : 'none' }}>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:'14px' }}>
+                  <div className="extra-books-grid" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:'14px' }}>
                     {promotionBooks.slice(4).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
                   </div>
                 </div>
@@ -670,15 +670,20 @@ function App() {
     }
     .cats-hscroll{
       display:flex;
+      flex-direction:row-reverse;
+      direction:ltr;
       gap:8px;
       overflow-x:auto;
       padding-bottom:6px;
       scrollbar-width:none;
       scroll-behavior:smooth;
+      width:100%;
+      max-width:100%;
+      min-width:0;
     }
+    .cats-hscroll > * { direction:rtl; flex-shrink:0; min-width:0; }
     .cats-hscroll::-webkit-scrollbar{ display:none; }
-    .cats-hscroll > * { flex-shrink:0; }
-    .cats-group{ position:relative; }
+    .cats-group{ position:relative; min-width:0; }
     .cats-scroll-arrow{
       display:none;
       position:absolute;
@@ -696,9 +701,9 @@ function App() {
         flex-wrap:wrap;
         overflow-x:visible;
       }
-      .cats-hscroll > * { flex-shrink:0; }
       .cats-scroll-arrow{ display:none !important; }
     }
+      .highlights-row > div { min-width: 0; }
       .highlights-col{
         display:grid;
         grid-template-columns: repeat(2, 1fr);
@@ -706,8 +711,29 @@ function App() {
       }
       @media(max-width:900px){
         .highlights-row{ grid-template-columns: 1fr !important; }
-        .highlights-banner{ order:-1; height:auto; }
+        .highlights-banner{ order:0; height:auto; }
         .highlights-col{ display:grid !important; grid-template-columns: repeat(2,1fr) !important; gap:10px !important; }
+        .highlights-col-scroll{
+          display:flex !important;
+          flex-direction:row-reverse !important;
+          direction:ltr !important;
+          overflow-x:auto !important;
+          gap:10px !important;
+          padding-bottom:6px;
+          scrollbar-width:none;
+          scroll-snap-type:x mandatory;
+          -webkit-overflow-scrolling:touch;
+          min-width:0;
+          width:100%;
+          max-width:100%;
+        }
+        .highlights-col-scroll::-webkit-scrollbar{ display:none; }
+        .highlights-col-scroll > * {
+          flex:0 0 140px !important;
+          scroll-snap-align:start;
+          min-width:0;
+          direction:rtl;
+        }
       }
       .hero-bismillah{display:none!important;}
       .hero-title{display:none!important;}
@@ -725,7 +751,7 @@ function App() {
       mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 55%, transparent 100%);
       }
         *{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif;}
-        body{overflow-x:hidden;}
+        html, body{overflow-x:hidden; max-width:100%;}
         ::-webkit-scrollbar{width:4px;height:4px;}
         ::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.4);border-radius:4px;}
         input::placeholder{color:#8C7B6B;font-family:'Cairo',sans-serif;}
@@ -738,26 +764,35 @@ function App() {
         }
         .bestsellers-grid{display:grid!important;grid-template-columns:repeat(6,1fr)!important;overflow-x:visible!important;}
         @media (max-width: 639px) {
-          .hero-carousel{display:none!important;}
-          .modal-content{flex-direction:column!important;}
-          .modal-cover{flex:none!important;border-radius:24px 24px 0 0!important;}
-          .modal-cover img{min-height:200px!important;max-height:240px!important;}
-          .app-book-card { transition: transform 0.2s; }
-          .app-book-card:hover { transform: translateY(-4px); }
-          .cat-card { transition: transform 0.25s, box-shadow 0.25s; }
-          .cat-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(74,55,40,0.18); }
-          .hero-item { transition: transform 0.3s; }
-          .hero-item:hover { transform: translateY(-8px) scale(1.03); }
-          .show-more-btn{ display:none !important; }
-          .extra-books{ display:block !important; }
-          .bestsellers-grid{display:flex!important;overflow-x:auto!important;scroll-snap-type:x mandatory;}
-          .bestsellers-grid>div{scroll-snap-align:start;min-width:150px!important;}
-          .hero-logo-banner img{
-            width:100%; height:100%; object-fit:contain;
-            -webkit-mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 55%, transparent 100%);
-            mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 55%, transparent 100%);
-          }
+        .extra-books-grid{ grid-template-columns: repeat(2, 1fr) !important; }
+        .cats-groups-wrap{ gap:8px !important; margin-top:8px !important; }
+        .cats-group h3{ margin-bottom:4px !important; font-size:0.75rem !important; }
+        .cat-card{ height:44px !important; padding:6px 8px !important; }
+        .cat-card > div:first-child{ width:28px !important; height:28px !important; }
+        .highlights-row{ padding-top:0 !important; }
+        .highlights-row h2{ margin-bottom:8px !important; font-size:1rem !important; }
+        .highlights-col-scroll > *{ flex:0 0 120px !important; }
+        .highlights-col-scroll .app-book-card img{ height:140px !important; }
+        .hero-carousel{display:none!important;}
+        .modal-content{flex-direction:column!important;}
+        .modal-cover{flex:none!important;border-radius:24px 24px 0 0!important;}
+        .modal-cover img{min-height:200px!important;max-height:240px!important;}
+        .app-book-card { transition: transform 0.2s; }
+        .app-book-card:hover { transform: translateY(-4px); }
+        .cat-card { transition: transform 0.25s, box-shadow 0.25s; }
+        .cat-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(74,55,40,0.18); }
+        .hero-item { transition: transform 0.3s; }
+        .hero-item:hover { transform: translateY(-8px) scale(1.03); }
+        .show-more-btn{ display:none !important; }
+        .extra-books{ display:block !important; }
+        .bestsellers-grid{display:flex!important;overflow-x:auto!important;scroll-snap-type:x mandatory;}
+        .bestsellers-grid>div{scroll-snap-align:start;min-width:150px!important;}
+        .hero-logo-banner img{
+          width:100%; height:100%; object-fit:contain;
+          -webkit-mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 55%, transparent 100%);
+          mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 55%, transparent 100%);
         }
+      }
       `}</style>
       
     </div>
