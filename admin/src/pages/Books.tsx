@@ -70,7 +70,7 @@ export default function Books() {
     affects_price: boolean;
   }[]>([])
   const [showBannerModal, setShowBannerModal] = useState(false)
-  const [bannerUrl, setBannerUrl] = useState<string | null>(null)
+  const [bannerImages, setBannerImages] = useState<string[]>([])
   const [uploadingBanner, setUploadingBanner] = useState(false)
   const bannerInputRef = useRef<HTMLInputElement>(null)
 
@@ -132,36 +132,37 @@ export default function Books() {
   }, [])
 
   async function fetchBanner() {
-    const { data } = await supabase.from('site_banner').select('image_url').eq('id', 1).single()
-    setBannerUrl(data?.image_url || null)
+    const { data } = await supabase.from('site_banner').select('images').eq('id', 1).single()
+    setBannerImages(data?.images || [])
   }
 
-  async function uploadBanner(file: File) {
-    setUploadingBanner(true)
+  async function uploadBanner(files: FileList) {
+  setUploadingBanner(true)
+  const newUrls: string[] = []
+  for (const file of Array.from(files)) {
     const compressed = await compressImage(file, 1200, 0.8)
     const ext = compressed.name.split('.').pop()
-    const path = `banner/main_${Date.now()}.${ext}`
+    const path = `banner/main_${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`
     const { error } = await supabase.storage.from('images').upload(path, compressed, { upsert: true, cacheControl: '31536000' })
     if (!error) {
       const { data: u } = supabase.storage.from('images').getPublicUrl(path)
-      const { error: dbError, count } = await supabase.from('site_banner').update({ image_url: u.publicUrl }).eq('id', 1).select()
-      if (dbError) {
-        console.error('Erreur DB banner:', dbError)
-        alert('Erreur lors de la sauvegarde: ' + dbError.message)
-      } else {
-        setBannerUrl(u.publicUrl)
-      }
+      newUrls.push(u.publicUrl)
     } else {
       console.error('Erreur upload banner:', error)
-      alert('Erreur upload: ' + error.message)
     }
-    setUploadingBanner(false)
   }
-
-async function removeBanner() {
-  await supabase.from('site_banner').update({ image_url: null }).eq('id', 1)
-  setBannerUrl(null)
+  const updated = [...bannerImages, ...newUrls]
+  const { error: dbError } = await supabase.from('site_banner').update({ images: updated }).eq('id', 1)
+  if (dbError) { alert('Erreur: ' + dbError.message) } else { setBannerImages(updated) }
+  setUploadingBanner(false)
 }
+
+async function removeBannerImage(url: string) {
+  const updated = bannerImages.filter(u => u !== url)
+  await supabase.from('site_banner').update({ images: updated }).eq('id', 1)
+  setBannerImages(updated)
+}
+
 
   useEffect(() => {
     if (!showModal) return
@@ -934,17 +935,22 @@ setOptions(hasQias ? loaded : [
               <button onClick={() => setShowBannerModal(false)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', color: 'rgba(37,99,235,0.6)', fontSize: '16px' }}>✕</button>
             </div>
             <p style={{ color: 'rgba(37,99,235,0.5)', fontSize: '12px', marginBottom: '16px' }}>ستظهر هذه الصورة في وسط الصفحة الرئيسية، بين قسم "الجديد والحصري" وقسم "العروض والتخفيضات".</p>
-            {bannerUrl ? (
-              <div style={{ position: 'relative', marginBottom: '16px' }}>
-                <img src={bannerUrl} style={{ width: '100%', borderRadius: '12px', border: '1px solid rgba(37,99,235,0.2)' }} />
-                <button onClick={removeBanner} style={{ position: 'absolute', top: '8px', left: '8px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '8px', padding: '6px 12px', cursor: 'pointer', fontSize: '12px', fontWeight: 700 }}>🗑️ حذف</button>
+            <p style={{ color: 'rgba(37,99,235,0.5)', fontSize: '12px', marginBottom: '16px' }}>يمكنك إضافة عدة صور، وسيتمكن الزوار من التمرير بينها في الصفحة الرئيسية.</p>
+            {bannerImages.length > 0 ? (
+              <div style={{ display:'flex', flexWrap:'wrap', gap:'10px', marginBottom:'16px' }}>
+                {bannerImages.map((url, i) => (
+                  <div key={i} style={{ position:'relative', width:'calc(50% - 5px)' }}>
+                    <img src={url} style={{ width:'100%', borderRadius:'12px', border:'1px solid rgba(37,99,235,0.2)', display:'block' }} />
+                    <button onClick={() => removeBannerImage(url)} style={{ position:'absolute', top:'6px', left:'6px', background:'#ef4444', color:'#fff', border:'none', borderRadius:'8px', padding:'4px 10px', cursor:'pointer', fontSize:'11px', fontWeight:700 }}>🗑️ حذف</button>
+                  </div>
+                ))}
               </div>
             ) : (
-              <p style={{ color: 'rgba(37,99,235,0.3)', textAlign: 'center', padding: '20px 0' }}>لا توجد لافتة حالياً</p>
+              <p style={{ color: 'rgba(37,99,235,0.3)', textAlign: 'center', padding: '20px 0' }}>لا توجد صور حالياً</p>
             )}
-            <input ref={bannerInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) uploadBanner(f); if (bannerInputRef.current) bannerInputRef.current.value = '' }} />
+            <input ref={bannerInputRef} type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={e => { const files = e.target.files; if (files && files.length) uploadBanner(files); if (bannerInputRef.current) bannerInputRef.current.value = '' }} />
             <button onClick={() => bannerInputRef.current?.click()} disabled={uploadingBanner} style={{ width: '100%', padding: '12px', background: 'linear-gradient(135deg, #14356B, #2563EB)', border: 'none', borderRadius: '10px', color: '#FFF8E7', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
-              {uploadingBanner ? '⏳ ...' : bannerUrl ? '📷 تغيير الصورة' : '📷 رفع صورة'}
+              {uploadingBanner ? '⏳ ...' : '📷 إضافة صورة'}
             </button>
           </div>
         </div>
