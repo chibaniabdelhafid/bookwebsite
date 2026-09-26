@@ -117,6 +117,14 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
   <>
     <style>{`
       .fn-mobile { display: none !important; }
+      .logo-spin-3d {
+        animation: spin3d 5s linear infinite;
+        transform-style: preserve-3d;
+      }
+      @keyframes spin3d {
+        from { transform: rotateY(0deg); }
+        to   { transform: rotateY(360deg); }
+      }
       @media(max-width:640px) {
         .fn-desktop { display: none !important; }
         .fn-mobile  { display: flex !important; }
@@ -124,8 +132,8 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
     `}</style>
     {/* DESKTOP */}
     <div className="fn-desktop" style={{ position:'fixed',top:'16px',right:'16px',zIndex:200,display:'flex',alignItems:'center',gap:'8px' }}>
-      <div onClick={()=>navigate('/')} style={{ width:'85px',height:'85px',borderRadius:'18px',overflow:'hidden',background:'transparent',cursor:'pointer',flexShrink:0 }}>
-        <img src={optimizeImg("/elquds.png")} loading='lazy' alt="القدس للكتاب" style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
+      <div onClick={()=>navigate('/')} style={{ width:'85px',height:'85px',borderRadius:'18px',overflow:'hidden',background:'transparent',cursor:'pointer',flexShrink:0,perspective:'600px' }}>
+        <img src={optimizeImg("/elquds3d.jfif")} loading='lazy' alt="القدس للكتاب" className="logo-spin-3d" style={{ width:'100%',height:'100%',objectFit:'contain' }}/>
       </div>
     </div>
     <div className="fn-desktop" style={{ position:'fixed',top:'16px',left:'50%',transform:'translateX(-50%)',zIndex:200,display:'flex',gap:'6px' }}>
@@ -163,9 +171,7 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
 
       {/* 2. Logo au MILIEU avec plus de hauteur */}
       <div style={{ display:'flex', justifyContent:'center', alignItems:'center', cursor:'pointer', flex:1 }} onClick={()=>navigate('/')}>
-        <div style={{ width:'80px', height:'80px', overflow:'hidden' }}>
-          <img src={optimizeImg("/elquds.png")} loading="lazy" alt="القدس للكتاب" style={{ width:'100%', height:'100%', objectFit:'contain' }}/>
-        </div>
+        <div style={{ width:'80px', height:'80px', overflow:'hidden', perspective:'600px' }}>        <img src={optimizeImg("/elquds3d.jfif")} loading="lazy" alt="القدس للكتاب" className="logo-spin-3d" style={{ width:'100%', height:'100%', objectFit:'contain' }}/>        </div>
       </div>
 
       {/* 3. Bouton Menu du côté droit */}
@@ -268,7 +274,8 @@ function App() {
   const [toast,            setToast]            = useState<string | null>(null)
   const [loading,          setLoading]          = useState(true)
   const [cats,             setCats]             = useState<{name:string,image:string,label:string,desc:string,type:string}[]>([])
-  const [bannerUrl, setBannerUrl] = useState<string | null>(null)
+  const [bannerImages, setBannerImages] = useState<string[]>([])
+  const [activeBannerIndex, setActiveBannerIndex] = useState(0)
   const [sidebarOpen,      setSidebarOpen]      = useState(false)
   const [showAllBestsellers, setShowAllBestsellers] = useState(false)
   const [showAllPromotions,  setShowAllPromotions]  = useState(false)
@@ -283,6 +290,14 @@ function App() {
 
   useEffect(() => { fbTrack('PageView') }, [location.pathname])
 
+ useEffect(() => {
+    if (bannerImages.length <= 1) return
+    const interval = setInterval(() => {
+      setActiveBannerIndex(prev => (prev + 1) % bannerImages.length)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [bannerImages.length])
+
   const catalogFetchedRef = useRef(false)
 
   useEffect(() => {
@@ -291,8 +306,8 @@ function App() {
     catalogFetchedRef.current = true
 
     const fetchBanner = async () => {
-      const { data } = await supabase.from('site_banner').select('image_url').eq('id', 1).single()
-      setBannerUrl(data?.image_url || null)
+      const { data } = await supabase.from('site_banner').select('images').eq('id', 1).single()
+      setBannerImages(data?.images || [])
     }
     fetchBanner()
 
@@ -361,8 +376,7 @@ function App() {
 
   const heroBooks = useMemo(() => books.slice(0, 8), [books])
 
-  const bestsellerBooks = useMemo(() => books.filter(b => b.bestseller).slice(0, 8), [books])
-
+  const bestsellerBooks = useMemo(() => books.filter(b => b.bestseller), [books])
   const promotionBooks = useMemo(() => 
     books.filter(b => b.promotion && b.promotion > 0 && b.promotion < b.price), 
   [books])
@@ -374,8 +388,8 @@ function App() {
     publisher: cats.filter(c => c.type === 'publisher'),
   }), [cats])
 
-  const light = { bg:'#FFFFFF', bgCard:'#FFFFFF', text:'#0F1F3D', primary:'#14356B', gold:'#2563EB', goldLight:'#93C5FD', goldDark:'#699bff', muted:'#5B6B82', border:'rgba(114, 151, 232, 0.18)' }
-  const dark  = { bg:'#0A1526', bgCard:'#0F2038', text:'#E7F0FF', primary:'#8FC1FF', gold:'#2563EB', goldLight:'#8FC1FF', goldDark:'#2563EB', muted:'#9FB3CE', border:'rgba(37,99,235,0.28)' }
+  const light = { bg:'#FFFFFF', bgCard:'#d8e5fd', text:'#0F1F3D', primary:'#14356B', gold:'#2563EB', goldLight:'#0f69cf', goldDark:'#699bff', muted:'#5B6B82', border:'rgba(114, 151, 232, 0.28)' }
+  const dark  = { bg:'#0A1526', bgCard:'#003785', text:'#E7F0FF', primary:'#8FC1FF', gold:'#2563EB', goldLight:'#8FC1FF', goldDark:'#2563EB', muted:'#9FB3CE', border:'rgba(37,99,235,0.28)' }
   const C = darkMode ? dark : light
 
   const currentPath = window.location.pathname
@@ -538,14 +552,14 @@ function App() {
               </header>
 
               {/* BESTSELLERS */}
-              {(bestsellerBooks.length > 0 || promotionBooks.length > 0 || bannerUrl) && (
-                <div className="highlights-row" style={{ padding: '10px 4% 40px', display: 'grid', gridTemplateColumns: bannerUrl ? '1fr 1.4fr 1fr' : '1fr 1fr', gap: '20px', alignItems: 'stretch' }}>
+              {(bestsellerBooks.length > 0 || promotionBooks.length > 0 || bannerImages.length > 0) && (
+              <div className="highlights-row" style={{ padding: '10px 4% 40px', display: 'grid', gridTemplateColumns: bannerImages.length > 0 ? '1fr 1.4fr 1fr' : '1fr 1fr', gap: '20px', alignItems: 'stretch' }}>
                   {/* Colonne droite : الجديد والحصري */}
                   {bestsellerBooks.length > 0 && (
                     <div>
                       <h2 style={{ color:C.primary, fontSize:'clamp(1.1rem,3vw,1.4rem)', fontWeight:'800', marginBottom:'14px', textAlign:'center' }}>الجديد والحصري</h2>
                       <div className="highlights-col-scroll">
-                        {bestsellerBooks.slice(0, 4).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
+                        {bestsellerBooks.map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
                       </div>
                       {bestsellerBooks.length > 4 && (
                         <div className="show-more-btn" style={{ textAlign:'center', marginTop:'14px' }}>
@@ -558,9 +572,34 @@ function App() {
                   )}
 
                   {/* Centre : lafitte */}
-                  {bannerUrl && (
-                    <div className="highlights-banner" onClick={() => navigate('/books')} style={{ cursor:'pointer', borderRadius:'20px', overflow:'hidden', boxShadow:'0 8px 30px rgba(37,99,235,0.15)', border:`1px solid ${C.border}`, alignSelf:'flex-start' }}>
-                      <img src={bannerUrl} alt="عروض" style={{ width:'100%', height:'auto', display:'block' }}/>
+                  {bannerImages.length > 0 && (
+                    <div>
+                      <div className="highlights-banner-scroll" style={{ position:'relative', overflow:'hidden' }}>
+                        <div style={{
+                          display:'flex',
+                          transform: `translateX(${activeBannerIndex * 100}%)`,
+                          transition:'transform 0.6s ease',
+                        }}>
+                          {bannerImages.map((url, i) => (
+                            <div key={i} onClick={() => navigate('/books')} style={{ flex:'0 0 100%', position:'relative', height:'320px', borderRadius:'20px', overflow:'hidden', cursor:'pointer', border:`1px solid ${C.border}`, boxShadow:'0 8px 30px rgba(37,99,235,0.15)' }}>
+                              <img src={url} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', filter:'blur(20px)', transform:'scale(1.2)', opacity:0.6 }}/>
+                              <img src={url} alt="عروض" style={{ position:'relative', width:'100%', height:'100%', objectFit:'contain' }}/>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      {bannerImages.length > 1 && (
+                        <div style={{ display:'flex', justifyContent:'center', gap:'6px', marginTop:'10px' }}>
+                          {bannerImages.map((_, i) => (
+                            <span key={i} onClick={() => setActiveBannerIndex(i)} style={{
+                              width: i === activeBannerIndex ? '18px' : '6px',
+                              height:'6px', borderRadius:'3px', cursor:'pointer',
+                              background: i === activeBannerIndex ? C.gold : C.border,
+                              transition:'all 0.25s'
+                            }}/>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -569,9 +608,9 @@ function App() {
                     <div>
                       <h2 style={{ color:C.primary, fontSize:'clamp(1.1rem,3vw,1.4rem)', fontWeight:'800', marginBottom:'14px', textAlign:'center' }}>🔥 عروض وتخفيضات</h2>
                       <div className="highlights-col">
-                        {promotionBooks.slice(0, 4).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
+                        {promotionBooks.slice(0, 6).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
                       </div>
-                      {promotionBooks.length > 4 && (
+                      {promotionBooks.length > 6 && (
                         <div className="show-more-btn" style={{ textAlign:'center', marginTop:'14px' }}>
                           <button onClick={() => setShowAllPromotions(v => !v)} style={{ background:'transparent', border:`1.5px solid ${C.gold}`, color:C.goldDark, padding:'8px 20px', borderRadius:'20px', cursor:'pointer', fontFamily:'inherit', fontWeight:700, fontSize:'0.82rem' }}>
                             {showAllPromotions ? 'عرض أقل' : 'عرض المزيد'}
@@ -585,7 +624,7 @@ function App() {
 
               {/* Extension pleine largeur : reste des nouveautés */}
               {bestsellerBooks.length > 4 && (
-                <div className="extra-books" style={{ padding:'0 4% 20px', display: showAllBestsellers ? 'block' : 'none' }}>
+                <div className="extra-books extra-books-bestsellers" style={{ padding:'0 4% 20px', display: showAllBestsellers ? 'block' : 'none' }}>
                   <div className="extra-books-grid" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:'14px' }}>
                     {bestsellerBooks.slice(4).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
                   </div>
@@ -594,9 +633,9 @@ function App() {
 
               {/* Extension pleine largeur : reste des réductions */}
               {promotionBooks.length > 4 && (
-                <div className="extra-books" style={{ padding:'0 4% 40px', display: showAllPromotions ? 'block' : 'none' }}>
+                <div className="extra-books extra-books-promotions" style={{ padding:'0 4% 40px', display: showAllPromotions ? 'block' : 'none' }}>
                   <div className="extra-books-grid" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:'14px' }}>
-                    {promotionBooks.slice(4).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
+                    {promotionBooks.slice(6).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
                   </div>
                 </div>
               )}
@@ -704,6 +743,27 @@ function App() {
       .cats-scroll-arrow{ display:none !important; }
     }
       .highlights-row > div { min-width: 0; }
+      .highlights-banner-scroll{
+      display:flex;
+      gap:10px;
+      overflow-x:auto;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+      border-radius:20px;
+      align-self:flex-start;
+    }
+    .highlights-banner-scroll::-webkit-scrollbar{ display:none; }
+   .highlights-banner-img{
+      flex:0 0 100%;
+      scroll-snap-align:start;
+      width:100%;
+      max-height:320px;
+      object-fit:contain;
+      border-radius:20px;
+      cursor:pointer;
+      display:block;
+      margin:0 auto;
+    }
       .highlights-col{
         display:grid;
         grid-template-columns: repeat(2, 1fr);
@@ -764,7 +824,10 @@ function App() {
         }
         .bestsellers-grid{display:grid!important;grid-template-columns:repeat(6,1fr)!important;overflow-x:visible!important;}
         @media (max-width: 639px) {
-        .extra-books-grid{ grid-template-columns: repeat(2, 1fr) !important; }
+        .extra-books-grid{ grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+        .highlights-col{ grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+        .highlights-col .app-book-card img,
+        .extra-books-grid .app-book-card img{ height: 130px !important; }
         .cats-groups-wrap{ gap:8px !important; margin-top:8px !important; }
         .cats-group h3{ margin-bottom:4px !important; font-size:0.75rem !important; }
         .cat-card{ height:44px !important; padding:6px 8px !important; }
@@ -784,7 +847,8 @@ function App() {
         .hero-item { transition: transform 0.3s; }
         .hero-item:hover { transform: translateY(-8px) scale(1.03); }
         .show-more-btn{ display:none !important; }
-        .extra-books{ display:block !important; }
+        .extra-books-bestsellers{ display:none !important; }
+        .extra-books-promotions{ display:block !important; }
         .bestsellers-grid{display:flex!important;overflow-x:auto!important;scroll-snap-type:x mandatory;}
         .bestsellers-grid>div{scroll-snap-align:start;min-width:150px!important;}
         .hero-logo-banner img{
