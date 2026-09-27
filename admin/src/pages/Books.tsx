@@ -71,8 +71,10 @@ export default function Books() {
   }[]>([])
   const [showBannerModal, setShowBannerModal] = useState(false)
   const [bannerImages, setBannerImages] = useState<string[]>([])
+  const [bannerImagesMobile, setBannerImagesMobile] = useState<string[]>([])
   const [uploadingBanner, setUploadingBanner] = useState(false)
   const bannerInputRef = useRef<HTMLInputElement>(null)
+  const bannerInputRefMobile = useRef<HTMLInputElement>(null)
 
   async function addBundle() {
     if (!editBook || !newBundle.qty || !newBundle.price) return
@@ -132,36 +134,64 @@ export default function Books() {
   }, [])
 
   async function fetchBanner() {
-    const { data } = await supabase.from('site_banner').select('images').eq('id', 1).single()
+    const { data } = await supabase.from('site_banner').select('images, images_mobile').eq('id', 1).single()
     setBannerImages(data?.images || [])
+    setBannerImagesMobile(data?.images_mobile || [])
   }
 
   async function uploadBanner(files: FileList) {
-  setUploadingBanner(true)
-  const newUrls: string[] = []
-  for (const file of Array.from(files)) {
-    const compressed = await compressImage(file, 1200, 0.8)
-    const ext = compressed.name.split('.').pop()
-    const path = `banner/main_${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`
-    const { error } = await supabase.storage.from('images').upload(path, compressed, { upsert: true, cacheControl: '31536000' })
-    if (!error) {
-      const { data: u } = supabase.storage.from('images').getPublicUrl(path)
-      newUrls.push(u.publicUrl)
-    } else {
-      console.error('Erreur upload banner:', error)
+    setUploadingBanner(true)
+    const newUrls: string[] = []
+    for (const file of Array.from(files)) {
+      const compressed = await compressImage(file, 1200, 0.8)
+      const ext = compressed.name.split('.').pop()
+      const path = `banner/main_${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`
+      const { error } = await supabase.storage.from('images').upload(path, compressed, { upsert: true, cacheControl: '31536000' })
+      if (!error) {
+        const { data: u } = supabase.storage.from('images').getPublicUrl(path)
+        newUrls.push(u.publicUrl)
+      } else {
+        console.error('Erreur upload banner:', error)
+      }
     }
+    const updated = [...bannerImages, ...newUrls]
+    const { error: dbError } = await supabase.from('site_banner').update({ images: updated }).eq('id', 1)
+    if (dbError) { alert('Erreur: ' + dbError.message) } else { setBannerImages(updated) }
+    setUploadingBanner(false)
   }
-  const updated = [...bannerImages, ...newUrls]
-  const { error: dbError } = await supabase.from('site_banner').update({ images: updated }).eq('id', 1)
-  if (dbError) { alert('Erreur: ' + dbError.message) } else { setBannerImages(updated) }
-  setUploadingBanner(false)
-}
 
-async function removeBannerImage(url: string) {
-  const updated = bannerImages.filter(u => u !== url)
-  await supabase.from('site_banner').update({ images: updated }).eq('id', 1)
-  setBannerImages(updated)
-}
+  async function removeBannerImage(url: string) {
+    const updated = bannerImages.filter(u => u !== url)
+    await supabase.from('site_banner').update({ images: updated }).eq('id', 1)
+    setBannerImages(updated)
+  }
+
+  async function uploadBannerMobile(files: FileList) {
+    setUploadingBanner(true)
+    const newUrls: string[] = []
+    for (const file of Array.from(files)) {
+      const compressed = await compressImage(file, 1200, 0.8)
+      const ext = compressed.name.split('.').pop()
+      const path = `banner/mobile_${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`
+      const { error } = await supabase.storage.from('images').upload(path, compressed, { upsert: true, cacheControl: '31536000' })
+      if (!error) {
+        const { data: u } = supabase.storage.from('images').getPublicUrl(path)
+        newUrls.push(u.publicUrl)
+      } else {
+        console.error('Erreur upload banner mobile:', error)
+      }
+    }
+    const updated = [...bannerImagesMobile, ...newUrls]
+    const { error: dbError } = await supabase.from('site_banner').update({ images_mobile: updated }).eq('id', 1)
+    if (dbError) { alert('Erreur: ' + dbError.message) } else { setBannerImagesMobile(updated) }
+    setUploadingBanner(false)
+  }
+
+  async function removeBannerImageMobile(url: string) {
+    const updated = bannerImagesMobile.filter(u => u !== url)
+    await supabase.from('site_banner').update({ images_mobile: updated }).eq('id', 1)
+    setBannerImagesMobile(updated)
+  }
 
 
   useEffect(() => {
@@ -950,7 +980,26 @@ setOptions(hasQias ? loaded : [
             )}
             <input ref={bannerInputRef} type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={e => { const files = e.target.files; if (files && files.length) uploadBanner(files); if (bannerInputRef.current) bannerInputRef.current.value = '' }} />
             <button onClick={() => bannerInputRef.current?.click()} disabled={uploadingBanner} style={{ width: '100%', padding: '12px', background: 'linear-gradient(135deg, #14356B, #2563EB)', border: 'none', borderRadius: '10px', color: '#FFF8E7', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
-              {uploadingBanner ? '⏳ ...' : '📷 إضافة صورة'}
+              {uploadingBanner ? '⏳ ...' : '📷 إضافة صورة (PC)'}
+            </button>
+
+            <h3 style={{ color:'#8FC1FF', fontSize:'14px', marginTop:'24px', marginBottom:'8px' }}>📱 نسخة الهاتف (اختياري)</h3>
+            <p style={{ color:'rgba(37,99,235,0.5)', fontSize:'11px', marginBottom:'12px' }}>إن لم تُضف صوراً هنا، ستُستخدم صور النسخة العادية على الهاتف أيضاً.</p>
+            {bannerImagesMobile.length > 0 ? (
+              <div style={{ display:'flex', flexWrap:'wrap', gap:'10px', marginBottom:'16px' }}>
+                {bannerImagesMobile.map((url, i) => (
+                  <div key={i} style={{ position:'relative', width:'calc(50% - 5px)' }}>
+                    <img src={url} style={{ width:'100%', borderRadius:'12px', border:'1px solid rgba(37,99,235,0.2)', display:'block' }} />
+                    <button onClick={() => removeBannerImageMobile(url)} style={{ position:'absolute', top:'6px', left:'6px', background:'#ef4444', color:'#fff', border:'none', borderRadius:'8px', padding:'4px 10px', cursor:'pointer', fontSize:'11px', fontWeight:700 }}>🗑️ حذف</button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: 'rgba(37,99,235,0.3)', textAlign: 'center', padding: '20px 0' }}>لا توجد صور حالياً</p>
+            )}
+            <input ref={bannerInputRefMobile} type="file" accept="image/*" multiple style={{ display: 'none' }} onChange={e => { const files = e.target.files; if (files && files.length) uploadBannerMobile(files); if (bannerInputRefMobile.current) bannerInputRefMobile.current.value = '' }} />
+            <button onClick={() => bannerInputRefMobile.current?.click()} disabled={uploadingBanner} style={{ width: '100%', padding: '12px', background: 'linear-gradient(135deg, #14356B, #2563EB)', border: 'none', borderRadius: '10px', color: '#FFF8E7', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+              {uploadingBanner ? '⏳ ...' : '📷 إضافة صورة (هاتف)'}
             </button>
           </div>
         </div>

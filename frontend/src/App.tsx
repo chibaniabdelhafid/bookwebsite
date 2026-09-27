@@ -212,15 +212,16 @@ const CatCard = memo(({ cat, books, C, darkMode, navigate }: CatCardProps) => {
         boxSizing: 'border-box',
       }}
     >
-      <div style={{ width:'36px', height:'36px', borderRadius:'50%', border:`2px solid ${C.gold}`, flexShrink:0, overflow:'hidden' }}>
+      <div className="cat-card-img" style={{ width:'36px', height:'36px', borderRadius:'50%', border:`2px solid ${C.gold}`, flexShrink:0, overflow:'hidden' }}>
         <img src={optimizeImg(cat.image, 100)} loading="lazy" alt={cat.label} style={{ width:'100%', height:'100%', objectFit:'cover', display:'block' }}/>
       </div>
-      <div style={{ flex:1, minWidth:0 }}>
-        <div style={{ color:C.primary, fontSize:'0.78rem', fontWeight:'700', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
+      <div className="cat-card-body" style={{ flex:1, minWidth:0 }}>
+        <div className="cat-card-title" style={{ color:C.primary, fontSize:'0.78rem', fontWeight:'700', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
           {cat.label}
         </div>
-        <div style={{ color:C.muted, fontSize:'0.65rem', marginTop:'2px' }}>
-          {count > 0 ? `${count} كتاب` : 'قريباً'}
+        <div className="cat-card-footer" style={{ color:C.muted, fontSize:'0.65rem', marginTop:'2px', display:'flex', alignItems:'center' }}>
+          <span className="cat-card-arrow" style={{ display:'none' }}>←</span>
+          <span className="cat-card-count">{count > 0 ? `${count} كتاب` : 'قريباً'}</span>
         </div>
       </div>
     </div>
@@ -275,7 +276,9 @@ function App() {
   const [loading,          setLoading]          = useState(true)
   const [cats,             setCats]             = useState<{name:string,image:string,label:string,desc:string,type:string}[]>([])
   const [bannerImages, setBannerImages] = useState<string[]>([])
+  const [bannerImagesMobile, setBannerImagesMobile] = useState<string[]>([])
   const [activeBannerIndex, setActiveBannerIndex] = useState(0)
+  const [activeBannerIndexMobile, setActiveBannerIndexMobile] = useState(0)
   const [sidebarOpen,      setSidebarOpen]      = useState(false)
   const [showAllBestsellers, setShowAllBestsellers] = useState(false)
   const [showAllPromotions,  setShowAllPromotions]  = useState(false)
@@ -290,13 +293,21 @@ function App() {
 
   useEffect(() => { fbTrack('PageView') }, [location.pathname])
 
- useEffect(() => {
+  useEffect(() => {
     if (bannerImages.length <= 1) return
     const interval = setInterval(() => {
       setActiveBannerIndex(prev => (prev + 1) % bannerImages.length)
     }, 4000)
     return () => clearInterval(interval)
   }, [bannerImages.length])
+
+  useEffect(() => {
+    if (bannerImagesMobile.length <= 1) return
+    const interval = setInterval(() => {
+      setActiveBannerIndexMobile(prev => (prev + 1) % bannerImagesMobile.length)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [bannerImagesMobile.length])
 
   const catalogFetchedRef = useRef(false)
 
@@ -306,10 +317,13 @@ function App() {
     catalogFetchedRef.current = true
 
     const fetchBanner = async () => {
-      const { data } = await supabase.from('site_banner').select('images').eq('id', 1).single()
+      const { data } = await supabase.from('site_banner').select('images, images_mobile').eq('id', 1).single()
       setBannerImages(data?.images || [])
+      setBannerImagesMobile(data?.images_mobile?.length ? data.images_mobile : (data?.images || []))
     }
     fetchBanner()
+
+
 
     const fetchBooks = async () => {
       setLoading(true)
@@ -453,174 +467,188 @@ function App() {
         <Routes>
           <Route path="/" element={
             <div style={{ position:'relative',zIndex:1 }}>
-              <header style={{ padding:'80px 5% 20px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'40px',minHeight:'auto',position:'relative',flexWrap:'wrap' }}>
-                <div style={{ flex:'1 1 100%',maxWidth:'100%',minWidth:'280px',position:'relative',zIndex:2,width:'100%' }}>
-                  <div className="hero-bismillah" style={{ display:'flex',alignItems:'center',gap:'10px',marginBottom:'16px' ,marginTop:'150px' }}>
-                      <div style={{ height:'1px',flex:1,background:`linear-gradient(to left,${C.gold},transparent)` }}/><span style={{ color:C.gold }}>✦</span>
-                      <span style={{ color:C.goldDark,fontSize:'0.68rem',letterSpacing:'1.5px' }}>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
-                      <span style={{ color:C.gold }}>✦</span><div style={{ height:'1px',flex:1,background:`linear-gradient(to right,${C.gold},transparent)` }}/>
-                  </div>
-                  <div className="hero-bismillah" style={{ display:'flex',alignItems:'center',gap:'10px',marginBottom:'16px' }}></div>
-                  <h1 className="hero-title" style={{ fontSize:'clamp(2rem,8vw,4rem)',fontWeight:'bold',color:C.primary,lineHeight:1.15,marginBottom:'12px' }}>
-                    جديد و <span style={{ color:C.goldDark }}>شائع</span>
-                  </h1>
-                  <p className="hero-desc" style={{ fontSize:'clamp(0.9rem,3vw,1.15rem)',color:C.muted,lineHeight:1.8,marginBottom:'24px' }}>اكتشف عوالم جديدة من خلال صفحات أفضل الكتب الإسلامية وأكثرها مبيعاً.</p>
-                  {/* ── SEARCH ── */}
-                  <div style={{ position:'relative' }}>
-                    <div style={{ display:'flex',alignItems:'center',background:C.bgCard,padding:'12px 20px',borderRadius:searchFocused&&suggestions.length>0?'20px 20px 0 0':'40px',border:`1.5px solid ${searchFocused?C.gold:C.border}`,boxShadow:searchFocused?`0 0 0 3px rgba(201,168,76,0.15)`:`0 8px 32px rgba(201,168,76,0.12)`,transition:'all 0.25s' }}>
-                      <span style={{ color:C.gold,marginLeft:'10px',fontSize:'1rem' }}>🔍</span>
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={e => setSearchQuery(e.target.value)}
-                        onFocus={() => setSearchFocused(true)}
-                        onBlur={() => setTimeout(() => setSearchFocused(false), 180)}
-                        placeholder="ابحث عن العناوين، المؤلفين..."
-                        style={{ border:'none',outline:'none',width:'100%',fontSize:'16px',background:'transparent',color:C.text,fontFamily:'inherit' }}
-                      />
-                      {searchQuery && <button onClick={() => setSearchQuery('')} style={{ background:'none',border:'none',cursor:'pointer',color:C.muted,fontSize:'1rem',padding:'0 4px',flexShrink:0 }}>✕</button>}
+              <div className="home-hero-grid">
+                <header style={{ padding:'80px 5% 20px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'40px',minHeight:'auto',position:'relative',flexWrap:'wrap' }}>
+                  <div style={{ flex:'1 1 100%',maxWidth:'100%',minWidth:'280px',position:'relative',zIndex:2,width:'100%' }}>
+                    <div className="hero-bismillah" style={{ display:'flex',alignItems:'center',gap:'10px',marginBottom:'16px' ,marginTop:'80px' }}>
+                        <div style={{ height:'1px',flex:1,background:`linear-gradient(to left,${C.gold},transparent)` }}/><span style={{ color:C.gold }}>✦</span>
+                        <span style={{ color:C.goldDark,fontSize:'0.68rem',letterSpacing:'1.5px' }}>بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
+                        <span style={{ color:C.gold }}>✦</span><div style={{ height:'1px',flex:1,background:`linear-gradient(to right,${C.gold},transparent)` }}/>
                     </div>
-                    {searchFocused && searchQuery.length >= 1 && (
-                      <div style={{ position:'absolute',top:'100%',left:0,right:0,background:C.bgCard,border:`1.5px solid ${C.gold}`,borderTop:'none',borderRadius:'0 0 20px 20px',boxShadow:`0 12px 32px rgba(74,55,40,0.2)`,zIndex:50,overflow:'hidden' }}>
-                        {categorySuggestions.length === 0 && suggestions.length === 0 ? (
-                          <div style={{ padding:'16px',textAlign:'center',color:C.muted,fontSize:'0.85rem' }}>لا توجد نتائج</div>
-                        ) : (
-                          <>
-                            {categorySuggestions.map(cat=>(
-                              <div key={cat.name} onClick={()=>{navigate(`/books?category=${encodeURIComponent(cat.name)}`);setSearchQuery('');setSearchFocused(false);}}
-                                style={{ display:'flex',alignItems:'center',gap:'12px',padding:'10px 16px',cursor:'pointer',borderBottom:`1px solid ${C.border}`,background:darkMode?'rgba(201,168,76,0.06)':'rgba(201,168,76,0.05)' }}
-                                onMouseEnter={e=>(e.currentTarget as HTMLElement).style.background=darkMode?'rgba(255,255,255,0.1)':'rgba(201,168,76,0.15)'}
-                                onMouseLeave={e=>(e.currentTarget as HTMLElement).style.background=darkMode?'rgba(201,168,76,0.06)':'rgba(201,168,76,0.05)'}>
-                                <div style={{ width:'38px',height:'38px',borderRadius:'50%',overflow:'hidden',flexShrink:0,border:`1px solid ${C.border}` }}>
-                                  <img src={optimizeImg(cat.image, 100)} loading="lazy" alt={cat.label} style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
+                    <div className="hero-bismillah" style={{ display:'flex',alignItems:'center',gap:'10px',marginBottom:'16px' }}></div>
+                    <h1 className="hero-title" style={{ fontSize:'clamp(2rem,8vw,4rem)',fontWeight:'bold',color:C.primary,lineHeight:1.15,marginBottom:'12px' }}>
+                      جديد و <span style={{ color:C.goldDark }}>شائع</span>
+                    </h1>
+                    <p className="hero-desc" style={{ fontSize:'clamp(0.9rem,3vw,1.15rem)',color:C.muted,lineHeight:1.8,marginBottom:'24px' }}>اكتشف عوالم جديدة من خلال صفحات أفضل الكتب الإسلامية وأكثرها مبيعاً.</p>
+                    {/* ── SEARCH ── */}
+                    <div style={{ position:'relative' }}>
+                      <div style={{ display:'flex',alignItems:'center',background:C.bgCard,padding:'12px 20px',borderRadius:searchFocused&&suggestions.length>0?'20px 20px 0 0':'40px',border:`1.5px solid ${searchFocused?C.gold:C.border}`,boxShadow:searchFocused?`0 0 0 3px rgba(201,168,76,0.15)`:`0 8px 32px rgba(201,168,76,0.12)`,transition:'all 0.25s' }}>
+                        <span style={{ color:C.gold,marginLeft:'10px',fontSize:'1rem' }}>🔍</span>
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={e => setSearchQuery(e.target.value)}
+                          onFocus={() => setSearchFocused(true)}
+                          onBlur={() => setTimeout(() => setSearchFocused(false), 180)}
+                          placeholder="ابحث عن العناوين، المؤلفين..."
+                          style={{ border:'none',outline:'none',width:'100%',fontSize:'16px',background:'transparent',color:C.text,fontFamily:'inherit' }}
+                        />
+                        {searchQuery && <button onClick={() => setSearchQuery('')} style={{ background:'none',border:'none',cursor:'pointer',color:C.muted,fontSize:'1rem',padding:'0 4px',flexShrink:0 }}>✕</button>}
+                      </div>
+                      {searchFocused && searchQuery.length >= 1 && (
+                        <div style={{ position:'absolute',top:'100%',left:0,right:0,background:C.bgCard,border:`1.5px solid ${C.gold}`,borderTop:'none',borderRadius:'0 0 20px 20px',boxShadow:`0 12px 32px rgba(74,55,40,0.2)`,zIndex:50,overflow:'hidden' }}>
+                          {categorySuggestions.length === 0 && suggestions.length === 0 ? (
+                            <div style={{ padding:'16px',textAlign:'center',color:C.muted,fontSize:'0.85rem' }}>لا توجد نتائج</div>
+                          ) : (
+                            <>
+                              {categorySuggestions.map(cat=>(
+                                <div key={cat.name} onClick={()=>{navigate(`/books?category=${encodeURIComponent(cat.name)}`);setSearchQuery('');setSearchFocused(false);}}
+                                  style={{ display:'flex',alignItems:'center',gap:'12px',padding:'10px 16px',cursor:'pointer',borderBottom:`1px solid ${C.border}`,background:darkMode?'rgba(201,168,76,0.06)':'rgba(201,168,76,0.05)' }}
+                                  onMouseEnter={e=>(e.currentTarget as HTMLElement).style.background=darkMode?'rgba(255,255,255,0.1)':'rgba(201,168,76,0.15)'}
+                                  onMouseLeave={e=>(e.currentTarget as HTMLElement).style.background=darkMode?'rgba(201,168,76,0.06)':'rgba(201,168,76,0.05)'}>
+                                  <div style={{ width:'38px',height:'38px',borderRadius:'50%',overflow:'hidden',flexShrink:0,border:`1px solid ${C.border}` }}>
+                                    <img src={optimizeImg(cat.image, 100)} loading="lazy" alt={cat.label} style={{ width:'100%',height:'100%',objectFit:'cover' }}/>
+                                  </div>
+                                  <div style={{ flex:1,minWidth:0 }}>
+                                    <p style={{ fontSize:'0.85rem',fontWeight:'700',color:C.primary,margin:0 }}>{cat.label}</p>
+                                    <p style={{ fontSize:'0.68rem',color:C.goldDark,margin:'2px 0 0' }}>تصنيف</p>
+                                  </div>
+                                  <span style={{ color:C.gold,fontSize:'1rem' }}>›</span>
                                 </div>
-                                <div style={{ flex:1,minWidth:0 }}>
-                                  <p style={{ fontSize:'0.85rem',fontWeight:'700',color:C.primary,margin:0 }}>{cat.label}</p>
-                                  <p style={{ fontSize:'0.68rem',color:C.goldDark,margin:'2px 0 0' }}>تصنيف</p>
+                              ))}
+                              {suggestions.map(book=>(
+                                <div key={book.id} onClick={()=>{navigate(`/book/${book.id}`);setSearchQuery('');setSearchFocused(false);}}
+                                  style={{ display:'flex',alignItems:'center',gap:'12px',padding:'10px 16px',cursor:'pointer',borderBottom:`1px solid ${C.border}` }}
+                                  onMouseEnter={e=>(e.currentTarget as HTMLElement).style.background=darkMode?'rgba(255,255,255,0.06)':'rgba(201,168,76,0.08)'}
+                                  onMouseLeave={e=>(e.currentTarget as HTMLElement).style.background='transparent'}>
+                                  <img src={optimizeImg(book.image_url, 300)} loading="lazy" alt={book.title} style={{ width:'38px',height:'50px',objectFit:'cover',borderRadius:'6px',flexShrink:0 }}/>
+                                  <div style={{ flex:1,minWidth:0 }}>
+                                    <p style={{ fontSize:'0.85rem',fontWeight:'700',color:C.primary,margin:0 }}>{book.title}</p>
+                                    <p style={{ fontSize:'0.72rem',color:C.muted,margin:'2px 0 0' }}>{book.author}</p>
+                                  </div>
+                                  <span style={{ fontSize:'0.8rem',fontWeight:'700',color:C.goldDark }}>{book.price.toLocaleString()} د.ج</span>
                                 </div>
-                                <span style={{ color:C.gold,fontSize:'1rem' }}>›</span>
-                              </div>
-                            ))}
-                            {suggestions.map(book=>(
-                              <div key={book.id} onClick={()=>{navigate(`/book/${book.id}`);setSearchQuery('');setSearchFocused(false);}}
-                                style={{ display:'flex',alignItems:'center',gap:'12px',padding:'10px 16px',cursor:'pointer',borderBottom:`1px solid ${C.border}` }}
-                                onMouseEnter={e=>(e.currentTarget as HTMLElement).style.background=darkMode?'rgba(255,255,255,0.06)':'rgba(201,168,76,0.08)'}
-                                onMouseLeave={e=>(e.currentTarget as HTMLElement).style.background='transparent'}>
-                                <img src={optimizeImg(book.image_url, 300)} loading="lazy" alt={book.title} style={{ width:'38px',height:'50px',objectFit:'cover',borderRadius:'6px',flexShrink:0 }}/>
-                                <div style={{ flex:1,minWidth:0 }}>
-                                  <p style={{ fontSize:'0.85rem',fontWeight:'700',color:C.primary,margin:0 }}>{book.title}</p>
-                                  <p style={{ fontSize:'0.72rem',color:C.muted,margin:'2px 0 0' }}>{book.author}</p>
-                                </div>
-                                <span style={{ fontSize:'0.8rem',fontWeight:'700',color:C.goldDark }}>{book.price.toLocaleString()} د.ج</span>
-                              </div>
-                            ))}
-                          </>
-                        )}
+                              ))}
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </header>
+
+                <div className="home-sections">
+                  <div className="home-section home-section-categories">
+                    <div className="cats-groups-wrap" style={{ marginTop:'16px' }}>
+                      {catsByType.category.length > 0 && (
+                      <div className="cats-group">
+<h3 className="cats-group-title" style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>🏷️ تصفّح حسب التصنيف</h3>                        <div className="cats-hscroll">
+                          {catsByType.category.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
+                        </div>
                       </div>
                     )}
-                  </div>
-
-                  <div className="cats-groups-wrap" style={{ marginTop:'16px' }}>
-                    {catsByType.category.length > 0 && (
-                    <div className="cats-group">
-                      <h3 style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>🏷️ تصفّح حسب التصنيف</h3>
-                      <div className="cats-hscroll">
-                        {catsByType.category.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
+                    {catsByType.author.length > 0 && (
+                      <div className="cats-group">
+<h3 className="cats-group-title" style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>✍️ تصفّح حسب المؤلف</h3>                        <div className="cats-hscroll">
+                          {catsByType.author.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
+                        </div>
                       </div>
-                    </div>
-                  )}
-
-                  {catsByType.author.length > 0 && (
-                    <div className="cats-group">
-                      <h3 style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>✍️ تصفّح حسب المؤلف</h3>
-                      <div className="cats-hscroll">
-                        {catsByType.author.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
+                    )}
+                    {catsByType.publisher.length > 0 && (
+                      <div className="cats-group">
+<h3 className="cats-group-title" style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>🏛️ تصفّح حسب دار النشر</h3>                        <div className="cats-hscroll">
+                          {catsByType.publisher.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
+                        </div>
                       </div>
+                    )}
                     </div>
-                  )}
-
-                  {catsByType.publisher.length > 0 && (
-                    <div className="cats-group">
-                      <h3 style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>🏛️ تصفّح حسب دار النشر</h3>
-                      <div className="cats-hscroll">
-                        {catsByType.publisher.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
-                      </div>
-                    </div>
-                  )}
                   </div>
                 </div>
-              </header>
 
-              {/* BESTSELLERS */}
-              {(bestsellerBooks.length > 0 || promotionBooks.length > 0 || bannerImages.length > 0) && (
-              <div className="highlights-row" style={{ padding: '10px 4% 40px', display: 'grid', gridTemplateColumns: bannerImages.length > 0 ? '1fr 1.4fr 1fr' : '1fr 1fr', gap: '20px', alignItems: 'stretch' }}>
-                  {/* Colonne droite : الجديد والحصري */}
-                  {bestsellerBooks.length > 0 && (
-                    <div>
-                      <h2 style={{ color:C.primary, fontSize:'clamp(1.1rem,3vw,1.4rem)', fontWeight:'800', marginBottom:'14px', textAlign:'center' }}>الجديد والحصري</h2>
-                      <div className="highlights-col-scroll">
-                        {bestsellerBooks.map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
-                      </div>
-                      {bestsellerBooks.length > 4 && (
-                        <div className="show-more-btn" style={{ textAlign:'center', marginTop:'14px' }}>
-                          <button onClick={() => setShowAllBestsellers(v => !v)} style={{ background:'transparent', border:`1.5px solid ${C.gold}`, color:C.goldDark, padding:'8px 20px', borderRadius:'20px', cursor:'pointer', fontFamily:'inherit', fontWeight:700, fontSize:'0.82rem' }}>
-                            {showAllBestsellers ? 'عرض أقل' : 'عرض المزيد'}
-                          </button>
+                                {bannerImages.length > 0 && (
+                <div className="home-section home-section-banner banner-desktop-only">
+                  <div className="highlights-banner-scroll" style={{ position:'relative', overflow:'hidden', width:'100%' }}>
+                    <div style={{
+                      display:'flex',
+                      width: `${bannerImages.length * 100}%`,
+                      flexShrink: 0,
+                      transform: `translateX(${activeBannerIndex * (100 / bannerImages.length)}%)`,
+                      transition:'transform 0.6s ease',
+                    }}>
+                      {bannerImages.map((url, i) => (
+                        <div key={i} onClick={() => navigate('/books')} style={{ width: `${100 / bannerImages.length}%`, flex:'0 0 auto', position:'relative', height:'320px', borderRadius:'20px', overflow:'hidden', cursor:'pointer', border:`1px solid ${C.border}`, boxShadow:'0 8px 30px rgba(37,99,235,0.15)' }}>
+                          <img src={url} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', filter:'blur(20px)', transform:'scale(1.2)', opacity:0.6 }}/>
+                          <img src={url} alt="عروض" className="banner-main-img" style={{ position:'relative', width:'100%', height:'100%', objectFit:'contain' }}/>
                         </div>
-                      )}
+                      ))}
                     </div>
-                  )}
-
-                  {/* Centre : lafitte */}
-                  {bannerImages.length > 0 && (
-                    <div>
-                      <div className="highlights-banner-scroll" style={{ position:'relative', overflow:'hidden' }}>
-                        <div style={{
-                          display:'flex',
-                          transform: `translateX(${activeBannerIndex * 100}%)`,
-                          transition:'transform 0.6s ease',
-                        }}>
-                          {bannerImages.map((url, i) => (
-                            <div key={i} onClick={() => navigate('/books')} style={{ flex:'0 0 100%', position:'relative', height:'320px', borderRadius:'20px', overflow:'hidden', cursor:'pointer', border:`1px solid ${C.border}`, boxShadow:'0 8px 30px rgba(37,99,235,0.15)' }}>
-                              <img src={url} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', filter:'blur(20px)', transform:'scale(1.2)', opacity:0.6 }}/>
-                              <img src={url} alt="عروض" style={{ position:'relative', width:'100%', height:'100%', objectFit:'contain' }}/>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      {bannerImages.length > 1 && (
-                        <div style={{ display:'flex', justifyContent:'center', gap:'6px', marginTop:'10px' }}>
-                          {bannerImages.map((_, i) => (
-                            <span key={i} onClick={() => setActiveBannerIndex(i)} style={{
-                              width: i === activeBannerIndex ? '18px' : '6px',
-                              height:'6px', borderRadius:'3px', cursor:'pointer',
-                              background: i === activeBannerIndex ? C.gold : C.border,
-                              transition:'all 0.25s'
-                            }}/>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Colonne gauche : عروض وتخفيضات */}
-                  {promotionBooks.length > 0 && (
-                    <div>
-                      <h2 style={{ color:C.primary, fontSize:'clamp(1.1rem,3vw,1.4rem)', fontWeight:'800', marginBottom:'14px', textAlign:'center' }}>🔥 عروض وتخفيضات</h2>
-                      <div className="highlights-col">
-                        {promotionBooks.slice(0, 6).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
-                      </div>
-                      {promotionBooks.length > 6 && (
-                        <div className="show-more-btn" style={{ textAlign:'center', marginTop:'14px' }}>
-                          <button onClick={() => setShowAllPromotions(v => !v)} style={{ background:'transparent', border:`1.5px solid ${C.gold}`, color:C.goldDark, padding:'8px 20px', borderRadius:'20px', cursor:'pointer', fontFamily:'inherit', fontWeight:700, fontSize:'0.82rem' }}>
-                            {showAllPromotions ? 'عرض أقل' : 'عرض المزيد'}
-                          </button>
-                        </div>
-                      )}
+                  </div>
+                  {bannerImages.length > 1 && (
+                    <div style={{ display:'flex', justifyContent:'center', gap:'6px', marginTop:'10px' }}>
+                      {bannerImages.map((_, i) => (
+                        <span key={i} onClick={() => setActiveBannerIndex(i)} style={{
+                          width: i === activeBannerIndex ? '18px' : '6px',
+                          height:'6px', borderRadius:'3px', cursor:'pointer',
+                          background: i === activeBannerIndex ? C.gold : C.border,
+                          transition:'all 0.25s'
+                        }}/>
+                      ))}
                     </div>
                   )}
                 </div>
               )}
+
+                {bannerImagesMobile.length > 0 && (
+                <div className="home-section home-section-banner banner-mobile-only">
+                  <div className="highlights-banner-scroll" style={{ position:'relative', overflow:'hidden', width:'100%' }}>
+                    <div style={{
+                      display:'flex',
+                      width: `${bannerImagesMobile.length * 100}%`,
+                      flexShrink: 0,
+                      transform: `translateX(${activeBannerIndexMobile * (100 / bannerImagesMobile.length)}%)`,
+                      transition:'transform 0.6s ease',
+                    }}>
+                      {bannerImagesMobile.map((url, i) => (
+                        <div key={i} onClick={() => navigate('/books')} style={{ width: `${100 / bannerImagesMobile.length}%`, flex:'0 0 auto', position:'relative', height:'320px', borderRadius:'20px', overflow:'hidden', cursor:'pointer', border:`1px solid ${C.border}`, boxShadow:'0 8px 30px rgba(37,99,235,0.15)' }}>
+                          <img src={url} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', filter:'blur(20px)', transform:'scale(1.2)', opacity:0.6 }}/>
+                          <img src={url} alt="عروض" className="banner-main-img" style={{ position:'relative', width:'100%', height:'100%', objectFit:'contain' }}/>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  {bannerImagesMobile.length > 1 && (
+                    <div style={{ display:'flex', justifyContent:'center', gap:'6px', marginTop:'10px' }}>
+                      {bannerImagesMobile.map((_, i) => (
+                        <span key={i} onClick={() => setActiveBannerIndexMobile(i)} style={{
+                          width: i === activeBannerIndexMobile ? '18px' : '6px',
+                          height:'6px', borderRadius:'3px', cursor:'pointer',
+                          background: i === activeBannerIndexMobile ? C.gold : C.border,
+                          transition:'all 0.25s'
+                        }}/>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+                {bestsellerBooks.length > 0 && (
+                  <div className="home-section home-section-bestsellers">
+                    <h2 style={{ color:C.primary, fontSize:'clamp(1.1rem,3vw,1.4rem)', fontWeight:'800', marginBottom:'14px', textAlign:'center' }}>الجديد والحصري</h2>
+                    <div className="highlights-col-scroll">
+                      {bestsellerBooks.map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
+                    </div>
+                  </div>
+                )}
+
+                {promotionBooks.length > 0 && (
+                  <div className="home-section home-section-promotions">
+                    <h2 style={{ color:C.primary, fontSize:'clamp(1.1rem,3vw,1.4rem)', fontWeight:'800', marginBottom:'14px', textAlign:'center' }}>🔥 عروض وتخفيضات</h2>
+                    <div className="highlights-col">
+                      {promotionBooks.slice(0, 6).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {/* Extension pleine largeur : reste des nouveautés */}
               {bestsellerBooks.length > 4 && (
@@ -735,23 +763,137 @@ function App() {
       font-size:0.9rem;
       font-weight:700;
     }
-    @media(min-width:900px){
+           @media(min-width:900px){
       .cats-hscroll{
-        flex-wrap:wrap;
-        overflow-x:visible;
+        display:flex !important;
+        flex-wrap:nowrap !important;
+        overflow-x:auto !important;
+        gap:16px !important;
+        scrollbar-width:none;
       }
+      .cats-hscroll::-webkit-scrollbar{ display:none; }
       .cats-scroll-arrow{ display:none !important; }
+
+      .cats-group-title{
+        text-align:center !important;
+        font-size:1.3rem !important;
+      }
+
+        .cat-card{
+          flex: 0 0 calc((100% - 5 * 16px) / 6) !important;
+          width:auto !important;
+          height:auto !important;
+          flex-direction:column !important;
+          align-items:center !important;
+          text-align:center !important;
+          gap:12px !important;
+          padding:24px 16px !important;
+          border-radius:18px !important;
+        }
+             .cat-card-img{
+        width:150px !important;
+        height:150px !important;
+        border-width:3px !important;
+        margin:0 auto !important;
+      }
+      .cat-card-body{
+        width:100% !important;
+      }
+      .cat-card-title{
+        font-size:1rem !important;
+        white-space:normal !important;
+        margin-bottom:6px !important;
+      }
+      .cat-card-footer{
+        justify-content:space-between !important;
+        width:100% !important;
+        margin-top:8px !important;
+      }
+      .cat-card-arrow{
+        display:flex !important;
+        align-items:center;
+        justify-content:center;
+        width:30px;
+        height:30px;
+        border-radius:50%;
+        background:rgba(37,99,235,0.1);
+        color:#2563EB;
+        font-size:1rem;
+        flex-shrink:0;
+      }
+      .cat-card-count{
+        font-size:0.8rem !important;
+        background:rgba(37,99,235,0.1);
+        padding:4px 10px;
+        border-radius:10px;
+      }
     }
       .highlights-row > div { min-width: 0; }
+      .home-sections{
+        display:flex;
+        flex-direction:column;
+        padding:10px 4% 40px;
+        gap:32px;
+      }
+      .home-section-categories{ order:1; }
+      .home-section-bestsellers{ order:2; }
+        .home-section-banner{
+          grid-area: hero-banner;
+          margin-top: 95px;
+        }
+        .banner-mobile-only{ display:none; }
+        @media(max-width:900px){
+          .banner-desktop-only{ display:none; }
+          .banner-mobile-only{ display:block; }
+        }
+      .home-section-promotions{ order:4; }
+
+      @media(min-width:901px){
+        
+        .home-hero-grid{
+          display:grid;
+          grid-template-columns: 1fr 1fr;
+          grid-template-areas:
+            "hero-text hero-banner"
+            "content content";
+          gap:24px;
+          align-items:start;
+        }
+        .home-hero-grid > header{
+          grid-area: hero-text;
+          padding-top:20px !important;
+        }
+        .home-hero-grid > .home-sections{
+          display:contents;
+        }
+        .home-section-banner{
+          grid-area: hero-banner;
+          min-width: 0;
+        }
+        .home-section-categories,
+        .home-section-bestsellers,
+        .home-section-promotions{
+          grid-column: 1 / -1;
+        }
+        .highlights-col-scroll{
+          display:grid !important;
+          grid-template-columns:repeat(auto-fill,minmax(180px,1fr)) !important;
+          overflow-x:visible !important;
+        }
+        .highlights-col{
+          grid-template-columns:repeat(auto-fill,minmax(180px,1fr)) !important;
+        }
+      }
       .highlights-banner-scroll{
-      display:flex;
-      gap:10px;
-      overflow-x:auto;
-      scroll-snap-type:x mandatory;
-      -webkit-overflow-scrolling:touch;
-      border-radius:20px;
-      align-self:flex-start;
-    }
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  border-radius:20px;
+  align-self:flex-start;
+  min-width: 0;   /* ← ajoute cette ligne */
+}
     .highlights-banner-scroll::-webkit-scrollbar{ display:none; }
    .highlights-banner-img{
       flex:0 0 100%;
@@ -772,6 +914,9 @@ function App() {
       @media(max-width:900px){
         .highlights-row{ grid-template-columns: 1fr !important; }
         .highlights-banner{ order:0; height:auto; }
+        .hero-bismillah{display:none!important;}
+        .hero-title{display:none!important;}
+        .hero-desc{display:none!important;}
         .highlights-col{ display:grid !important; grid-template-columns: repeat(2,1fr) !important; gap:10px !important; }
         .highlights-col-scroll{
           display:flex !important;
@@ -795,9 +940,7 @@ function App() {
           direction:rtl;
         }
       }
-      .hero-bismillah{display:none!important;}
-      .hero-title{display:none!important;}
-      .hero-desc{display:none!important;}
+     
       .hero-logo-banner{
       display:block!important;
       width:80%;
