@@ -133,7 +133,7 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
     {/* DESKTOP */}
     <div className="fn-desktop" style={{ position:'fixed',top:'16px',right:'16px',zIndex:200,display:'flex',alignItems:'center',gap:'8px' }}>
       <div onClick={()=>navigate('/')} style={{ width:'85px',height:'85px',borderRadius:'18px',overflow:'hidden',background:'transparent',cursor:'pointer',flexShrink:0,perspective:'600px' }}>
-        <img src={optimizeImg("/elquds3d.jfif")} loading='lazy' alt="القدس للكتاب" className="logo-spin-3d" style={{ width:'100%',height:'100%',objectFit:'contain' }}/>
+        <img src={optimizeImg("/elquds3d2.png")} loading='lazy' alt="القدس للكتاب" className="logo-spin-3d" style={{ width:'100%',height:'100%',objectFit:'contain' }}/>
       </div>
     </div>
     <div className="fn-desktop" style={{ position:'fixed',top:'16px',left:'50%',transform:'translateX(-50%)',zIndex:200,display:'flex',gap:'6px' }}>
@@ -171,7 +171,7 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
 
       {/* 2. Logo au MILIEU avec plus de hauteur */}
       <div style={{ display:'flex', justifyContent:'center', alignItems:'center', cursor:'pointer', flex:1 }} onClick={()=>navigate('/')}>
-        <div style={{ width:'80px', height:'80px', overflow:'hidden', perspective:'600px' }}>        <img src={optimizeImg("/elquds3d.jfif")} loading="lazy" alt="القدس للكتاب" className="logo-spin-3d" style={{ width:'100%', height:'100%', objectFit:'contain' }}/>        </div>
+        <div style={{ width:'80px', height:'80px', overflow:'hidden', perspective:'600px' }}>        <img src={optimizeImg("/elquds3d2.png")} loading="lazy" alt="القدس للكتاب" className="logo-spin-3d" style={{ width:'100%', height:'100%', objectFit:'contain' }}/>        </div>
       </div>
 
       {/* 3. Bouton Menu du côté droit */}
@@ -842,11 +842,19 @@ function App() {
           margin-top: 95px;
         }
         .banner-mobile-only{ display:none; }
-        @media(max-width:900px){
-          .banner-desktop-only{ display:none; }
-          .banner-mobile-only{ display:block; }
+               @media(max-width:900px){
+        .banner-desktop-only{ display:none !important; }
+        .banner-mobile-only{ display:block !important; }
+
+        .home-sections,
+        .home-hero-grid{ display:flex !important; flex-direction:column !important; }
+        .home-hero-grid > .home-sections{ display:contents !important; }
+
+        .home-section-categories{ order:1 !important; }
+        .home-section-bestsellers{ order:2 !important; }
+        .home-section-banner{ order:3 !important; margin-top:0 !important; }
+        .home-section-promotions{ order:4 !important; }
         }
-      .home-section-promotions{ order:4; }
 
       @media(min-width:901px){
         
@@ -914,6 +922,7 @@ function App() {
       @media(max-width:900px){
         .highlights-row{ grid-template-columns: 1fr !important; }
         .highlights-banner{ order:0; height:auto; }
+        .home-hero-grid > header{ padding-top:100px !important; }
         .hero-bismillah{display:none!important;}
         .hero-title{display:none!important;}
         .hero-desc{display:none!important;}
@@ -977,8 +986,27 @@ function App() {
         .cat-card > div:first-child{ width:28px !important; height:28px !important; }
         .highlights-row{ padding-top:0 !important; }
         .highlights-row h2{ margin-bottom:8px !important; font-size:1rem !important; }
+        .highlights-col-scroll{ align-items:flex-start !important; }
         .highlights-col-scroll > *{ flex:0 0 120px !important; }
-        .highlights-col-scroll .app-book-card img{ height:140px !important; }
+        .highlights-col-scroll .app-book-card img{ height:150px !important; }
+        .highlights-col-scroll .app-book-card > div:last-child{ padding:6px 8px !important; }
+        .highlights-col-scroll .app-book-card p{
+          font-size:0.7rem !important;
+          line-height:1.25 !important;
+          margin-bottom:2px !important;
+        }
+        .highlights-col-scroll .app-book-card p:first-child{
+          -webkit-line-clamp:1 !important;
+        }
+        .highlights-col-scroll .app-book-card p:nth-child(2){
+          white-space:nowrap !important;
+          overflow:hidden !important;
+          text-overflow:ellipsis !important;
+          margin-bottom:4px !important;
+        }
+        .highlights-col-scroll .app-book-card > div:last-child > div{
+          padding-top:4px !important;
+        }
         .hero-carousel{display:none!important;}
         .modal-content{flex-direction:column!important;}
         .modal-cover{flex:none!important;border-radius:24px 24px 0 0!important;}
