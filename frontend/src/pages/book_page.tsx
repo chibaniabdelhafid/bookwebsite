@@ -30,7 +30,7 @@ export default function BooksPage({ books, darkMode }: BooksPageProps) {
   const [viewMode, setViewMode]         = useState<'grid'|'list'>('grid');
   const [searchFocused, setSearchFocused] = useState(false);
 
-  const light = { bg:'#F3F6FB', bgCard:'#FFFFFF', text:'#0F1F3D', primary:'#14356B', gold:'#2563EB', goldLight:'#5B9BFF', goldDark:'#173F91', muted:'#5B6B82', border:'rgba(37,99,235,0.22)', inputBg:'rgba(20,53,107,0.04)' };
+  const light = { bg:'#F3F6FB', bgCard:'#d8e5fd', text:'#0F1F3D', primary:'#14356B', gold:'#2563EB', goldLight:'#5B9BFF', goldDark:'#173F91', muted:'#5B6B82', border:'rgba(37,99,235,0.22)', inputBg:'rgba(20,53,107,0.04)' };
   const dark  = { bg:'#0A1526', bgCard:'#0F2038', text:'#E7F0FF', primary:'#8FC1FF', gold:'#2563EB', goldLight:'#8FC1FF', goldDark:'#2563EB', muted:'#9FB3CE', border:'rgba(37,99,235,0.28)', inputBg:'rgba(255,255,255,0.05)' };
   const c = darkMode ? dark : light;
 
@@ -106,13 +106,7 @@ export default function BooksPage({ books, darkMode }: BooksPageProps) {
 
       {/* Header */}
       <div style={{ padding:'40px 5% 0', position:'relative', zIndex:1 }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'12px', marginBottom:'10px' }}>
-          <div style={{ height:'1px', flex:1, background:`linear-gradient(to left,${c.gold},transparent)` }}/>
-          <span style={{ color:c.gold }}>✦</span>
-          <span style={{ color:c.goldDark, fontSize:'0.72rem', letterSpacing:'1.5px' }}>مجموعتنا الكاملة</span>
-          <span style={{ color:c.gold }}>✦</span>
-          <div style={{ height:'1px', flex:1, background:`linear-gradient(to right,${c.gold},transparent)` }}/>
-        </div>
+        
         <h1 style={{ fontSize:'clamp(1.8rem,7vw,2.8rem)', fontWeight:'800', color:c.primary, margin:'0 0 8px' }}>
           جميع <span style={{ color:c.goldDark }}>الكتب</span>
         </h1>
