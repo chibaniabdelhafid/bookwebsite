@@ -125,15 +125,90 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
         from { transform: rotateY(0deg); }
         to   { transform: rotateY(360deg); }
       }
+      .mobile-topbar { overflow: visible; }
+
+.topbar-glow {
+  position:absolute; left:8%; right:8%; bottom:0; height:2px;
+  background: linear-gradient(90deg, transparent, #2563EB, #8FC1FF, #2563EB, transparent);
+  background-size: 200% 100%;
+  animation: glowMove 3s linear infinite;
+  border-radius:2px;
+}
+@keyframes glowMove {
+  from { background-position: 0% 0; }
+  to   { background-position: 200% 0; }
+}
+
+.logo-ring {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 8px rgba(37,99,235,0.55));
+}
+  .logo-ring-desktop {
+  width: 96px;
+  height: 96px;
+}
+
+/* Anneau lumineux qui tourne */
+.logo-ring::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    #2563EB 25%,
+    #8FC1FF 50%,
+    #2563EB 75%,
+    transparent 100%
+  );
+  animation: ringSpin 2.6s linear infinite;
+}
+
+@keyframes ringSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Disque qui masque le carré blanc du PNG */
+.logo-ring-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  perspective: 600px;
+}
+
+.topbar-btn { transition: transform 0.15s; }
+.topbar-btn:active { transform: scale(0.92); }
+
+.cart-badge-pulse { animation: badgePop 1.6s ease-in-out infinite; }
+@keyframes badgePop {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.15); }
+}
       @media(max-width:640px) {
         .fn-desktop { display: none !important; }
         .fn-mobile  { display: flex !important; }
       }
     `}</style>
     {/* DESKTOP */}
-    <div className="fn-desktop" style={{ position:'fixed',top:'16px',right:'16px',zIndex:200,display:'flex',alignItems:'center',gap:'8px' }}>
-      <div onClick={()=>navigate('/')} style={{ width:'85px',height:'85px',borderRadius:'18px',overflow:'hidden',background:'transparent',cursor:'pointer',flexShrink:0,perspective:'600px' }}>
-        <img src={optimizeImg("/elquds3d2.png")} loading='lazy' alt="القدس للكتاب" className="logo-spin-3d" style={{ width:'100%',height:'100%',objectFit:'contain' }}/>
+    <div className="fn-desktop" style={{ position:'fixed', top:'10px', right:'16px', zIndex:200 }}>
+      <div onClick={()=>navigate('/')} style={{ cursor:'pointer' }}>
+        <div className="logo-ring logo-ring-desktop">
+          <div className="logo-ring-inner" style={{ background: darkMode ? '#0F2038' : '#FFFFFF' }}>
+            <img
+              src={optimizeImg(darkMode ? "/elquds3d2-dark.png" : "/elquds3d2-transparent.png")}
+              alt="القدس للكتاب"
+              style={{ width:'100%', height:'100%', objectFit:'contain', padding:'8px' }}
+            />
+          </div>
+        </div>
       </div>
     </div>
     <div className="fn-desktop" style={{ position:'fixed',top:'16px',left:'50%',transform:'translateX(-50%)',zIndex:200,display:'flex',gap:'6px' }}>
@@ -152,37 +227,71 @@ const FloatingNav = ({ darkMode, C, navigate, activeTab, cartCount, setCartOpen,
       </button>
     </div>
     {/* MOBILE */}
-    {/* MOBILE */}
-    <div className="fn-mobile" style={{ 
-      position:'fixed', top:0, left:0, right:0, zIndex:200, 
-      height:'90px', // Hauteur de la barre augmentée si besoin
-      background:darkMode?'rgba(10,21,38,0.9)':'rgba(255,255,255,0.9)',
-      backdropFilter:'blur(10px)', 
-      display:'flex', alignItems:'center', justifyContent:'space-between', 
-      padding:'0 16px', borderBottom:`1px solid ${C.border}` 
+<div className="fn-mobile mobile-topbar" style={{
+  position:'fixed', top:0, left:0, right:0, zIndex:200,
+  height:'84px',
+  background: darkMode
+    ? 'linear-gradient(180deg, rgba(10,21,38,0.97) 0%, rgba(15,32,56,0.92) 100%)'
+    : 'linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(216,229,253,0.92) 100%)',
+  backdropFilter:'blur(14px)',
+  WebkitBackdropFilter:'blur(14px)',
+  display:'flex', alignItems:'center', justifyContent:'space-between',
+  padding:'0 14px',
+  boxShadow: darkMode
+    ? '0 6px 24px rgba(0,0,0,0.45)'
+    : '0 6px 24px rgba(37,99,235,0.18)',
+  borderBottomLeftRadius:'26px',
+  borderBottomRightRadius:'26px',
+}}>
+  {/* Ligne lumineuse animée en bas */}
+  <div className="topbar-glow" />
+
+  {/* Panier (gauche) */}
+  <div style={{ display:'flex', alignItems:'center', width:'56px' }}>
+    <button onClick={()=>setCartOpen(true)} className="topbar-btn" style={{
+      position:'relative', width:'42px', height:'42px', borderRadius:'14px',
+      border:`1px solid ${C.border}`,
+      background: darkMode ? 'rgba(37,99,235,0.15)' : 'rgba(255,255,255,0.9)',
+      boxShadow:'0 4px 12px rgba(37,99,235,0.18)',
+      cursor:'pointer', fontSize:'1.15rem',
+      display:'flex', alignItems:'center', justifyContent:'center', color:C.text
     }}>
-      {/* 1. Boutons du côté gauche (Panier) */}
-      <div style={{ display:'flex', alignItems:'center', gap:'8px', width:'70px' }}>
-        <button onClick={()=>setCartOpen(true)} style={{ position:'relative', background:'none', border:`1px solid ${C.border}`, borderRadius:'50%', width:'36px', height:'36px', cursor:'pointer', fontSize:'1rem', display:'flex', alignItems:'center', justifyContent:'center', color:C.text }}>
-          🛒
-          {cartCount>0 && <span style={{ position:'absolute',top:'-3px',right:'-3px',background:C.gold,color:darkMode?'#1A1208':C.primary,borderRadius:'50%',width:'16px',height:'16px',fontSize:'0.5rem',fontWeight:'bold',display:'flex',alignItems:'center',justifyContent:'center' }}>{cartCount}</span>}
-        </button>
-      </div>
+      🛒
+      {cartCount>0 && (
+        <span className="cart-badge-pulse" style={{ position:'absolute', top:'-6px', right:'-6px', background:'linear-gradient(135deg,#ff5f6d,#e74c3c)', color:'#fff', borderRadius:'50%', width:'20px', height:'20px', fontSize:'0.62rem', fontWeight:'800', display:'flex', alignItems:'center', justifyContent:'center', border:'2px solid #fff' }}>{cartCount}</span>
+      )}
+    </button>
+  </div>
 
-      {/* 2. Logo au MILIEU avec plus de hauteur */}
-      <div style={{ display:'flex', justifyContent:'center', alignItems:'center', cursor:'pointer', flex:1 }} onClick={()=>navigate('/')}>
-        <div style={{ width:'80px', height:'80px', overflow:'hidden', perspective:'600px' }}>        <img src={optimizeImg("/elquds3d2.png")} loading="lazy" alt="القدس للكتاب" className="logo-spin-3d" style={{ width:'100%', height:'100%', objectFit:'contain' }}/>        </div>
-      </div>
-
-      {/* 3. Bouton Menu du côté droit */}
-      <div style={{ display:'flex', alignItems:'center', justifyContent:'flex-end', width:'70px' }}>
-        <button onClick={()=>setSidebarOpen(true)} style={{ background:'none', border:`1px solid ${C.border}`, borderRadius:'10px', width:'36px', height:'36px', cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'5px', padding:'8px' }}>
-          <span style={{ display:'block', width:'18px', height:'2px', background:C.primary, borderRadius:'2px' }}/>
-          <span style={{ display:'block', width:'18px', height:'2px', background:C.primary, borderRadius:'2px' }}/>
-          <span style={{ display:'block', width:'18px', height:'2px', background:C.primary, borderRadius:'2px' }}/>
-        </button>
+  {/* Logo au milieu : cercle + anneau lumineux */}
+  <div onClick={()=>navigate('/')} style={{ display:'flex', justifyContent:'center', alignItems:'center', cursor:'pointer', flex:1 }}>
+    <div className="logo-ring">
+      <div className="logo-ring-inner" style={{ background: darkMode ? '#0F2038' : '#FFFFFF' }}>
+        <img
+          src={optimizeImg(darkMode ? "/elquds3d2-dark.png" : "/elquds3d2-transparent.png")}
+          loading="lazy"
+          alt="القدس للكتاب"
+          style={{ width:'100%', height:'100%', objectFit:'contain', padding:'6px' }}
+        />
       </div>
     </div>
+  </div>
+
+  {/* Menu (droite) */}
+  <div style={{ display:'flex', alignItems:'center', justifyContent:'flex-end', width:'56px' }}>
+    <button onClick={()=>setSidebarOpen(true)} className="topbar-btn" style={{
+      width:'42px', height:'42px', borderRadius:'14px', border:'none',
+      background:`linear-gradient(135deg,${C.gold},#5B9BFF)`,
+      boxShadow:'0 6px 16px rgba(37,99,235,0.4)',
+      cursor:'pointer', display:'flex', flexDirection:'column',
+      alignItems:'center', justifyContent:'center', gap:'5px', padding:'10px'
+    }}>
+      <span style={{ display:'block', width:'20px', height:'2.5px', background:'#fff', borderRadius:'2px' }}/>
+      <span style={{ display:'block', width:'14px', height:'2.5px', background:'#fff', borderRadius:'2px', alignSelf:'flex-end' }}/>
+      <span style={{ display:'block', width:'20px', height:'2.5px', background:'#fff', borderRadius:'2px' }}/>
+    </button>
+  </div>
+</div>
     <Sidebar sidebarOpen={false} setSidebarOpen={()=>{}} darkMode={darkMode} C={C} navigate={navigate} activeTab={activeTab} cartCount={cartCount} setCartOpen={setCartOpen} setDarkMode={setDarkMode} catsByType={catsByType}/>
   </>
 )
@@ -644,20 +753,11 @@ function App() {
                   <div className="home-section home-section-promotions">
                     <h2 style={{ color:C.primary, fontSize:'clamp(1.1rem,3vw,1.4rem)', fontWeight:'800', marginBottom:'14px', textAlign:'center' }}>🔥 عروض وتخفيضات</h2>
                     <div className="highlights-col">
-                      {promotionBooks.slice(0, 6).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
+                      {promotionBooks.map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
                     </div>
                   </div>
                 )}
               </div>
-
-              {/* Extension pleine largeur : reste des nouveautés */}
-              {bestsellerBooks.length > 4 && (
-                <div className="extra-books extra-books-bestsellers" style={{ padding:'0 4% 20px', display: showAllBestsellers ? 'block' : 'none' }}>
-                  <div className="extra-books-grid" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:'14px' }}>
-                    {bestsellerBooks.slice(4).map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
-                  </div>
-                </div>
-              )}
 
               {/* Extension pleine largeur : reste des réductions */}
               {promotionBooks.length > 4 && (
@@ -850,43 +950,51 @@ function App() {
         .home-hero-grid{ display:flex !important; flex-direction:column !important; }
         .home-hero-grid > .home-sections{ display:contents !important; }
 
-        .home-section-categories{ order:1 !important; }
+        .home-section-banner{ order:1 !important; margin-top:0 !important; }
         .home-section-bestsellers{ order:2 !important; }
-        .home-section-banner{ order:3 !important; margin-top:0 !important; }
-        .home-section-promotions{ order:4 !important; }
+        .home-section-promotions{ order:3 !important; }
+        .home-section-categories{ order:4 !important; }
         }
 
       @media(min-width:901px){
-        
-        .home-hero-grid{
-          display:grid;
-          grid-template-columns: 1fr 1fr;
-          grid-template-areas:
-            "hero-text hero-banner"
-            "content content";
-          gap:24px;
-          align-items:start;
-        }
-        .home-hero-grid > header{
-          grid-area: hero-text;
-          padding-top:20px !important;
-        }
-        .home-hero-grid > .home-sections{
-          display:contents;
-        }
-        .home-section-banner{
-          grid-area: hero-banner;
-          min-width: 0;
-        }
-        .home-section-categories,
-        .home-section-bestsellers,
-        .home-section-promotions{
-          grid-column: 1 / -1;
+  .home-hero-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "hero-text hero-banner"
+      "content content";
+    gap:24px;
+    align-items:start;
+  }
+  .home-hero-grid > header{
+    grid-area: hero-text;
+    padding-top:20px !important;
+    order:0;
+  }
+  .home-hero-grid > .home-sections{
+    display:contents;
+  }
+  .home-section-banner{
+    grid-area: hero-banner;
+    min-width: 0;
+    order:0;
+  }
+  .home-section-bestsellers{ order:1; }
+  .home-section-promotions{ order:2; }
+  .home-section-categories{ order:3; }
+
+  .home-section-categories,
+  .home-section-bestsellers,
+  .home-section-promotions{
+    grid-column: 1 / -1;
+  }
+ 
         }
         .highlights-col-scroll{
           display:grid !important;
           grid-template-columns:repeat(auto-fill,minmax(180px,1fr)) !important;
           overflow-x:visible !important;
+          gap:14px !important;
         }
         .highlights-col{
           grid-template-columns:repeat(auto-fill,minmax(180px,1fr)) !important;
@@ -1019,7 +1127,6 @@ function App() {
         .hero-item:hover { transform: translateY(-8px) scale(1.03); }
         .show-more-btn{ display:none !important; }
         .extra-books-bestsellers{ display:none !important; }
-        .extra-books-promotions{ display:block !important; }
         .bestsellers-grid{display:flex!important;overflow-x:auto!important;scroll-snap-type:x mandatory;}
         .bestsellers-grid>div{scroll-snap-align:start;min-width:150px!important;}
         .hero-logo-banner img{
