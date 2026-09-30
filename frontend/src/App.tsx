@@ -408,7 +408,7 @@ function App() {
       setActiveBannerIndex(prev => (prev + 1) % bannerImages.length)
     }, 4000)
     return () => clearInterval(interval)
-  }, [bannerImages.length])
+  }, [bannerImages.length, activeBannerIndex])
 
   useEffect(() => {
     if (bannerImagesMobile.length <= 1) return
@@ -416,23 +416,32 @@ function App() {
       setActiveBannerIndexMobile(prev => (prev + 1) % bannerImagesMobile.length)
     }, 4000)
     return () => clearInterval(interval)
-  }, [bannerImagesMobile.length])
+  }, [bannerImagesMobile.length, activeBannerIndexMobile])
 
   const catalogFetchedRef = useRef(false)
-  const touchStartX = useRef<number | null>(null)
+const swipeStartX = useRef<number | null>(null)
+const didDrag = useRef(false)
 
-  const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) => ({
-    onTouchStart: (e: React.TouchEvent) => {
-      touchStartX.current = e.touches[0].clientX
-    },
-    onTouchEnd: (e: React.TouchEvent) => {
-      if (touchStartX.current === null) return
-      const dx = e.changedTouches[0].clientX - touchStartX.current
-      touchStartX.current = null
-      if (Math.abs(dx) < 40) return
-      setIndex(i => dx > 0 ? (i + 1) % len : (i - 1 + len) % len)
-    },
-  })
+const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) => {
+  const start = (x: number) => { swipeStartX.current = x; didDrag.current = false }
+  const end = (x: number) => {
+    if (swipeStartX.current === null) return
+    const dx = x - swipeStartX.current
+    swipeStartX.current = null
+    if (Math.abs(dx) < 40) return
+    didDrag.current = true
+    setIndex(i => dx > 0 ? (i + 1) % len : (i - 1 + len) % len)
+  }
+  return {
+    // téléphone
+    onTouchStart: (e: React.TouchEvent) => start(e.touches[0].clientX),
+    onTouchEnd:   (e: React.TouchEvent) => end(e.changedTouches[0].clientX),
+    // PC (glisser avec la souris)
+    onMouseDown:  (e: React.MouseEvent) => { e.preventDefault(); start(e.clientX) },
+    onMouseUp:    (e: React.MouseEvent) => end(e.clientX),
+    onMouseLeave: (e: React.MouseEvent) => end(e.clientX),
+  }
+}
 
   useEffect(() => {
     const needsCatalog = location.pathname === '/' || location.pathname.startsWith('/books')
@@ -689,7 +698,17 @@ function App() {
                 </div>
 
               {bannerImages.length > 0 && (
-                <div className="home-section home-section-banner banner-desktop-only">
+                <div className="home-section home-section-banner banner-desktop-only" style={{ position:'relative' }}>
+                  {bannerImages.length > 1 && (
+                    <>
+                      <button
+                        onClick={() => setActiveBannerIndex(i => (i - 1 + bannerImages.length) % bannerImages.length)}
+                        style={{ position:'absolute', top:'140px', right:'10px', width:'40px', height:'40px', borderRadius:'50%', border:'none', background:'rgba(255,255,255,0.85)', color:C.primary, fontSize:'1.4rem', cursor:'pointer', boxShadow:'0 4px 12px rgba(0,0,0,0.2)', zIndex:5 }}>‹</button>
+                      <button
+                        onClick={() => setActiveBannerIndex(i => (i + 1) % bannerImages.length)}
+                        style={{ position:'absolute', top:'140px', left:'10px', width:'40px', height:'40px', borderRadius:'50%', border:'none', background:'rgba(255,255,255,0.85)', color:C.primary, fontSize:'1.4rem', cursor:'pointer', boxShadow:'0 4px 12px rgba(0,0,0,0.2)', zIndex:5 }}>›</button>
+                    </>
+                  )}
                       <div
                         className="highlights-banner-scroll"
                         style={{ position:'relative', overflow:'hidden', width:'100%', touchAction:'pan-y' }}
@@ -702,7 +721,10 @@ function App() {
                       transition:'transform 0.6s ease',
                     }}>
                       {bannerImages.map((url, i) => (
-                        <div key={i} onClick={() => navigate('/books')} style={{ width: `${100 / bannerImages.length}%`, flex:'0 0 auto', position:'relative', height:'320px', borderRadius:'20px', overflow:'hidden', cursor:'pointer', border:`1px solid ${C.border}`, boxShadow:'0 8px 30px rgba(37,99,235,0.15)' }}>
+                        <div key={i} onClick={() => {
+  if (didDrag.current) { didDrag.current = false; return }
+  navigate('/books')
+}} style={{ width: `${100 / bannerImages.length}%`, flex:'0 0 auto', position:'relative', height:'320px', borderRadius:'20px', overflow:'hidden', cursor:'pointer', border:`1px solid ${C.border}`, boxShadow:'0 8px 30px rgba(37,99,235,0.15)' }}>
                           <img src={url} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', filter:'blur(20px)', transform:'scale(1.2)', opacity:0.6 }}/>
                           <img src={url} alt="عروض" className="banner-main-img" style={{ position:'relative', width:'100%', height:'100%', objectFit:'contain' }}/>
                         </div>
@@ -739,7 +761,10 @@ function App() {
                       transition:'transform 0.6s ease',
                     }}>
                       {bannerImagesMobile.map((url, i) => (
-                        <div key={i} onClick={() => navigate('/books')} style={{ width: `${100 / bannerImagesMobile.length}%`, flex:'0 0 auto', position:'relative', height:'320px', borderRadius:'20px', overflow:'hidden', cursor:'pointer', border:`1px solid ${C.border}`, boxShadow:'0 8px 30px rgba(37,99,235,0.15)' }}>
+                        <div key={i} onClick={() => {
+  if (didDrag.current) { didDrag.current = false; return }
+  navigate('/books')
+}} style={{ width: `${100 / bannerImagesMobile.length}%`, flex:'0 0 auto', position:'relative', height:'320px', borderRadius:'20px', overflow:'hidden', cursor:'pointer', border:`1px solid ${C.border}`, boxShadow:'0 8px 30px rgba(37,99,235,0.15)' }}>
                           <img src={url} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', filter:'blur(20px)', transform:'scale(1.2)', opacity:0.6 }}/>
                           <img src={url} alt="عروض" className="banner-main-img" style={{ position:'relative', width:'100%', height:'100%', objectFit:'contain' }}/>
                         </div>
