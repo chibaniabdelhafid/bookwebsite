@@ -419,6 +419,20 @@ function App() {
   }, [bannerImagesMobile.length])
 
   const catalogFetchedRef = useRef(false)
+  const touchStartX = useRef<number | null>(null)
+
+  const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) => ({
+    onTouchStart: (e: React.TouchEvent) => {
+      touchStartX.current = e.touches[0].clientX
+    },
+    onTouchEnd: (e: React.TouchEvent) => {
+      if (touchStartX.current === null) return
+      const dx = e.changedTouches[0].clientX - touchStartX.current
+      touchStartX.current = null
+      if (Math.abs(dx) < 40) return
+      setIndex(i => dx > 0 ? (i + 1) % len : (i - 1 + len) % len)
+    },
+  })
 
   useEffect(() => {
     const needsCatalog = location.pathname === '/' || location.pathname.startsWith('/books')
@@ -674,10 +688,13 @@ function App() {
                   </div>
                 </div>
 
-                                {bannerImages.length > 0 && (
+              {bannerImages.length > 0 && (
                 <div className="home-section home-section-banner banner-desktop-only">
-                  <div className="highlights-banner-scroll" style={{ position:'relative', overflow:'hidden', width:'100%' }}>
-                    <div style={{
+                      <div
+                        className="highlights-banner-scroll"
+                        style={{ position:'relative', overflow:'hidden', width:'100%', touchAction:'pan-y' }}
+                        {...makeSwipe(bannerImages.length, setActiveBannerIndex)}
+                      >                    <div style={{
                       display:'flex',
                       width: `${bannerImages.length * 100}%`,
                       flexShrink: 0,
@@ -709,7 +726,11 @@ function App() {
 
                 {bannerImagesMobile.length > 0 && (
                 <div className="home-section home-section-banner banner-mobile-only">
-                  <div className="highlights-banner-scroll" style={{ position:'relative', overflow:'hidden', width:'100%' }}>
+                  <div
+                    className="highlights-banner-scroll"
+                    style={{ position:'relative', overflow:'hidden', width:'100%', touchAction:'pan-y' }}
+                    {...makeSwipe(bannerImagesMobile.length, setActiveBannerIndexMobile)}
+                  >
                     <div style={{
                       display:'flex',
                       width: `${bannerImagesMobile.length * 100}%`,
