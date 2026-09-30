@@ -959,7 +959,7 @@ setOptions(hasQias ? loaded : [
       {/* ══ Modal Livraison ══ */}
       {showBannerModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000 }}>
-          <div style={{ width: '100%', maxWidth: '480px', background: '#0A1526', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '20px', padding: '24px' }}>
+          <div style={{ width: '100%', maxWidth: '480px', maxHeight: '90vh', overflowY: 'auto', background: '#0A1526', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '20px', padding: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <h2 style={{ color: '#8FC1FF', margin: 0 }}>🖼️ لافتة الصفحة الرئيسية</h2>
               <button onClick={() => setShowBannerModal(false)} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(37,99,235,0.15)', borderRadius: '50%', width: '32px', height: '32px', cursor: 'pointer', color: 'rgba(37,99,235,0.6)', fontSize: '16px' }}>✕</button>
