@@ -47,6 +47,26 @@ interface SidebarProps {
 // Fonction utilitaire à ajouter en haut de chaque fichier
 const optimizeImg = (url: string, _width = 400) => url
 
+const useDesktopCols = () => {
+  const get = () => {
+    const w = window.innerWidth
+    if (w <= 900) return 0
+    if (w >= 1700) return 7
+    if (w >= 1400) return 6
+    if (w >= 1150) return 5
+    return 4
+  }
+  const [cols, setCols] = useState(get)
+  useEffect(() => {
+    const h = () => setCols(get())
+    window.addEventListener('resize', h)
+    return () => window.removeEventListener('resize', h)
+  }, [])
+  return cols
+}
+
+const MOBILE_PROMO_LIMIT = 6   // 3 colonnes × 2 rangées
+
 const Sidebar = ({ sidebarOpen, setSidebarOpen, darkMode, C, navigate, activeTab, cartCount, setCartOpen, setDarkMode, catsByType }: SidebarProps) => (
   <>
     <div onClick={() => setSidebarOpen(false)} style={{ position:'fixed', inset:0, zIndex:400, background:'rgba(0,0,0,0.5)', backdropFilter:'blur(4px)', opacity: sidebarOpen ? 1 : 0, pointerEvents: sidebarOpen ? 'all' : 'none', transition:'opacity 0.3s' }}/>
@@ -373,6 +393,35 @@ const BookCard = memo(({ book, C, navigate }: BookCardProps) => (
   </div>
 ))
 
+const CollectionPage = ({ title, books, C, navigate }: { title: string; books: Book[]; C: any; navigate: any }) => (
+  <div style={{ padding:'110px 4% 100px' }}>
+    <button onClick={() => navigate('/')} style={{ background:'none', border:`1px solid ${C.border}`, color:C.primary, padding:'8px 16px', borderRadius:'20px', cursor:'pointer', fontFamily:'inherit', fontWeight:700, marginBottom:'16px' }}>
+      → الرئيسية
+    </button>
+    <h1 style={{ color:C.primary, fontSize:'clamp(1.3rem,4vw,1.8rem)', fontWeight:800, textAlign:'center', marginBottom:'24px' }}>{title}</h1>
+    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:'14px' }}>
+      {books.map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
+    </div>
+  </div>
+)
+const makeStarTile = (color: string) => `
+<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'
+     fill='none' stroke='${color}' stroke-width='1' stroke-linejoin='round'>
+  <polygon points='50,16 56.5,36.5 76.6,28.8 64.6,46.7 83.2,57.6 61.7,59.4 64.8,80.6 50,65 35.3,80.6 38.3,59.4 16.9,57.6 35.4,46.7 23.4,28.8 43.5,36.5'/>
+</svg>`
+
+const IslamicBg = ({ darkMode }: { darkMode: boolean }) => {
+  const svg = makeStarTile(darkMode ? '#2563EB' : '#7FA8F0')
+  return (
+    <div style={{
+      position:'fixed', inset:0, zIndex:0, pointerEvents:'none',
+      backgroundImage:`url("data:image/svg+xml,${encodeURIComponent(svg)}")`,
+      backgroundSize:'100px 100px',
+      backgroundRepeat:'repeat',
+      opacity: darkMode ? 0.25 : 0.45,
+    }}/>
+  )
+}
 // ══ APP ══
 function App() {
   const [books,            setBooks]            = useState<Book[]>([])
@@ -391,6 +440,9 @@ function App() {
   const [sidebarOpen,      setSidebarOpen]      = useState(false)
   const [showAllBestsellers, setShowAllBestsellers] = useState(false)
   const [showAllPromotions,  setShowAllPromotions]  = useState(false)
+  const bannerVisible   = Math.min(3, bannerImages.length)
+  const bannerPositions = Math.max(1, bannerImages.length - bannerVisible + 1)
+
 
   const removeFromCartById = (bookId: number, qiasLabel?: string) => {
     setCart(prev => prev.filter(i => !(i.id === bookId && i.qiasLabel === qiasLabel)))
@@ -399,16 +451,18 @@ function App() {
   const heroRef   = useRef<HTMLDivElement>(null)
   const navigate  = useNavigate()
   const location  = useLocation()
+  const cols = useDesktopCols()
+
 
   useEffect(() => { fbTrack('PageView') }, [location.pathname])
 
   useEffect(() => {
-    if (bannerImages.length <= 1) return
+    if (bannerPositions <= 1) return
     const interval = setInterval(() => {
-      setActiveBannerIndex(prev => (prev + 1) % bannerImages.length)
+      setActiveBannerIndex(prev => (prev + 1) % bannerPositions)
     }, 4000)
     return () => clearInterval(interval)
-  }, [bannerImages.length, activeBannerIndex])
+  }, [bannerPositions, activeBannerIndex])
 
   useEffect(() => {
     if (bannerImagesMobile.length <= 1) return
@@ -445,6 +499,7 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
 
   useEffect(() => {
     const needsCatalog = location.pathname === '/' || location.pathname.startsWith('/books')
+      || location.pathname === '/promotions' || location.pathname === '/new'
     if (!needsCatalog || catalogFetchedRef.current) return
     catalogFetchedRef.current = true
 
@@ -527,6 +582,12 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
     books.filter(b => b.promotion && b.promotion > 0 && b.promotion < b.price), 
   [books])
 
+  const bestsellerShown = cols ? bestsellerBooks.slice(0, cols) : bestsellerBooks
+  const promotionShown  = cols ? promotionBooks.slice(0, cols)  : promotionBooks.slice(0, MOBILE_PROMO_LIMIT)
+  const promoHasMore    = cols
+    ? promotionBooks.length > cols
+    : promotionBooks.length > MOBILE_PROMO_LIMIT
+
   const catsByType = useMemo(() => ({
     category: cats.filter(c => c.type === 'category'),
     author: cats.filter(c => c.type === 'author'),
@@ -544,35 +605,7 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
 
   return (
     <div style={{ minHeight:'100vh',width:'100%',backgroundColor:C.bg,color:C.text,direction:'rtl',fontFamily:"'Cairo','Segoe UI',sans-serif",margin:0,padding:0,overflowX:'hidden',position:'relative',transition:'background-color 0.35s,color 0.35s' }}>
-      <div style={{ position:'fixed', inset:0, zIndex:0, pointerEvents:'none', overflow:'hidden' }}>
-        <div style={{
-          position:'absolute',
-          top:'-20%', left:'-20%',
-          width:'140%', height:'140%',
-          display:'flex', flexWrap:'wrap',
-          alignContent:'flex-start',
-          gap:'40px 60px',
-          transform:'rotate(-10deg)',
-          transformOrigin:'center',
-        }}>
-          {(() => {
-            const catWords = ['باقات','اللغة والبلاغة','الصحيحين والسنن','التزكية','التاريخ','أصول الفقه','فقه مالكي','فتاوى','علوم القرآن','علوم الحديث','العقيدة','تفسير القرآن']
-            return Array.from({ length: 250 }).map((_, i) => (
-              <span key={i} style={{
-                fontFamily:"'Aref Ruqaa',serif",
-                fontWeight:700,
-                fontSize:'30px',
-                color:'#86beff',
-                opacity:0.35,
-                whiteSpace:'nowrap',
-              }}>
-                {catWords[i % catWords.length]}
-              </span>
-            ))
-          })()}
-        </div>
-      </div>
-
+      <IslamicBg darkMode={darkMode} />
       <FloatingNav
         darkMode={darkMode} C={C} navigate={navigate} activeTab={activeTab}
         cartCount={cartCount} setCartOpen={setCartOpen}
@@ -595,12 +628,33 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
         <CartDrawer items={cart} darkMode={darkMode} onClose={()=>setCartOpen(false)} onUpdateQty={updateQty} onRemove={removeFromCart} onCheckout={()=>{ setCartOpen(false); navigate('/checkout') }}/>
       )}
 
-      <div style={{ position:'relative',zIndex:1 }}>
+      <div
+        className="site-frame"
+        style={{
+          position:'relative', zIndex:1,
+          ['--frame-bg' as any]: darkMode ? 'rgba(10,21,38,0.35)' : 'rgba(255,255,255,0.35)',
+          ['--frame-border' as any]: C.border,
+        }}
+      >
         <Routes>
           <Route path="/" element={
             <div style={{ position:'relative',zIndex:1 }}>
               <div className="home-hero-grid">
                 <header style={{ padding:'80px 5% 20px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'40px',minHeight:'auto',position:'relative',flexWrap:'wrap' }}>
+                  {/* ── BRAND (PC seulement) ── */}
+                  <div className="hero-brand">
+                    <img
+                      src={optimizeImg(darkMode ? "/elquds3d2-dark.png" : "/elquds3d2-transparent.png")}
+                      alt="القدس للكتاب"
+                      className="hero-brand-logo"
+                    />
+                    <div className="hero-brand-text">
+                      <h1 className="hero-brand-name">مكتبة القدس للكتاب</h1>
+                      <p className="hero-brand-sub">
+                        <span>✦</span> كتب إسلامية أصيلة · توصيل إلى 58 ولاية <span>✦</span>
+                      </p>
+                    </div>
+                  </div>
                   <div style={{ flex:'1 1 100%',maxWidth:'100%',minWidth:'280px',position:'relative',zIndex:2,width:'100%' }}>
                     <div className="hero-bismillah" style={{ display:'flex',alignItems:'center',gap:'10px',marginBottom:'16px' ,marginTop:'80px' }}>
                         <div style={{ height:'1px',flex:1,background:`linear-gradient(to left,${C.gold},transparent)` }}/><span style={{ color:C.gold }}>✦</span>
@@ -673,15 +727,15 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
                   <div className="home-section home-section-categories">
                     <div className="cats-groups-wrap" style={{ marginTop:'16px' }}>
                       {catsByType.category.length > 0 && (
-                      <div className="cats-group">
-<h3 className="cats-group-title" style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>🏷️ تصفّح حسب التصنيف</h3>                        <div className="cats-hscroll">
-                          {catsByType.category.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
+                          <div className="cats-group">
+                            <h3 className="cats-group-title" style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>🏷️ تصفّح حسب التصنيف</h3>                        <div className="cats-hscroll">
+                            {catsByType.category.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
                     {catsByType.author.length > 0 && (
                       <div className="cats-group">
-<h3 className="cats-group-title" style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>✍️ تصفّح حسب المؤلف</h3>                        <div className="cats-hscroll">
+                          <h3 className="cats-group-title" style={{ color:C.primary, fontSize:'0.85rem', fontWeight:'700', margin:'0 0 8px' }}>✍️ تصفّح حسب المؤلف</h3>                        <div className="cats-hscroll">
                           {catsByType.author.map(cat => <CatCard key={cat.name} cat={cat} books={books} C={C} darkMode={darkMode} navigate={navigate}/>)}
                         </div>
                       </div>
@@ -699,45 +753,48 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
 
               {bannerImages.length > 0 && (
                 <div className="home-section home-section-banner banner-desktop-only" style={{ position:'relative' }}>
-                  {bannerImages.length > 1 && (
+                  {bannerPositions > 1 && (
                     <>
                       <button
-                        onClick={() => setActiveBannerIndex(i => (i - 1 + bannerImages.length) % bannerImages.length)}
+                        onClick={() => setActiveBannerIndex(i => (i - 1 + bannerPositions) % bannerPositions)}
                         style={{ position:'absolute', top:'140px', right:'10px', width:'40px', height:'40px', borderRadius:'50%', border:'none', background:'rgba(255,255,255,0.85)', color:C.primary, fontSize:'1.4rem', cursor:'pointer', boxShadow:'0 4px 12px rgba(0,0,0,0.2)', zIndex:5 }}>‹</button>
                       <button
-                        onClick={() => setActiveBannerIndex(i => (i + 1) % bannerImages.length)}
+                        onClick={() => setActiveBannerIndex(i => (i + 1) % bannerPositions)}
                         style={{ position:'absolute', top:'140px', left:'10px', width:'40px', height:'40px', borderRadius:'50%', border:'none', background:'rgba(255,255,255,0.85)', color:C.primary, fontSize:'1.4rem', cursor:'pointer', boxShadow:'0 4px 12px rgba(0,0,0,0.2)', zIndex:5 }}>›</button>
                     </>
                   )}
-                      <div
-                        className="highlights-banner-scroll"
-                        style={{ position:'relative', overflow:'hidden', width:'100%', touchAction:'pan-y' }}
-                        {...makeSwipe(bannerImages.length, setActiveBannerIndex)}
-                      >                    <div style={{
+                  <div
+                    className="highlights-banner-scroll"
+                    style={{ position:'relative', overflow:'hidden', width:'100%', touchAction:'pan-y' }}
+                    {...makeSwipe(bannerPositions, setActiveBannerIndex)}
+                  >
+                    <div style={{
                       display:'flex',
-                      width: `${bannerImages.length * 100}%`,
+                      width: `${bannerImages.length * (100 / bannerVisible)}%`,
                       flexShrink: 0,
-                      transform: `translateX(${activeBannerIndex * (100 / bannerImages.length)}%)`,
+                      transform: `translateX(${(activeBannerIndex % bannerPositions) * (100 / bannerImages.length)}%)`,
                       transition:'transform 0.6s ease',
                     }}>
                       {bannerImages.map((url, i) => (
-                        <div key={i} onClick={() => {
-  if (didDrag.current) { didDrag.current = false; return }
-  navigate('/books')
-}} style={{ width: `${100 / bannerImages.length}%`, flex:'0 0 auto', position:'relative', height:'320px', borderRadius:'20px', overflow:'hidden', cursor:'pointer', border:`1px solid ${C.border}`, boxShadow:'0 8px 30px rgba(37,99,235,0.15)' }}>
-                          <img src={url} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', filter:'blur(20px)', transform:'scale(1.2)', opacity:0.6 }}/>
-                          <img src={url} alt="عروض" className="banner-main-img" style={{ position:'relative', width:'100%', height:'100%', objectFit:'contain' }}/>
+                        <div key={i} style={{ width: `${100 / bannerImages.length}%`, flex:'0 0 auto', padding:'0 6px', boxSizing:'border-box' }}>
+                          <div onClick={() => {
+                            if (didDrag.current) { didDrag.current = false; return }
+                            navigate('/books')
+                          }} style={{ position:'relative', height:'320px', borderRadius:'20px', overflow:'hidden', cursor:'pointer', border:`1px solid ${C.border}`, boxShadow:'0 8px 30px rgba(37,99,235,0.15)' }}>
+                            <img src={url} alt="" style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', filter:'blur(20px)', transform:'scale(1.2)', opacity:0.6 }}/>
+                            <img src={url} alt="عروض" className="banner-main-img" style={{ position:'relative', width:'100%', height:'100%', objectFit:'contain' }}/>
+                          </div>
                         </div>
                       ))}
                     </div>
                   </div>
-                  {bannerImages.length > 1 && (
+                  {bannerPositions > 1 && (
                     <div style={{ display:'flex', justifyContent:'center', gap:'6px', marginTop:'10px' }}>
-                      {bannerImages.map((_, i) => (
+                      {Array.from({ length: bannerPositions }).map((_, i) => (
                         <span key={i} onClick={() => setActiveBannerIndex(i)} style={{
-                          width: i === activeBannerIndex ? '18px' : '6px',
+                          width: i === (activeBannerIndex % bannerPositions) ? '18px' : '6px',
                           height:'6px', borderRadius:'3px', cursor:'pointer',
-                          background: i === activeBannerIndex ? C.gold : C.border,
+                          background: i === (activeBannerIndex % bannerPositions) ? C.gold : C.border,
                           transition:'all 0.25s'
                         }}/>
                       ))}
@@ -789,18 +846,28 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
                 {bestsellerBooks.length > 0 && (
                   <div className="home-section home-section-bestsellers">
                     <h2 style={{ color:C.primary, fontSize:'clamp(1.1rem,3vw,1.4rem)', fontWeight:'800', marginBottom:'14px', textAlign:'center' }}>الجديد والحصري</h2>
-                    <div className="highlights-col-scroll">
-                      {bestsellerBooks.map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
+                    <div className="highlights-col-scroll row-one" style={{ ['--cols' as any]: cols }}>
+                      {bestsellerShown.map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
                     </div>
+                    {cols > 0 && bestsellerBooks.length > cols && (
+                      <div style={{ textAlign:'center', marginTop:'18px' }}>
+                        <button className="see-all-btn" onClick={() => navigate('/new')}>عرض كل الجديد والحصري ←</button>
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {promotionBooks.length > 0 && (
                   <div className="home-section home-section-promotions">
                     <h2 style={{ color:C.primary, fontSize:'clamp(1.1rem,3vw,1.4rem)', fontWeight:'800', marginBottom:'14px', textAlign:'center' }}>🔥 عروض وتخفيضات</h2>
-                    <div className="highlights-col">
-                      {promotionBooks.map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
+                    <div className="highlights-col row-one" style={{ ['--cols' as any]: cols }}>
+                      {promotionShown.map(book => <BookCard key={book.id} book={book} C={C} navigate={navigate}/>)}
                     </div>
+                    {promoHasMore && (
+                      <div style={{ textAlign:'center', marginTop:'18px' }}>
+                        <button className="see-all-btn" onClick={() => navigate('/promotions')}>عرض كل العروض والتخفيضات ←</button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -871,6 +938,8 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
             <BookDetailPage books={books} darkMode={darkMode} onAddToCart={addToCart} cart={cart} onOrderPlaced={removeFromCartById}/>
           }/>
           <Route path="/checkout" element={<CheckoutPage items={cart} darkMode={darkMode} onBack={() => navigate(-1)} onConfirm={() => { setCart([]); navigate('/') }}/>}/>
+          <Route path="/promotions" element={<CollectionPage title="🔥 عروض وتخفيضات" books={promotionBooks} C={C} navigate={navigate}/>}/>
+          <Route path="/new" element={<CollectionPage title="الجديد والحصري" books={bestsellerBooks} C={C} navigate={navigate}/>}/>  
         </Routes>
         <Analytics />
       </div>
@@ -909,64 +978,63 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
       font-size:0.9rem;
       font-weight:700;
     }
-           @media(min-width:900px){
-      .cats-hscroll{
-        display:flex !important;
-        flex-wrap:nowrap !important;
-        overflow-x:auto !important;
-        gap:16px !important;
-        scrollbar-width:none;
-      }
-      .cats-hscroll::-webkit-scrollbar{ display:none; }
-      .cats-scroll-arrow{ display:none !important; }
+           @media(min-width:900px){/* ── Cartes catégories : petites pastilles (toutes tailles) ── */
+.cat-card{
+  border-radius:40px !important;
+  transition:transform .25s, box-shadow .25s, border-color .25s;
+}
+.cat-card:hover{
+  transform:translateY(-3px);
+  border-color:#2563EB !important;
+  box-shadow:0 8px 20px rgba(37,99,235,0.22) !important;
+}
+.cat-card-count{
+  display:inline-block;
+  font-size:0.68rem;
+  background:rgba(37,99,235,0.12);
+  color:#2563EB;
+  padding:1px 8px;
+  border-radius:10px;
+}
+.cat-card-arrow{ display:none !important; }
 
-      .cats-group-title{
-        text-align:center !important;
-        font-size:1.3rem !important;
-      }
+/* ── PC : pastilles centrées, retour à la ligne automatique ── */
+@media(min-width:900px){
+  .cats-groups-wrap{ gap:22px !important; }
 
-        .cat-card{
-          flex: 0 0 calc((100% - 5 * 16px) / 6) !important;
-          width:auto !important;
-          height:auto !important;
-          flex-direction:column !important;
-          align-items:center !important;
-          text-align:center !important;
-          gap:12px !important;
-          padding:24px 16px !important;
-          border-radius:18px !important;
-        }
-             .cat-card-img{
-        width:150px !important;
-        height:150px !important;
-        border-width:3px !important;
-        margin:0 auto !important;
-      }
-      .cat-card-body{
-        width:100% !important;
-      }
-      .cat-card-title{
-        font-size:1rem !important;
-        white-space:normal !important;
-        margin-bottom:6px !important;
-      }
-      .cat-card-footer{
-        justify-content:space-between !important;
-        width:100% !important;
-        margin-top:8px !important;
-      }
-      .cat-card-arrow{
-        display:flex !important;
-        align-items:center;
-        justify-content:center;
-        width:30px;
-        height:30px;
-        border-radius:50%;
-        background:rgba(37,99,235,0.1);
-        color:#2563EB;
-        font-size:1rem;
-        flex-shrink:0;
-      }
+  .cats-hscroll{
+    direction:rtl !important;
+    flex-direction:row !important;
+    flex-wrap:wrap !important;
+    justify-content:center !important;
+    overflow:visible !important;
+    gap:12px !important;
+    padding-bottom:0 !important;
+  }
+
+  .cats-group-title{
+    text-align:center !important;
+    font-size:1.15rem !important;
+    margin-bottom:14px !important;
+  }
+
+  .cat-card{
+    width:auto !important;
+    min-width:190px;
+    max-width:260px;
+    height:60px !important;
+    padding:6px 16px 6px 12px !important;
+    gap:10px !important;
+  }
+  .cat-card-img{
+    width:44px !important;
+    height:44px !important;
+    border-width:2px !important;
+  }
+  .cat-card-title{
+    font-size:0.88rem !important;
+  }
+}
       .cat-card-count{
         font-size:0.8rem !important;
         background:rgba(37,99,235,0.1);
@@ -1002,27 +1070,58 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
         .home-section-categories{ order:4 !important; }
         }
 
-      @media(min-width:901px){
-  .home-hero-grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "hero-text hero-banner"
-      "content content";
-    gap:24px;
-    align-items:start;
-  }
+      @media(min-width:901px){@media(min-width:901px){
+        .home-hero-grid{
+          display:grid;
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            "hero-text"
+            "hero-banner"
+            "content";
+          gap:16px;
+          align-items:start;
+        }
+
+  /* Marque + recherche : colonne centrée */
   .home-hero-grid > header{
     grid-area: hero-text;
-    padding-top:20px !important;
-    order:0;
+    padding: 90px 5% 0 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:center !important;
   }
+  .home-hero-grid > header > div{
+    width:100% !important;
+    max-width:760px !important;
+    margin:0 auto !important;
+    flex:0 0 auto !important;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  /* La barre de recherche prend toute la largeur du bloc (760px) */
+  .home-hero-grid > header > div > div:last-child{
+    width:100%;
+  }
+  /* On cache bismillah / titre / description sur PC pour que la recherche soit en haut */
+  .home-hero-grid .hero-bismillah,
+  .home-hero-grid .hero-title,
+  .home-hero-grid .hero-desc{
+    display:none !important;
+  }
+
   .home-hero-grid > .home-sections{
     display:contents;
   }
+
+  /* Bannière : centrée sous la recherche */
   .home-section-banner{
     grid-area: hero-banner;
-    min-width: 0;
+    width:100%;
+    max-width:1200px;
+    margin:0 auto !important;   /* annule le margin-top:95px */
+    min-width:0;
     order:0;
   }
   .home-section-bestsellers{ order:1; }
@@ -1180,7 +1279,73 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
           -webkit-mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 55%, transparent 100%);
           mask-image:linear-gradient(to bottom, transparent 0%, black 18%, black 55%, transparent 100%);
         }
+
       }
+        /* ── Bloc marque (logo + nom) ── */
+.hero-brand{ display:none; }
+
+@media(min-width:901px){
+  .hero-brand{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:22px;
+    margin:0 auto 22px;
+    width:100%;
+    text-align:center;
+  }
+  .hero-brand-logo{
+    width:130px;
+    height:130px;
+    object-fit:contain;
+    filter:drop-shadow(0 6px 18px rgba(37,99,235,0.35));
+  }
+  .hero-brand-name{
+    font-size:clamp(2.2rem,3.6vw,3.4rem);
+    font-weight:800;
+    line-height:1.15;
+    background:linear-gradient(135deg,#14356B,#2563EB 60%,#5B9BFF);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin:0 0 6px;
+  }
+  .hero-brand-sub{
+    font-size:1rem;
+    color:#5B6B82;
+    margin:0;
+    letter-spacing:.3px;
+  }
+  .hero-brand-sub span{ color:#2563EB; margin:0 6px; }
+}
+        .see-all-btn{
+  background:linear-gradient(135deg,#2563EB,#5B9BFF);
+  color:#fff; border:none; padding:11px 28px; border-radius:24px;
+  cursor:pointer; font-weight:700; font-size:0.9rem; font-family:inherit;
+  box-shadow:0 6px 18px rgba(37,99,235,0.35); transition:transform .2s;
+}
+.see-all-btn:hover{ transform:translateY(-2px); }
+
+@media(min-width:901px){
+  .highlights-col-scroll.row-one,
+  .highlights-col.row-one{
+    display:grid !important;
+    grid-template-columns:repeat(var(--cols),1fr) !important;
+    overflow:visible !important;
+  }
+}
+  /* ── Cadre du site (grands écrans) ── */
+@media(min-width:1200px){
+  .site-frame{
+    max-width:1600px;
+    margin:0 auto;
+    min-height:100vh;
+    background:var(--frame-bg);
+    border-left:1px solid var(--frame-border);
+    border-right:1px solid var(--frame-border);
+    box-shadow:0 0 50px rgba(37,99,235,0.12);
+  }
+}
       `}</style>
       
     </div>
