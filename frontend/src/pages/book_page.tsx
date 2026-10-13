@@ -72,37 +72,9 @@ export default function BooksPage({ books, darkMode }: BooksPageProps) {
   }, [filtered, currentPage]);
 
   return (
-    <div style={{ minHeight:'100vh', backgroundColor:c.bg, color:c.text, direction:'rtl', fontFamily:"'Cairo','Segoe UI',sans-serif", paddingTop:'40px', transition:'background 0.35s,color 0.35s', position:'relative' }}>
+    <div style={{ minHeight:'100vh', backgroundColor:'transparent', color:c.text, direction:'rtl', fontFamily:"'Cairo','Segoe UI',sans-serif", paddingTop:'40px', transition:'background 0.35s,color 0.35s', position:'relative' , zIndex:1}}>
 
-      {/* BG pattern */}
-      <div style={{ position:'fixed', inset:0, zIndex:0, pointerEvents:'none', overflow:'hidden' }}>
-        <div style={{
-          position:'absolute',
-          top:'-20%', left:'-20%',
-          width:'140%', height:'140%',
-          display:'flex', flexWrap:'wrap',
-          alignContent:'flex-start',
-          gap:'40px 60px',
-          transform:'rotate(-10deg)',
-          transformOrigin:'center',
-        }}>
-          {(() => {
-            const catWords = ['باقات','اللغة والبلاغة','الصحيحين والسنن','التزكية','التاريخ','أصول الفقه','فقه مالكي','فتاوى','علوم القرآن','علوم الحديث','العقيدة','تفسير القرآن']
-            return Array.from({ length: 250 }).map((_, i) => (
-              <span key={i} style={{
-                fontFamily:"'Aref Ruqaa',serif",
-                fontWeight:700,
-                fontSize:'26px',
-                color: darkMode ? '#2563EB' : '#86beff',
-                opacity:0.35,
-                whiteSpace:'nowrap',
-              }}>
-                {catWords[i % catWords.length]}
-              </span>
-            ))
-          })()}
-        </div>
-      </div>
+      
 
       {/* Header */}
       <div style={{ padding:'40px 5% 0', position:'relative', zIndex:1 }}>

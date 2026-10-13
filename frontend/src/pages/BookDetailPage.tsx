@@ -442,8 +442,7 @@ useEffect(() => {
   }
 
   return (
-    <div style={{ minHeight:'100vh', backgroundColor:c.bg, color:c.text, direction:'rtl', fontFamily:"'Cairo',sans-serif", transition:'background 0.35s' }}>
-
+<div style={{ minHeight:'100vh', backgroundColor:'transparent', color:c.text, direction:'rtl', fontFamily:"'Cairo',sans-serif", transition:'background 0.35s', position:'relative', zIndex:1 }}>
       {/* BG pattern */}
       <div style={{ position:'fixed', inset:0, zIndex:0, pointerEvents:'none', overflow:'hidden' }}>
         <div style={{
@@ -456,21 +455,6 @@ useEffect(() => {
           transform:'rotate(-10deg)',
           transformOrigin:'center',
         }}>
-          {(() => {
-            const catWords = ['باقات','اللغة والبلاغة','الصحيحين والسنن','التزكية','التاريخ','أصول الفقه','فقه مالكي','فتاوى','علوم القرآن','علوم الحديث','العقيدة','تفسير القرآن']
-            return Array.from({ length: 280 }).map((_, i) => (
-              <span key={i} style={{
-                fontFamily:"'Aref Ruqaa',serif",
-                fontWeight:700,
-                fontSize:'26px',
-                color: darkMode ? '#2563EB' : '#86beff',
-                opacity:0.35,
-                whiteSpace:'nowrap',
-              }}>
-                {catWords[i % catWords.length]}
-              </span>
-            ))
-          })()}
         </div>
       </div>
 
@@ -502,7 +486,7 @@ useEffect(() => {
           <div className="bd-left">
 
             {/* ── GALERIE IMAGES ── */}
-            <div style={{ position:'relative', width:'100%', background: darkMode?'#0D0A04':'#F0EBE0' }} className="bd-gallery">
+            <div style={{ position:'relative', width:'100%', background: darkMode ? '#0F2038' : '#FFFFFF' }} className="bd-gallery">
               <button onClick={()=>navigate(-1)} style={{ position:'absolute', top:'16px', right:'16px', zIndex:10, background: darkMode?'rgba(13,10,4,0.7)':'rgba(255,253,248,0.85)', backdropFilter:'blur(10px)', border:`1px solid ${c.border}`, color:c.primary, width:'40px', height:'40px', borderRadius:'50%', cursor:'pointer', fontSize:'1.1rem', display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 2px 12px rgba(0,0,0,0.15)' }}>←</button>
               {imagesLoading ? (
                 <div style={{ width:'100%', height:'clamp(220px, 45vh, 360px)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'3rem' }}>📖</div>
@@ -1023,6 +1007,19 @@ useEffect(() => {
           pointer-events: none;
           transition: opacity 0.25s;
         }
+          .bd-left > div:first-child,
+.bd-right > div {
+  background: ${c.bgCard} !important;
+}
+.bd-left { 
+  border-radius: 20px; 
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(37,99,235,0.12);
+  background: ${c.bgCard};
+}
+.bd-right > div {
+  box-shadow: 0 8px 30px rgba(37,99,235,0.12);
+}
         .bd-zoom-img { transition: filter 0.25s, transform 0.25s; transform-origin: center; }
 
         /* ── PC : au survol ── */

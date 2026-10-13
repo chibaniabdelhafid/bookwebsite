@@ -404,24 +404,118 @@ const CollectionPage = ({ title, books, C, navigate }: { title: string; books: B
     </div>
   </div>
 )
-const makeStarTile = (color: string) => `
-<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'
-     fill='none' stroke='${color}' stroke-width='1' stroke-linejoin='round'>
-  <polygon points='50,16 56.5,36.5 76.6,28.8 64.6,46.7 83.2,57.6 61.7,59.4 64.8,80.6 50,65 35.3,80.6 38.3,59.4 16.9,57.6 35.4,46.7 23.4,28.8 43.5,36.5'/>
-</svg>`
-
 const IslamicBg = ({ darkMode }: { darkMode: boolean }) => {
-  const svg = makeStarTile(darkMode ? '#2563EB' : '#7FA8F0')
+  const logo = darkMode ? '/elquds3d2-dark.png' : '/elquds3d2-transparent.png'
+  const tile = 260   // taille de la tuile : plus grand = plus d'espace entre les logos
+  const size = 120   // taille du logo dans la tuile
+  const color = darkMode ? '#2563EB' : '#5B9BFF'
+
   return (
     <div style={{
       position:'fixed', inset:0, zIndex:0, pointerEvents:'none',
-      backgroundImage:`url("data:image/svg+xml,${encodeURIComponent(svg)}")`,
-      backgroundSize:'100px 100px',
-      backgroundRepeat:'repeat',
-      opacity: darkMode ? 0.25 : 0.45,
+      backgroundColor: color,
+      WebkitMaskImage:`url("${logo}")`,
+      maskImage:`url("${logo}")`,
+      WebkitMaskRepeat:'space',
+      maskRepeat:'space',
+      WebkitMaskSize:`${size}px ${size}px`,
+      maskSize:`${size}px ${size}px`,
+      opacity: darkMode ? 0.18 : 0.16,
     }}/>
   )
 }
+
+const SbWave = ({ flip, id }: { flip?: boolean; id: string }) => (
+  <svg
+    viewBox="0 0 100 100" preserveAspectRatio="none"
+    style={{
+      position:'absolute', top:0, bottom:0, width:'38%', height:'100%',
+      [flip ? 'right' : 'left']: 0,
+      transform: flip ? 'scaleX(-1)' : undefined,
+    }}
+  >
+    <defs>
+      <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#14356B"/>
+        <stop offset="100%" stopColor="#2563EB"/>
+      </linearGradient>
+    </defs>
+    <path d="M0 0 L82 0 C98 0, 78 100, 100 100 L0 100 Z" fill={`url(#${id})`}/>
+  </svg>
+)
+
+const StoreInfoBand = ({ darkMode, C }: { darkMode: boolean; C: any }) => {
+  const logo = darkMode ? '/elquds3d2-dark.png' : '/elquds3d2-transparent.png'
+
+  return (
+    <div className="store-band-wrap">
+      <style>{`
+        .store-band-wrap{ grid-area:store-band; margin-top:100px; padding:0 1%; }
+        .store-band{
+          position:relative; width:100%; height:190px; border-radius:22px;
+          overflow:hidden; direction:ltr;
+          border:1px solid rgba(37,99,235,0.28);
+          box-shadow:0 8px 24px rgba(37,99,235,0.15);
+        }
+        .sb-side{
+          position:absolute; top:0; bottom:0; width:33%; padding:0 3%;
+          display:flex; flex-direction:column; justify-content:center; gap:8px; z-index:2;
+        }
+        .sb-line{
+          display:flex; align-items:center; gap:8px; color:#fff; font-weight:700;
+          font-size:clamp(0.58rem,1.5vw,0.95rem); white-space:nowrap; text-decoration:none;
+        }
+        .sb-center{
+          position:absolute; left:50%; top:0; bottom:0; transform:translateX(-50%);
+          width:30%; display:flex; flex-direction:column; align-items:center;
+          justify-content:center; text-align:center; z-index:1; gap:4px;
+        }
+        .sb-logo{ height:58%; max-width:100%; object-fit:contain; filter:drop-shadow(0 4px 12px rgba(37,99,235,0.3)); }
+        .sb-title{ font-size:clamp(1rem,2.2vw,1.8rem); font-weight:800; margin:0; line-height:1.2; direction:rtl; }
+        .sb-sub{ font-size:clamp(0.6rem,1vw,0.85rem); margin:0; direction:rtl; }
+        @media(max-width:640px){
+          .store-band-wrap{ margin-top:96px; padding:0 3%; }
+          .store-band{ height:130px; border-radius:18px; }
+          .sb-side{ gap:5px; }
+          .sb-logo{ height:72%; }
+          .sb-title, .sb-sub{ display:none; }
+        }
+      `}</style>
+
+      <div className="store-band" style={{ background: darkMode ? '#0F2038' : '#FFFFFF' }}>
+        <SbWave id="sbWaveL" />
+        <SbWave id="sbWaveR" flip />
+
+        {/* GAUCHE */}
+        <div className="sb-side" style={{ left:0 }}>
+          <a href="tel:023698505" className="sb-line"><span>📞</span><span>023 69 85 05</span></a>
+          <a href="tel:0698698505" className="sb-line"><span>📱</span><span>06 98 69 85 05</span></a>
+          <a href="https://wa.me/213771268601" target="_blank" rel="noopener noreferrer" className="sb-line">
+            <span>💬</span><span>07 71 26 86 01</span>
+          </a>
+        </div>
+
+        {/* MILIEU : logo + écriture */}
+        <div className="sb-center">
+          <img src={logo} alt="القدس للكتاب" className="sb-logo" />
+          <h1 className="sb-title" style={{ color: C.primary }}>مكتبة القدس للكتاب</h1>
+        </div>
+
+        {/* DROITE */}
+        <div className="sb-side" style={{ right:0, alignItems:'flex-end' }}>
+          <a href="https://www.elqudslilkitab.dz" target="_blank" rel="noopener noreferrer" className="sb-line">
+            <span>www.elqudslilkitab.dz</span><span>🌐</span>
+          </a>
+          <div className="sb-line" style={{ direction:'rtl', whiteSpace:'normal', lineHeight:1.4, fontWeight:600 }}>
+            <span>📍</span>
+            <span>رقم 02، المنوير البحري<br/>المحمدية - الجزائر</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ══ APP ══
 function App() {
   const [books,            setBooks]            = useState<Book[]>([])
@@ -640,16 +734,11 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
           <Route path="/" element={
             <div style={{ position:'relative',zIndex:1 }}>
               <div className="home-hero-grid">
+                <StoreInfoBand darkMode={darkMode} C={C} />
                 <header style={{ padding:'80px 5% 20px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:'40px',minHeight:'auto',position:'relative',flexWrap:'wrap' }}>
                   {/* ── BRAND (PC seulement) ── */}
                   <div className="hero-brand">
-                    <img
-                      src={optimizeImg(darkMode ? "/elquds3d2-dark.png" : "/elquds3d2-transparent.png")}
-                      alt="القدس للكتاب"
-                      className="hero-brand-logo"
-                    />
                     <div className="hero-brand-text">
-                      <h1 className="hero-brand-name">مكتبة القدس للكتاب</h1>
                       <p className="hero-brand-sub">
                         <span>✦</span> كتب إسلامية أصيلة · توصيل إلى 58 ولاية <span>✦</span>
                       </p>
@@ -719,8 +808,11 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
                           )}
                         </div>
                       )}
+                      
                     </div>
+                    
                   </div>
+                  
                 </header>
 
                 <div className="home-sections">
@@ -1056,18 +1148,18 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
           margin-top: 95px;
         }
         .banner-mobile-only{ display:none; }
-               @media(max-width:900px){
-        .banner-desktop-only{ display:none !important; }
-        .banner-mobile-only{ display:block !important; }
+        @media(max-width:900px){
+          .banner-desktop-only{ display:none !important; }
+          .banner-mobile-only{ display:block !important; }
 
-        .home-sections,
-        .home-hero-grid{ display:flex !important; flex-direction:column !important; }
-        .home-hero-grid > .home-sections{ display:contents !important; }
+          .home-sections,
+          .home-hero-grid{ display:flex !important; flex-direction:column !important; }
+          .home-hero-grid > .home-sections{ display:contents !important; }
 
-        .home-section-banner{ order:1 !important; margin-top:0 !important; }
-        .home-section-bestsellers{ order:2 !important; }
-        .home-section-promotions{ order:3 !important; }
-        .home-section-categories{ order:4 !important; }
+          .home-section-banner{ order:1 !important; margin-top:0 !important; }
+          .home-section-bestsellers{ order:2 !important; }
+          .home-section-promotions{ order:3 !important; }
+          .home-section-categories{ order:4 !important; }
         }
 
       @media(min-width:901px){@media(min-width:901px){
@@ -1075,22 +1167,24 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
           display:grid;
           grid-template-columns: 1fr;
           grid-template-areas:
-            "hero-text"
-            "hero-banner"
-            "content";
-          gap:16px;
+          "store-band"
+          "hero-text"
+          "hero-banner"
+          "content";
+          gap:8px;
           align-items:start;
         }
 
   /* Marque + recherche : colonne centrée */
   .home-hero-grid > header{
-    grid-area: hero-text;
-    padding: 90px 5% 0 !important;
-    display:flex !important;
-    flex-direction:column !important;
-    align-items:center !important;
-    justify-content:center !important;
-  }
+  grid-area: hero-text;
+  padding: 0 5% 0 !important;
+  gap:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
   .home-hero-grid > header > div{
     width:100% !important;
     max-width:760px !important;
@@ -1175,8 +1269,14 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
       @media(max-width:900px){
         .highlights-row{ grid-template-columns: 1fr !important; }
         .highlights-banner{ order:0; height:auto; }
-        .home-hero-grid > header{ padding-top:100px !important; }
-        .hero-bismillah{display:none!important;}
+.home-hero-grid > header{
+  padding-top:12px !important;
+  padding-bottom:0 !important;
+  gap:0 !important;
+  min-height:0 !important;
+}
+.home-hero-grid > header > div{ margin:0 !important; }
+.home-hero-grid > header > div > div:last-child{ margin-top:0 !important; }        .hero-bismillah{display:none!important;}
         .hero-title{display:none!important;}
         .hero-desc{display:none!important;}
         .highlights-col{ display:grid !important; grid-template-columns: repeat(2,1fr) !important; gap:10px !important; }
@@ -1311,7 +1411,7 @@ const makeSwipe = (len: number, setIndex: (fn: (i: number) => number) => void) =
     margin:0 0 6px;
   }
   .hero-brand-sub{
-    font-size:1rem;
+    font-size:1.3rem;
     color:#5B6B82;
     margin:0;
     letter-spacing:.3px;
