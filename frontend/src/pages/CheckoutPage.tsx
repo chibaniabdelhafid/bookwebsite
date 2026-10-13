@@ -209,37 +209,7 @@ export default function CheckoutPage({ items, darkMode, onBack, onConfirm }: Che
 
   // ── Formulaire principal ──
   return (
-    <div style={{ minHeight:'100vh', backgroundColor:c.bg, color:c.text, direction:'rtl', fontFamily:"'Cairo',sans-serif", position:'relative', zIndex:1 }}>
-
-      {/* BG pattern */}
-      <div style={{ position:'fixed', inset:0, zIndex:0, pointerEvents:'none', overflow:'hidden' }}>
-        <div style={{
-          position:'absolute',
-          top:'-20%', left:'-20%',
-          width:'140%', height:'140%',
-          display:'flex', flexWrap:'wrap',
-          alignContent:'flex-start',
-          gap:'40px 60px',
-          transform:'rotate(-10deg)',
-          transformOrigin:'center',
-        }}>
-          {(() => {
-            const catWords = ['باقات','اللغة والبلاغة','الصحيحين والسنن','التزكية','التاريخ','أصول الفقه','فقه مالكي','فتاوى','علوم القرآن','علوم الحديث','العقيدة','تفسير القرآن']
-            return Array.from({ length: 260 }).map((_, i) => (
-              <span key={i} style={{
-                fontFamily:"'Aref Ruqaa',serif",
-                fontWeight:700,
-                fontSize:'26px',
-                color: darkMode ? '#2563EB' : '#86beff',
-                opacity:0.35,
-                whiteSpace:'nowrap',
-              }}>
-                {catWords[i % catWords.length]}
-              </span>
-            ))
-          })()}
-        </div>
-      </div>
+    <div style={{ minHeight:'100vh', backgroundColor:'transparent', color:c.text, direction:'rtl', fontFamily:"'Cairo',sans-serif", position:'relative', zIndex:1 }}>
 
       {/* Header */}
       <div style={{ position:'relative', zIndex:1, padding:'32px 5% 0' }}>
